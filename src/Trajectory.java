@@ -7,7 +7,7 @@ Class Trajectory used to make paths
 @version 1.0.0 20/02/2023
 @inv Points in the path must be sequential and in the 1st quadrant
  */
-public class Trajectory extends Individual {
+public class Trajectory implements Individual {
     private final ArrayList<Point> points;
     private double length;
     public Random generator;

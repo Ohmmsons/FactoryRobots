@@ -1,7 +1,7 @@
-public abstract class Individual {
-    public abstract void addGene(double pa);
-    public abstract void removeGene(double pr);
-    public abstract void mutate(double pm);
-    public abstract Individual[] crossover(Individual other);
-    public abstract double fitness();
+public interface Individual {
+    void addGene(double pa);
+    void removeGene(double pr);
+    void mutate(double pm);
+    Individual[] crossover(Individual other);
+    double fitness();
 }

@@ -8,11 +8,15 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
-public class TrajectoryPopulation extends Population {
+public class TrajectoryPopulation implements Population {
 
+    private  ArrayList<Individual> individuals;
     private final ArrayList<Shape> obstacles;
+
+    private Random generator;
     /*
   Constructor for Population Class
   @param int n, int[] lengths, Random generator
@@ -36,6 +40,16 @@ public class TrajectoryPopulation extends Population {
         this.individuals = individuals;
         this.generator = generator;
         this.obstacles = obstacles;
+    }
+
+    @Override
+    public ArrayList<Individual> getIndividuals() {
+        return individuals;
+    }
+
+    @Override
+    public void setIndividuals(ArrayList<Individual> individuals) {
+       this.individuals = individuals;
     }
 
     public String populationInfo(){
@@ -81,5 +95,4 @@ public class TrajectoryPopulation extends Population {
         }
         return new TrajectoryPopulation(vencedores,generator,obstacles);
     }
-
 }
