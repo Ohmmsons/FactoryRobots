@@ -35,8 +35,7 @@ public class Ponto {
     @Override
     public boolean equals(Object o) {
         Ponto x = (Ponto) o;
-        if(x.getX() == this.x && x.getY() == this.y) return true;
-        return false;
+        return x.getX() == this.x && x.getY() == this.y;
     }
 
     @Override
