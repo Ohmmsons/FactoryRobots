@@ -30,22 +30,9 @@ public class Trajectory implements Individual {
                 if(i>0)length+= points.get(++j).dist(points.get(j-1));
             }
         }
-//        if(!isSequential(segments)){System.out.println("Trajectory:vi"); System.exit(0);}
         this.points = points;
     }
 
-//    /*
-//   isSequential method to check if an array of segments form a path with sequential points
-//   @params SegmentoReta[] segmentos
-//   @return True if a sequential path is formed
-//    */
-//    private boolean isSequential(SegmentoReta[] segmentos){
-//        for(SegmentoReta segmento : segmentos){
-//            if((segmento.getP1().getX()>segmento.getP2().getX())&&(segmento.getP1().getY()>segmento.getP2().getY()))
-//                return false;
-//        }
-//        return true;
-//    }
 
     public String toString() {
         if (points.isEmpty()) return "[]";
@@ -102,7 +89,10 @@ public class Trajectory implements Individual {
         for (int i = point1; i < points.size(); i++) child2.add(points.get(i));
         return new Trajectory[]{new Trajectory(child1,generator,obstacles), new Trajectory(child2,generator,obstacles)};
     }
-
+    /*
+          mutate method to perform one point mutation with probability pm
+          @params double pm
+    */
     public void mutate(double pm) {
         if (generator.nextDouble() < pm) {
             if (points.size() > 2) {
@@ -117,6 +107,18 @@ public class Trajectory implements Individual {
         }
     }
 
+    public boolean equals(Object other){
+        Trajectory otherTrajectory = (Trajectory) other;
+        ArrayList<Point> otherTrajectoryPoints = otherTrajectory.getPoints();
+        for(int i = 0; i<points.size(); i++)
+            if(!points.get(i).equals(otherTrajectoryPoints.get(i)))
+                return false;
+        return true;
+    }
+    /*
+          addGene method to add a random point in a random spot in the trajectory with probability pa
+          @params double pa
+    */
     public void addGene(double pa) {
         if(generator.nextDouble() < pa) {
             int i = 0;
@@ -129,7 +131,10 @@ public class Trajectory implements Individual {
             }
         }
     }
-
+    /*
+         removeGene method to remove a random point with probability pr
+         @params double pr
+   */
     public void removeGene(double pr) {
         if(generator.nextDouble()<pr) {
             int i;

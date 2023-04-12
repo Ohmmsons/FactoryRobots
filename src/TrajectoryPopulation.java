@@ -68,9 +68,7 @@ public class TrajectoryPopulation implements Population {
     public void sortByFitness(){
         individuals.sort((s1, s2) -> (int) Math.signum(s2.fitness() - s1.fitness()));
     }
-//    public void sortByNCollisions(ArrayList<Shape> obstaculos){
-//        Collections.sort(individuals,(s1, s2) -> (int) Math.signum(s1.nCollisions(obstaculos)-s2.nCollisions(obstaculos)));
-//    }
+
     public String toString() {
         StringBuilder str = new StringBuilder();
         for (Individual t : individuals) {
