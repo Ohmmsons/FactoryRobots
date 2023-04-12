@@ -1,21 +1,21 @@
 /*
-Class Circunferencia
+Class Circumference
 @author Jude Adam
 @version 1.0.0 16/02/2023
 @inv Radius cannot be less than or equal to 0
  */
-public class Circunferencia extends FiguraGeometrica {
+public class Circumference extends Shape {
 
     private double r;
 
     /*
-    Constructor for Circunferencia Class
-    @param Ponto[] pontos, double r
+    Constructor for Circumference Class
+    @param Point[] points, double r
  */
-    Circunferencia(Ponto[] pontos, double r) {
-        super(pontos);
+    Circumference(Point[] points, double r) {
+        super(points);
         if (r < 0) {
-            System.out.println("Circunferencia:vi");
+            System.out.println("Circumference:vi");
             System.exit(0);
         }
         this.r = r;
@@ -23,10 +23,10 @@ public class Circunferencia extends FiguraGeometrica {
 
     /*
    Method to see shortest distance from Segment s to point p
-   @params Ponto p
+   @params Point p
    @return double value of shortest distance from s to point p
     */
-    private double shortestDistance(SegmentoReta s, Ponto p) {
+    private double shortestDistance(SegmentoReta s, Point p) {
         double x1 = s.getP1().getX();
         double y1 = s.getP1().getY();
         double x2 = s.getP2().getX();
@@ -58,6 +58,6 @@ public class Circunferencia extends FiguraGeometrica {
     */
     @Override
     public boolean isIntercepted(SegmentoReta segment) {
-        return shortestDistance(segment, pontos[0]) <= r;
+        return shortestDistance(segment, points[0]) <= r;
     }
 }

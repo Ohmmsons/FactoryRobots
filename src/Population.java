@@ -1,8 +1,15 @@
 import java.util.ArrayList;
+import java.util.Random;
 
-public interface Population {
-    String populationInfo();
-    String sortByFitness();
-    Population tournament();
+public abstract class Population extends Object{
 
+    protected ArrayList<Individual> individuals;
+    protected Random generator;
+    public abstract String populationInfo();
+    public abstract void sortByFitness();
+    public abstract Population tournament();
+
+    public ArrayList<Individual> getIndividuals(){return this.individuals;}
+
+    public void setIndividuals(ArrayList<Individual> individuals) { this.individuals = individuals;}
 }

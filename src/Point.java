@@ -1,20 +1,20 @@
 /*
-Class Ponto used for forming line segments
+Class Point used for forming line segments
 @author Jude Adam
 @version 1.0.0 16/02/2023
 @inv Point must be in first quadrant (x>=0 && y>=0)
  */
-public class Ponto {
+public class Point {
     private final double x;
     private final double y;
 
     /*
-    Constructor for Ponto Class
+    Constructor for Point Class
     @param double x, double y
      */
-    Ponto(double x, double y) {
+    Point(double x, double y) {
         if (x < 0 || y < 0) {
-            System.out.println("Ponto:vi");
+            System.out.println("Point:vi");
             System.exit(0);
         }
         this.x = x;
@@ -22,8 +22,8 @@ public class Ponto {
     }
 
     /*
-        Equals comparator for Ponto Class
-        @param Ponto other
+        Equals comparator for Point Class
+        @param Point other
         @return True if x and y are equal to other's x and y
         */
 
@@ -34,7 +34,7 @@ public class Ponto {
 
     @Override
     public boolean equals(Object o) {
-        Ponto x = (Ponto) o;
+        Point x = (Point) o;
         return x.getX() == this.x && x.getY() == this.y;
     }
 
@@ -56,10 +56,10 @@ public class Ponto {
 
     /*
     Method to see distance from this point to point p
-    @params Ponto p
+    @params Point p
     @return double value of distance from this to point p
      */
-    public double dist(Ponto p) {
+    public double dist(Point p) {
         double dx = x - p.x;
         double dy = y - p.y;
         return Math.sqrt(dx * dx + dy * dy);

@@ -22,7 +22,7 @@ public class Main {
         for (int i = 0; i < lengths.length; i++) {
             lengths[i] = sc.nextInt();
         }
-        FiguraGeometrica f;
+        Shape f;
         DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
         unusualSymbols.setDecimalSeparator('.');
         DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
@@ -31,7 +31,7 @@ public class Main {
         String[] aos;
 
         sc.nextLine();
-        ArrayList<FiguraGeometrica> figuras = new ArrayList<>();
+        ArrayList<Shape> figuras = new ArrayList<>();
 
         while (sc.hasNextLine()) {
             s = sc.nextLine();
@@ -41,14 +41,14 @@ public class Main {
 
             switch (aos[0]) {
                 case "Circunferencia" -> {
-                    figuras.add(new Circunferencia(new Ponto[]{new Ponto(Integer.parseInt(aos[1]), Integer.parseInt(aos[2]))}, Double.parseDouble(aos[3])));
+                    figuras.add(new Circumference(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2]))}, Double.parseDouble(aos[3])));
                 }
                 case "Triangulo" -> {
-                    figuras.add(new Triangulo(new Ponto[]{new Ponto(Integer.parseInt(aos[1]), Integer.parseInt(aos[2])), new Ponto(Integer.parseInt(aos[3]), Integer.parseInt(aos[4])), new Ponto(Integer.parseInt(aos[5]), Integer.parseInt(aos[6]))}));
+                    figuras.add(new Triangle(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2])), new Point(Integer.parseInt(aos[3]), Integer.parseInt(aos[4])), new Point(Integer.parseInt(aos[5]), Integer.parseInt(aos[6]))}));
 
                 }
                 case "Retangulo" -> {
-                    figuras.add(new Retangulo(new Ponto[]{new Ponto(Integer.parseInt(aos[1]), Integer.parseInt(aos[2])), new Ponto(Integer.parseInt(aos[3]), Integer.parseInt(aos[4])), new Ponto(Integer.parseInt(aos[5]), Integer.parseInt(aos[6])), new Ponto(Integer.parseInt(aos[7]), Integer.parseInt(aos[8]))}));
+                    figuras.add(new Rectangle(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2])), new Point(Integer.parseInt(aos[3]), Integer.parseInt(aos[4])), new Point(Integer.parseInt(aos[5]), Integer.parseInt(aos[6])), new Point(Integer.parseInt(aos[7]), Integer.parseInt(aos[8]))}));
 
                 }
                 default -> {
@@ -57,8 +57,8 @@ public class Main {
                 }
             }
         }
-        SGA sga = new SGA(pm, pa, pr, x1, y1, x2, y2, lengths.length, lengths, generator, figuras);
-        TrajectoryPopulation pop = sga.sga(g);
+        SGA sga = new SGA(pm, pa, pr, generator, new TrajectoryPopulation(x1, y1, x2, y2, lengths.length, lengths, generator, figuras));
+        sga.sga(g);
         sc.close();
     }
 

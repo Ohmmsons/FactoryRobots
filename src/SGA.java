@@ -3,47 +3,45 @@ import java.util.Random;
 
 public class SGA {
 
-    private TrajectoryPopulation population;
+    private Population population;
     private double pm;
     private double pa;
     private double pr;
-    private ArrayList<FiguraGeometrica> obstaculos;
-
     private Random generator;
 
-    public SGA(double pm, double pa, double pr, int x1, int y1, int x2, int y2, int n, int[] lengths, Random generator, ArrayList<FiguraGeometrica> obstaculos) {
-        this.population = new TrajectoryPopulation(x1, y1, x2, y2, n, lengths, generator,obstaculos);
+    public SGA(double pm, double pa, double pr, Random generator, Population population) {
+        this.population = population;
         this.pm = pm;
         this.pa = pa;
         this.pr = pr;
         this.generator = generator;
-        this.obstaculos = obstaculos;
     }
 
-    public TrajectoryPopulation sga(int g) {
+    public Population sga(int g) {
         for(int i = 0; i<g; i++) {
-            population = population.tournament();
-            ArrayList<Individual> trajetorias = population.getIndividuals();
-            ArrayList<Individual> trajetoriasFilho = new ArrayList<>();
+            Population offspring = population.tournament();
+            ArrayList<Individual> tournamentWinners = offspring.getIndividuals();
+            ArrayList<Individual> offspringIndividuals = new ArrayList<>();
             while (true) {
-                int index1 = generator.nextInt(trajetorias.size());
-                int index2 = generator.nextInt(trajetorias.size());
-                Individual[] filhos = trajetorias.get(index1).crossover(trajetorias.get(index2));
-                trajetoriasFilho.add(filhos[0]);
-                if (trajetoriasFilho.size() == trajetorias.size()) break;
-                trajetoriasFilho.add(filhos[1]);
-                if (trajetoriasFilho.size() == trajetorias.size()) break;
+                int index1 = generator.nextInt(tournamentWinners.size());
+                int index2 = generator.nextInt(tournamentWinners.size());
+                Individual[] filhos = tournamentWinners.get(index1).crossover(tournamentWinners.get(index2));
+                offspringIndividuals.add(filhos[0]);
+                if (offspringIndividuals.size() == tournamentWinners.size()) break;
+                offspringIndividuals.add(filhos[1]);
+                if (offspringIndividuals.size() == tournamentWinners.size()) break;
             }
-            for (Individual t : trajetoriasFilho) {
-                t.mutate(pm);
+            for (Individual ind : offspringIndividuals) {
+                ind.mutate(pm);
             }
-            for (Individual t : trajetoriasFilho) {
-                t.addGene(pa);
+            for (Individual ind : offspringIndividuals) {
+                ind.addGene(pa);
             }
-            for (Individual t : trajetoriasFilho) {
-                t.removeGene(pr);
+            for (Individual ind : offspringIndividuals) {
+                ind.removeGene(pr);
             }
-            population = new TrajectoryPopulation(trajetoriasFilho, generator, obstaculos);
+            offspring.setIndividuals(offspringIndividuals);
+            population = offspring;
             System.out.println(i+": " + population.populationInfo());
         }
         return population;

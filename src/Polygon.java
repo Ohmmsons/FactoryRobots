@@ -3,14 +3,14 @@ Class Polygon
 @author Jude Adam
 @version 1.0.0 16/02/2023
  */
-public class Polygon extends FiguraGeometrica {
+public class Polygon extends Shape {
 
     /*
      Constructor for Polygon Class
-    @param Ponto[] pontos
+    @param Point[] points
    */
-    Polygon(Ponto[] pontos) {
-        super(pontos);
+    Polygon(Point[] points) {
+        super(points);
     }
 
     /*
@@ -20,8 +20,8 @@ public class Polygon extends FiguraGeometrica {
      */
     @Override
     public boolean isIntercepted(SegmentoReta segment) {
-        for (int i = 0; i < pontos.length - 1; i++)
-            if (segment.intersseta(new SegmentoReta(pontos[i], pontos[i + 1]))) return true;
+        for (int i = 0; i < points.length - 1; i++)
+            if (segment.intersseta(new SegmentoReta(points[i], points[i + 1]))) return true;
         return false;
     }
 }

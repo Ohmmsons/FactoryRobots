@@ -5,32 +5,32 @@ Class SegmentoReta used to form Shapes
 @inv The two points must have different coordinates
  */
 public class SegmentoReta{
-    private final Ponto p1, p2;
+    private final Point p1, p2;
     /*
     Constructor method for SegmentoReta class
-    @params Ponto p1,p2
+    @params Point p1,p2
      */
-    SegmentoReta(Ponto p1, Ponto p2){
+    SegmentoReta(Point p1, Point p2){
 //        if(p1.getX()==p2.getX() && p1.getY()==p2.getY()){System.out.println("Segmento:vi"); System.exit(0);}
         this.p1=p1;
         this.p2=p2;
     }
 
-    public Ponto getP1() {
+    public Point getP1() {
         return p1;
     }
 
-    public Ponto getP2() {
+    public Point getP2() {
         return p2;
     }
 
     /*
     ccw method to see if 3 points are in counter clocwise order
-    @params Ponto a,b,c
+    @params Point a,b,c
     @return True if a,b and c are in counter clockwise order
     @see https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
      */
-    private boolean ccw(Ponto a, Ponto b, Ponto c){
+    private boolean ccw(Point a, Point b, Point c){
         return (c.getY()-a.getY())*(b.getX()-a.getX()) > (b.getY()-a.getY())*(c.getX()-a.getX());
     }
     /*
