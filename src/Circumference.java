@@ -6,7 +6,7 @@ Class Circumference
  */
 public class Circumference extends Shape {
 
-    private double r;
+    private final double r;
 
     /*
     Constructor for Circumference Class
@@ -46,9 +46,7 @@ public class Circumference extends Shape {
         double y = y1 + u * py;
         double dx = x - x3;
         double dy = y - y3;
-        double dist = Math.sqrt(dx * dx + dy * dy);
-        return dist;
-
+        return Math.sqrt(dx * dx + dy * dy);
     }
 
     /*

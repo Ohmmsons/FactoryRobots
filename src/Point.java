@@ -35,7 +35,7 @@ public class Point {
     @Override
     public boolean equals(Object o) {
         Point x = (Point) o;
-        return x.getX() == this.x && x.getY() == this.y;
+        return (o.getClass() == this.getClass()) && x.getX() == this.x && x.getY() == this.y;
     }
 
     @Override

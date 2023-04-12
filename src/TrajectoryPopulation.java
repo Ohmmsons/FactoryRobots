@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class TrajectoryPopulation extends Population {
 
-    private ArrayList<Shape> obstacles;
+    private final ArrayList<Shape> obstacles;
     /*
   Constructor for Population Class
   @param int n, int[] lengths, Random generator
@@ -58,11 +58,11 @@ public class TrajectoryPopulation extends Population {
 //        Collections.sort(individuals,(s1, s2) -> (int) Math.signum(s1.nCollisions(obstaculos)-s2.nCollisions(obstaculos)));
 //    }
     public String toString() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for (Individual t : individuals) {
-            str += t.toString() + "\n";
+            str.append(t.toString()).append("\n");
         }
-        return str;
+        return str.toString();
     }
 
     /*
@@ -77,7 +77,7 @@ public class TrajectoryPopulation extends Population {
             int p2 = (generator.nextInt(individuals.size()));
             double f1 = individuals.get(p1).fitness();
             double f2 = individuals.get(p2).fitness();
-            vencedores.add((Trajectory) (f1 >= f2 ? individuals.get(p1) : individuals.get(p2)));
+            vencedores.add(f1 >= f2 ? individuals.get(p1) : individuals.get(p2));
         }
         return new TrajectoryPopulation(vencedores,generator,obstacles);
     }

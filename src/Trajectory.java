@@ -12,7 +12,7 @@ public class Trajectory extends Individual {
     private double length;
     public Random generator;
 
-    private ArrayList<Shape> obstacles;
+    private final ArrayList<Shape> obstacles;
     /*
     Constructor for Trajectory class
     @params SegmentoReta[] segments
@@ -51,7 +51,7 @@ public class Trajectory extends Individual {
         if (points.isEmpty()) return "[]";
         StringBuilder str = new StringBuilder("[");
         for (Point point : points) {
-            str.append("(" + (int) point.getX() + ";" + (int) point.getY() + ") ");
+            str.append("(").append((int) point.getX()).append(";").append((int) point.getY()).append(") ");
         }
         str.deleteCharAt(str.length() - 1);
         str.append("]");

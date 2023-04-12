@@ -4,10 +4,10 @@ import java.util.Random;
 public class SGA {
 
     private Population population;
-    private double pm;
-    private double pa;
-    private double pr;
-    private Random generator;
+    private final double pm;
+    private final double pa;
+    private final double pr;
+    private final Random generator;
 
     public SGA(double pm, double pa, double pr, Random generator, Population population) {
         this.population = population;

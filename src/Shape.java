@@ -22,7 +22,7 @@ public abstract class Shape {
     */
     public abstract boolean isIntercepted(SegmentoReta segment);
 
-    public Point[] getPontos() {
+    public Point[] getPoints() {
         return points;
     }
 }

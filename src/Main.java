@@ -1,12 +1,11 @@
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+
 import java.util.*;
 
 
 public class Main {
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
         Random generator = new Random(0);
@@ -22,10 +21,6 @@ public class Main {
         for (int i = 0; i < lengths.length; i++) {
             lengths[i] = sc.nextInt();
         }
-        Shape f;
-        DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
-        unusualSymbols.setDecimalSeparator('.');
-        DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
         String s;
 
         String[] aos;
@@ -35,22 +30,11 @@ public class Main {
 
         while (sc.hasNextLine()) {
             s = sc.nextLine();
-
             aos = s.split(" ");
-
-
             switch (aos[0]) {
-                case "Circunferencia" -> {
-                    figuras.add(new Circumference(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2]))}, Double.parseDouble(aos[3])));
-                }
-                case "Triangulo" -> {
-                    figuras.add(new Triangle(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2])), new Point(Integer.parseInt(aos[3]), Integer.parseInt(aos[4])), new Point(Integer.parseInt(aos[5]), Integer.parseInt(aos[6]))}));
-
-                }
-                case "Retangulo" -> {
-                    figuras.add(new Rectangle(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2])), new Point(Integer.parseInt(aos[3]), Integer.parseInt(aos[4])), new Point(Integer.parseInt(aos[5]), Integer.parseInt(aos[6])), new Point(Integer.parseInt(aos[7]), Integer.parseInt(aos[8]))}));
-
-                }
+                case "Circunferencia" -> figuras.add(new Circumference(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2]))}, Double.parseDouble(aos[3])));
+                case "Triangulo" -> figuras.add(new Triangle(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2])), new Point(Integer.parseInt(aos[3]), Integer.parseInt(aos[4])), new Point(Integer.parseInt(aos[5]), Integer.parseInt(aos[6]))}));
+                case "Retangulo" -> figuras.add(new Rectangle(new Point[]{new Point(Integer.parseInt(aos[1]), Integer.parseInt(aos[2])), new Point(Integer.parseInt(aos[3]), Integer.parseInt(aos[4])), new Point(Integer.parseInt(aos[5]), Integer.parseInt(aos[6])), new Point(Integer.parseInt(aos[7]), Integer.parseInt(aos[8]))}));
                 default -> {
                     System.out.println("Tipo de obstaculo desconhecido");
                     System.exit(0);

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Population extends Object{
+public abstract class Population{
 
     protected ArrayList<Individual> individuals;
     protected Random generator;
