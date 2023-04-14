@@ -94,8 +94,9 @@ public class Trajectory implements Individual {
           @params double pm
     */
     public void mutate(double pm) {
+        if (points.size() > 2) {
         if (generator.nextDouble() < pm) {
-            if (points.size() > 2) {
+
                 int i = generator.nextInt(points.size() - 2) + 1;
                 Point p = new Point(generator.nextInt(100), generator.nextInt(100));
                 if (!points.contains(p)) {
@@ -136,15 +137,22 @@ public class Trajectory implements Individual {
          @params double pr
    */
     public void removeGene(double pr) {
-        if(generator.nextDouble()<pr) {
+        if (points.size() > 2){
+            if(generator.nextDouble()<pr) {
             int i;
-            if (points.size() > 2) {
                 i = generator.nextInt(points.size() - 2) + 1;
                 length-=(points.get(i-1).dist(points.get(i)) + points.get(i).dist(points.get(i+1)));
                 points.remove(i);
                 length+=points.get(i-1).dist(points.get(i));
             }
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        for(int i = 0; i<points.size(); i++) hash+= i*points.get(i).hashCode();
+        return hash;
     }
 
     public ArrayList<Point> getPoints() {

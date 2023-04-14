@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /*
 Class Rectangle used to form Rectangles
 @author Jude Adam
@@ -11,8 +13,7 @@ public class Rectangle extends Polygon {
      */
     Rectangle(Point[] points) {
         super(points);
-        if (points.length != 4 || (points[0].equals(points[1]) || points[0].equals(points[2]) || points[0].equals(points[3])) || points[1].equals(points[2]) || points[1].equals(points[3]) || points[2].equals(points[3])
-                || !(isOrthogonal(points[0], points[1], points[2]) && isOrthogonal(points[1], points[2], points[3]) && isOrthogonal(points[2], points[3], points[0]))) {
+        if (points.length != 4 || Arrays.stream(points).distinct().count()!=points.length || !(isOrthogonal(points[0], points[1], points[2]) && isOrthogonal(points[1], points[2], points[3]) && isOrthogonal(points[2], points[3], points[0]))) {
             System.out.println("Rectangle:vi");
             System.exit(0);
         }
