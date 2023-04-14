@@ -17,10 +17,10 @@ public abstract class Shape {
 
     /*
    Method to see if Shape is intercepted by segment
-   @params SegmentoReta segment
+   @params LineSegment segment
    @return True if caller is intertcepted by segment
     */
-    public abstract boolean isIntercepted(SegmentoReta segment);
+    public abstract boolean isIntercepted(LineSegment segment);
 
     public Point[] getPoints() {
         return points;

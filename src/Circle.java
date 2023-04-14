@@ -1,21 +1,21 @@
 /*
-Class Circumference
+Class Circle
 @author Jude Adam
 @version 1.0.0 16/02/2023
 @inv Radius cannot be less than or equal to 0
  */
-public class Circumference extends Shape {
+public class Circle extends Shape {
 
     private final double r;
 
     /*
-    Constructor for Circumference Class
+    Constructor for Circle Class
     @param Point[] points, double r
  */
-    Circumference(Point[] points, double r) {
+    Circle(Point[] points, double r) {
         super(points);
         if (r < 0) {
-            System.out.println("Circumference:vi");
+            System.out.println("Circle:vi");
             System.exit(0);
         }
         this.r = r;
@@ -26,13 +26,13 @@ public class Circumference extends Shape {
    @params Point p
    @return double value of shortest distance from s to point p
     */
-    private double shortestDistance(SegmentoReta s, Point p) {
-        double x1 = s.getP1().getX();
-        double y1 = s.getP1().getY();
-        double x2 = s.getP2().getX();
-        double y2 = s.getP2().getY();
-        double x3 = p.getX();
-        double y3 = p.getY();
+    private double shortestDistance(LineSegment s, Point p) {
+        double x1 = s.getP1().x();
+        double y1 = s.getP1().y();
+        double x2 = s.getP2().x();
+        double y2 = s.getP2().y();
+        double x3 = p.x();
+        double y3 = p.y();
         double px = x2 - x1;
         double py = y2 - y1;
         double temp = (px * px) + (py * py);
@@ -51,11 +51,11 @@ public class Circumference extends Shape {
 
     /*
    Method to see if circle is intercepted by segment
-   @params SegmentoReta segment
+   @params LineSegment segment
    @return true if segment intersects caller
     */
     @Override
-    public boolean isIntercepted(SegmentoReta segment) {
+    public boolean isIntercepted(LineSegment segment) {
         return shortestDistance(segment, points[0]) <= r;
     }
 }

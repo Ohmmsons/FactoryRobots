@@ -15,13 +15,13 @@ public class Polygon extends Shape {
 
     /*
     isIntercepted,
-    @params SegmentoReta segment
+    @params LineSegment segment
     @return True if the segment intercepts the caller
      */
     @Override
-    public boolean isIntercepted(SegmentoReta segment) {
+    public boolean isIntercepted(LineSegment segment) {
         for (int i = 0; i < points.length - 1; i++)
-            if (segment.intersseta(new SegmentoReta(points[i], points[i + 1]))) return true;
+            if (segment.intercepts(new LineSegment(points[i], points[i + 1]))) return true;
         return false;
     }
 }

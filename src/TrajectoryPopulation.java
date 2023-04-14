@@ -8,17 +8,16 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
-public class TrajectoryPopulation implements Population {
+public class TrajectoryPopulation {
 
-    private  ArrayList<Individual> individuals;
+    private  ArrayList<Trajectory> individuals;
     private final ArrayList<Shape> obstacles;
 
     private Random generator;
     /*
-  Constructor for Population Class
+  Constructor for TrajectoryPopulation Class
   @param int n, int[] lengths, Random generator
    */
     public TrajectoryPopulation(int x1, int y1, int x2, int y2, int n, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
@@ -36,19 +35,17 @@ public class TrajectoryPopulation implements Population {
         }
     }
 
-    public TrajectoryPopulation(ArrayList<Individual> individuals, Random generator, ArrayList<Shape> obstacles){
+    public TrajectoryPopulation(ArrayList<Trajectory> individuals, Random generator, ArrayList<Shape> obstacles){
         this.individuals = individuals;
         this.generator = generator;
         this.obstacles = obstacles;
     }
 
-    @Override
-    public ArrayList<Individual> getIndividuals() {
+    public ArrayList<Trajectory> getIndividuals() {
         return individuals;
     }
 
-    @Override
-    public void setIndividuals(ArrayList<Individual> individuals) {
+    public void setIndividuals(ArrayList<Trajectory> individuals) {
        this.individuals = individuals;
     }
 
@@ -56,11 +53,11 @@ public class TrajectoryPopulation implements Population {
         DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
         unusualSymbols.setDecimalSeparator('.');
         DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
-        Trajectory maxFitness = (Trajectory) Collections.max(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        Trajectory minFitness = (Trajectory) Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        Trajectory minCollision = (Trajectory) Collections.min(individuals, (s1, s2) -> (int) Math.signum(((Trajectory)s1).nCollisions() - ((Trajectory)s2).nCollisions()));
+        Trajectory maxFitness = Collections.max(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
+        Trajectory minFitness = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
+        Trajectory minCollision =  Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.nCollisions() - s2.nCollisions()));
         double average = 0;
-        for (Individual t : individuals) average += t.fitness();
+        for (Trajectory t : individuals) average += t.fitness();
         average /= individuals.size();
         return (df.format(maxFitness.fitness()) + " " + df.format(average) + " " + df.format(minFitness.fitness()) + " " + df.format(minCollision.getLength()) + " " + minCollision.nCollisions());
     }
@@ -71,7 +68,7 @@ public class TrajectoryPopulation implements Population {
 
     public String toString() {
         StringBuilder str = new StringBuilder();
-        for (Individual t : individuals) {
+        for (Trajectory t : individuals) {
             str.append(t.toString()).append("\n");
         }
         return str.toString();
@@ -83,7 +80,7 @@ public class TrajectoryPopulation implements Population {
  @return winners of selection
   */
     public TrajectoryPopulation tournament() {
-        ArrayList<Individual> vencedores = new ArrayList<>();
+        ArrayList<Trajectory> vencedores = new ArrayList<>();
         for (int i = 0; i < individuals.size(); i++) {
             int p1 = (generator.nextInt(individuals.size()));
             int p2 = (generator.nextInt(individuals.size()));

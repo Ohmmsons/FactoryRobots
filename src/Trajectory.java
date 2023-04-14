@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /*
-Class Trajectory used to make paths
+Class Trajectory
 @author Jude Adam
 @version 1.0.0 20/02/2023
 @inv Points in the path must be sequential and in the 1st quadrant
  */
-public class Trajectory implements Individual {
+public class Trajectory {
     private final ArrayList<Point> points;
     private double length;
     public Random generator;
@@ -15,7 +15,7 @@ public class Trajectory implements Individual {
     private final ArrayList<Shape> obstacles;
     /*
     Constructor for Trajectory class
-    @params SegmentoReta[] segments
+    @params LineSegment[] segments
      */
     Trajectory(ArrayList<Point> pontos, Random generator, ArrayList<Shape> obstacles) {
         this.obstacles = obstacles;
@@ -38,7 +38,7 @@ public class Trajectory implements Individual {
         if (points.isEmpty()) return "[]";
         StringBuilder str = new StringBuilder("[");
         for (Point point : points) {
-            str.append("(").append((int) point.getX()).append(";").append((int) point.getY()).append(") ");
+            str.append(point);
         }
         str.deleteCharAt(str.length() - 1);
         str.append("]");
@@ -55,7 +55,7 @@ public class Trajectory implements Individual {
         int n = points.size();
         for (Shape shape : obstacles) {
             for (int i = 0; i<n-1; i++)
-                if (shape.isIntercepted(new SegmentoReta(points.get(i),points.get(i+1)))){
+                if (shape.isIntercepted(new LineSegment(points.get(i),points.get(i+1)))){
                     result++;
                     break;
                 }
@@ -76,9 +76,8 @@ public class Trajectory implements Individual {
       @params Trajectory other, Random generator
       @return Trajectory[] offspring
        */
-    public Trajectory[] crossover(Individual other) {
-        Trajectory otherT = (Trajectory) other;
-        ArrayList<Point> otherPoints = otherT.getPoints();
+    public Trajectory[] crossover(Trajectory other) {
+        ArrayList<Point> otherPoints = other.getPoints();
         int point1 = generator.nextInt(points.size() - 1) + 1;
         int point2 = generator.nextInt(otherPoints.size() - 1) + 1;
         ArrayList<Point> child1 = new ArrayList<>();
@@ -96,7 +95,6 @@ public class Trajectory implements Individual {
     public void mutate(double pm) {
         if (points.size() > 2) {
         if (generator.nextDouble() < pm) {
-
                 int i = generator.nextInt(points.size() - 2) + 1;
                 Point p = new Point(generator.nextInt(100), generator.nextInt(100));
                 if (!points.contains(p)) {
@@ -117,10 +115,10 @@ public class Trajectory implements Individual {
         return true;
     }
     /*
-          addGene method to add a random point in a random spot in the trajectory with probability pa
+          addPoint method to add a random point in a random spot in the trajectory with probability pa
           @params double pa
     */
-    public void addGene(double pa) {
+    public void addPoint(double pa) {
         if(generator.nextDouble() < pa) {
             int i = 0;
             if (points.size() > 2) i = generator.nextInt(points.size() - 2) + 1;
@@ -133,10 +131,10 @@ public class Trajectory implements Individual {
         }
     }
     /*
-         removeGene method to remove a random point with probability pr
+         removePoint method to remove a random point with probability pr
          @params double pr
    */
-    public void removeGene(double pr) {
+    public void removePoint(double pr) {
         if (points.size() > 2){
             if(generator.nextDouble()<pr) {
             int i;

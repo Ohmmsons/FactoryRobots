@@ -25,7 +25,7 @@ public class Rectangle extends Polygon {
     @return True if a,b and c form a right angle
      */
     private boolean isOrthogonal(Point a, Point b, Point c) {
-        return (b.getX() - a.getX()) * (b.getX() - c.getX()) + (b.getY() - a.getY()) * (b.getY() - c.getY()) == 0;
+        return (b.x() - a.x()) * (b.x() - c.x()) + (b.y() - a.y()) * (b.y() - c.y()) == 0;
     }
 
 }

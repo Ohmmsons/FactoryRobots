@@ -11,7 +11,7 @@ public class Triangle extends Polygon {
     */
     Triangle(Point[] points) {
         super(points);
-        if (points.length != 3 || (points[0].getX() * (points[1].getY() - points[2].getY()) + points[1].getX() * (points[2].getY() - points[0].getY()) + points[2].getX() * (points[0].getY() - points[1].getY())) == 0) {
+        if (points.length != 3 || (points[0].x() * (points[1].y() - points[2].y()) + points[1].x() * (points[2].y() - points[0].y()) + points[2].x() * (points[0].y() - points[1].y())) == 0) {
             System.out.println("Triangle:vi");
             System.exit(0);
         }
