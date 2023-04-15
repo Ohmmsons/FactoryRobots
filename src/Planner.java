@@ -17,12 +17,13 @@ public class Planner {
     private final Random generator;
 
     private ArrayList<Shape> obstacles;
+
     /*
        Constructor for SGA class
        @params double pm, double pa, double pr, Random generator, Population population
         */
-    public Planner(double pm, double pa, double pr,int x1,int y1, int x2, int y2, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
-        this.population = new TrajectoryPopulation(x1, y1, x2, y2, lengths.length, lengths, generator, obstacles);
+    public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
+        this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles);
         this.pm = pm;
         this.pa = pa;
         this.pr = pr;
@@ -39,7 +40,7 @@ public class Planner {
     */
     public Trajectory findTrajectory() {
         Trajectory bestTrajectory = Collections.max(population.getIndividuals(), (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-       while(bestTrajectory.nCollisions()>0){
+        while (bestTrajectory.nCollisions() > 0) {
             TrajectoryPopulation offspring = population.tournament();
             ArrayList<Trajectory> tournamentWinners = offspring.getIndividuals();
             ArrayList<Trajectory> offspringIndividuals = new ArrayList<>();
@@ -61,7 +62,7 @@ public class Planner {
             for (Trajectory t : offspringIndividuals) {
                 t.removePoint(pr);
             }
-            offspring = new TrajectoryPopulation(offspringIndividuals,generator,obstacles);
+            offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles);
             bestTrajectory = Collections.max(offspringIndividuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
             population = offspring;
         }

@@ -5,10 +5,9 @@ Class Point used for forming line segments
 @inv Point must be in first quadrant (x>=0 && y>=0)
  */
 public record Point(int x, int y) {
-    /*
-    Constructor for Point Class
-    @param double x, double y
-     */
+    public Point{
+        if(x<0||y<0) System.out.println("Point:vi");
+    }
     @Override
     public String toString() {
         return "("+x+";"+y+")";

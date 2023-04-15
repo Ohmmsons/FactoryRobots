@@ -107,6 +107,7 @@ public class Trajectory {
     }
 
     public boolean equals(Object other){
+        if(other.getClass()!=this.getClass())return false;
         Trajectory otherTrajectory = (Trajectory) other;
         ArrayList<Point> otherTrajectoryPoints = otherTrajectory.getPoints();
         for(int i = 0; i<points.size(); i++)

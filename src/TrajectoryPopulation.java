@@ -20,17 +20,17 @@ public class TrajectoryPopulation {
   Constructor for TrajectoryPopulation Class
   @param int n, int[] lengths, Random generator
    */
-    public TrajectoryPopulation(int x1, int y1, int x2, int y2, int n, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
+    public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
         this.individuals = new ArrayList<>();
         this.generator = generator;
         this.obstacles = obstacles;
         for (int i = 0; i < n; i++) {
             ArrayList<Point> points = new ArrayList<>();
-            points.add(new Point(x1, y1));
+            points.add(start);
             for (int j = 1; j < lengths[i] + 1; j++) {
                 points.add(j, new Point(generator.nextInt(100), generator.nextInt(100)));
             }
-            points.add(new Point(x2, y2));
+            points.add(end);
             this.individuals.add(new Trajectory(points,generator,obstacles));
         }
     }

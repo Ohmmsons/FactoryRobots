@@ -1,9 +1,51 @@
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class RobotManager {
-    private Robot[] subscribers;
+    private ArrayList<Robot> subscribers;
     private Queue<Point> requests;
 
+    public RobotManager(ArrayList<Robot>  robots){
+        this.subscribers = robots;
+    }
+
+    private void addSubscriber(Robot robot){
+
+    }
+    private void removeSubscriber(Robot robot){
+
+    }
+    public void update(){
+        Point nextRequest = requests.peek();
+        Robot bestRobot = null;
+        Trajectory bestTrajectory = null;
+        double minDistance = 1000000000;
+        for(Robot robot: subscribers){
+            Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(),nextRequest);
+            if(robot.canReachDestination(trajectory) && trajectory.getLength()<minDistance) {
+                bestRobot = robot;
+                bestTrajectory = trajectory;
+            }
+        }
+        if(bestRobot!=null){
+            bestRobot.setPath(bestTrajectory);
+        }
+        //Send request to end of queue
+        else{
+            requests.poll();
+            requests.add(nextRequest);
+        }
+    }
+    public void notify(Robot sender, RobotPowerState event){
+        switch (event){
+            case STANDBY -> addSubscriber(sender);
+            case MOVING -> removeSubscriber(sender);
+        }
+    }
+
+    public void addRequest(Point deliveryPoint){
+        this.requests.add(deliveryPoint);
+    }
 
 }
