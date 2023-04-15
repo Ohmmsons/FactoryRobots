@@ -11,10 +11,10 @@ public class RobotManager {
     }
 
     private void addSubscriber(Robot robot){
-
+        subscribers.add(robot);
     }
     private void removeSubscriber(Robot robot){
-
+        subscribers.remove(robot);
     }
     public void update(){
         Point nextRequest = requests.peek();
