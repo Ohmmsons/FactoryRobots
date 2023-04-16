@@ -6,7 +6,7 @@ public class RobotManager {
     private ArrayList<Robot> subscribers;
     private Queue<Point> requests;
 
-    public RobotManager(ArrayList<Robot>  robots){
+    public RobotManager(ArrayList<Robot> robots){
         this.subscribers = robots;
     }
 
@@ -28,10 +28,11 @@ public class RobotManager {
                 bestTrajectory = trajectory;
             }
         }
+        //If there is a robot that can reach the request
         if(bestRobot!=null){
             bestRobot.setPath(bestTrajectory);
         }
-        //Send request to end of queue
+        //If no robot can reach the request's destination send request to end of queue
         else{
             requests.poll();
             requests.add(nextRequest);

@@ -23,25 +23,22 @@ public class Circle extends Shape {
 
     /*
    Method to see shortest distance from Segment s to point p
-   @params Point p
+   @params LineSegment s, Point p
    @return double value of shortest distance from s to point p
     */
     private double shortestDistance(LineSegment s, Point p) {
-        double x1 = s.getP1().x();
-        double y1 = s.getP1().y();
-        double x2 = s.getP2().x();
-        double y2 = s.getP2().y();
+        double x1 = s.p1().x();
+        double y1 = s.p1().y();
+        double x2 = s.p2().x();
+        double y2 = s.p2().y();
         double x3 = p.x();
         double y3 = p.y();
         double px = x2 - x1;
         double py = y2 - y1;
         double temp = (px * px) + (py * py);
         double u = ((x3 - x1) * px + (y3 - y1) * py) / (temp);
-        if (u > 1) {
-            u = 1;
-        } else if (u < 0) {
-            u = 0;
-        }
+        if (u > 1) u = 1;
+        else if (u < 0) u = 0;
         double x = x1 + u * px;
         double y = y1 + u * py;
         double dx = x - x3;
@@ -50,10 +47,20 @@ public class Circle extends Shape {
     }
 
     /*
-   Method to see if circle is intercepted by segment
-   @params LineSegment segment
-   @return true if segment intersects caller
-    */
+     surrounds,
+     @params Point p
+     @return True if the point is inside the circle, this happens when the distance from the point to the center <= radius
+      */
+    @Override
+    public boolean surrounds(Point p) {
+        return p.dist(points[0])<=r;
+    }
+
+    /*
+       Method to see if circle is intercepted by segment
+       @params LineSegment segment
+       @return true if segment intersects caller
+        */
     @Override
     public boolean isIntercepted(LineSegment segment) {
         return shortestDistance(segment, points[0]) <= r;

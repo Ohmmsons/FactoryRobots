@@ -45,10 +45,6 @@ public class TrajectoryPopulation {
         return individuals;
     }
 
-    public void setIndividuals(ArrayList<Trajectory> individuals) {
-       this.individuals = individuals;
-    }
-
     public String populationInfo(){
         DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
         unusualSymbols.setDecimalSeparator('.');

@@ -14,6 +14,25 @@ public class Polygon extends Shape {
     }
 
     /*
+     surrounds,
+     @params Point p
+     @return True if the point is inside the polygon, this is done using the ray casting algorithm inspired by the reference given.
+     @see https://observablehq.com/@tmcw/understanding-point-in-polygon
+      */
+    @Override
+    public boolean surrounds(Point p) {
+        boolean inside = false;
+        int nPoints = points.length;
+        int j = nPoints - 1;
+        for(int i = 0; i<nPoints; j = i++){
+            if(((points[i].y()>p.y()) != (points[j].y()>p.y())) && (p.x()<(points[j].y()-points[i].x())*(p.y()-points[i].y())/(points[j].y()-points[i].y()) + points[i].x())){
+                inside=!inside;
+            }
+        }
+        return inside;
+    }
+
+    /*
     isIntercepted,
     @params LineSegment segment
     @return True if the segment intercepts the caller

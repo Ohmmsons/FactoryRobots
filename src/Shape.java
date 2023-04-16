@@ -14,6 +14,7 @@ public abstract class Shape {
         this.points = points;
     }
 
+    public abstract boolean surrounds(Point p);
 
     /*
    Method to see if Shape is intercepted by segment

@@ -1,3 +1,1 @@
-public enum RobotPowerState{
-    MOVING,CHARGING,STANDBY
-}
+public enum RobotPowerState{MOVING,CHARGING,STANDBY}

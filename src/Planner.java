@@ -17,7 +17,6 @@ public class Planner {
     private final Random generator;
 
     private ArrayList<Shape> obstacles;
-
     /*
        Constructor for SGA class
        @params double pm, double pa, double pr, Random generator, Population population
@@ -29,13 +28,10 @@ public class Planner {
         this.pr = pr;
         this.generator = generator;
     }
-
     /*
         Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
         algorithm performs tournament selection, crossover , mutation, gene addition and gene removal on the population
-        and replaces the old population with the new one. It also prints the information of each generation in the format:
-        "i: maxf avgf minf etc." where i is the generation number maxf is the max fitness avg fitness is the average fitness
-        minf is the minimum fitness, and etc. is any additional information about the population depending on the implementation.
+        and replaces the old population with the new one.
         @return best trajectory found
     */
     public Trajectory findTrajectory() {

@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class Robot {
     private Point currentPosition;
-    private final ArrayList<Shape> obstacles;
     private final Random generator;
     private double energy;
     private RobotPowerState powerState;
@@ -14,9 +13,11 @@ public class Robot {
     private Iterator<Point> trajectoryPointIterator;
     private RobotManager manager;
 
-    public Robot(Point start, ArrayList<Shape> obstacles, Random generator, Point chargingStation, RobotManager manager) {
-        this.currentPosition = start;
-        this.obstacles = obstacles;
+    private DeliveryMap deliveryMap;
+
+    public Robot(Point startingPoint, DeliveryMap deliveryMap, Random generator, Point chargingStation, RobotManager manager) {
+        this.currentPosition = startingPoint;
+        this.deliveryMap = deliveryMap;
         this.generator = generator;
         this.energy = 100.00;
         this.powerState = RobotPowerState.STANDBY;
@@ -49,7 +50,8 @@ public class Robot {
     }
 
     public boolean canReachDestination(Trajectory trajectory) {
-        int distanceFromEndToChargingStation = findTrajectory(trajectory.getPoints().get(trajectory.getPoints().size() - 1), chargingStation).getPoints().size();
+        Point destination = trajectory.getPoints().get(trajectory.getPoints().size() - 1);
+        int distanceFromEndToChargingStation = findTrajectory(destination, chargingStation).getPoints().size();
         return energy / 0.1 < distanceFromEndToChargingStation + trajectory.getPoints().size();
     }
 
@@ -69,13 +71,21 @@ public class Robot {
         return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol + ")";
     }
 
-    private void moveToNextPosition() {this.currentPosition = trajectoryPointIterator.next();}
+    private void moveToNextPosition() {
+        if(this.trajectoryPointIterator.hasNext()) {
+            this.currentPosition = trajectoryPointIterator.next();
+        }
+        if(!this.trajectoryPointIterator.hasNext()){
+            this.powerState = RobotPowerState.STANDBY;
+            manager.notify(this, this.powerState);
+        }
+    }
 
     private void goToChargingStation() {setPath(findTrajectory(currentPosition, chargingStation));}
 
     public Trajectory findTrajectory(Point start, Point destination) {
         int[] lengths = generator.ints(30, 0, 30).toArray();
-        Planner planner = new Planner(0.5, 0.25, 0.25, start, destination, lengths, generator, obstacles);
+        Planner planner = new Planner(0.5, 0.25, 0.25, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }
 

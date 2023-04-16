@@ -53,13 +53,12 @@ public class Trajectory {
     public int nCollisions() {
         int result = 0;
         int n = points.size();
-        for (Shape shape : obstacles) {
+        for (Shape shape : obstacles)
             for (int i = 0; i<n-1; i++)
                 if (shape.isIntercepted(new LineSegment(points.get(i),points.get(i+1)))){
                     result++;
                     break;
                 }
-        }
         return result;
     }
 
