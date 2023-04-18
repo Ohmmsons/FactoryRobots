@@ -12,7 +12,7 @@ public class Robot {
     private final Point chargingStation;
     private Iterator<Point> trajectoryPointIterator;
     private RobotManager manager;
-    private boolean needToCharge;
+    private boolean goingToChargingStation;
 
     private DeliveryMap deliveryMap;
 
@@ -23,7 +23,7 @@ public class Robot {
         this.chargingStation = startingPoint;
         this.energy = 100.00;
         this.powerState = RobotPowerState.STANDBY;
-        this.needToCharge = false;
+        this.goingToChargingStation = false;
         this.trajectoryPointIterator = null;
     }
 
@@ -45,10 +45,9 @@ public class Robot {
                 if(!this.currentPosition.equals(chargingStation))
                     energy -= 0.01;
                 if (energy < 50.0) {
-                    this.needToCharge = true;
+                    this.goingToChargingStation = true;
                     this.goToChargingStation();
                 }
-
             }
             case CHARGING -> {
                 if (energy < 100.0)
@@ -79,7 +78,7 @@ public class Robot {
         DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
         String formattedX = String.format("%03d", currentPosition.x());
         String formattedY = String.format("%03d", currentPosition.y());
-        String symbol = this.energy < 10 ? "-" : "*";
+        String symbol = (this.powerState == RobotPowerState.MOVING && !goingToChargingStation) ? "*" : "-";
         return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol + "," + powerState + ")";
     }
 
@@ -88,7 +87,10 @@ public class Robot {
             this.currentPosition = trajectoryPointIterator.next();
         }
         if (!this.trajectoryPointIterator.hasNext()) {
-            if (needToCharge) this.powerState = RobotPowerState.CHARGING;
+            if (goingToChargingStation) {
+                this.powerState = RobotPowerState.CHARGING;
+                goingToChargingStation = false;
+            }
             else {
                 this.powerState = RobotPowerState.STANDBY;
                 manager.notify(this, this.powerState);
