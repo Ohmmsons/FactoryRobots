@@ -12,21 +12,28 @@ public class Robot {
     private final Point chargingStation;
     private Iterator<Point> trajectoryPointIterator;
     private RobotManager manager;
+    private boolean needToCharge;
 
     private DeliveryMap deliveryMap;
 
-    public Robot(Point startingPoint, DeliveryMap deliveryMap, Random generator, Point chargingStation, RobotManager manager) {
+    public Robot(Point startingPoint, DeliveryMap deliveryMap, Random generator) {
         this.currentPosition = startingPoint;
         this.deliveryMap = deliveryMap;
         this.generator = generator;
+        this.chargingStation = startingPoint;
         this.energy = 100.00;
         this.powerState = RobotPowerState.STANDBY;
-        this.chargingStation = chargingStation;
+        this.needToCharge = false;
         this.trajectoryPointIterator = null;
+    }
+
+    public void subscribeToManager(RobotManager manager) {
         this.manager = manager;
     }
 
-    public double getEnergy() {return energy;}
+    public double getEnergy() {
+        return energy;
+    }
 
     public void update() {
         switch (powerState) {
@@ -35,10 +42,13 @@ public class Robot {
                 this.moveToNextPosition();
             }
             case STANDBY -> {
-                energy -= 0.01;
-                if (energy < 10.0) {
+                if(!this.currentPosition.equals(chargingStation))
+                    energy -= 0.01;
+                if (energy < 50.0) {
+                    this.needToCharge = true;
                     this.goToChargingStation();
                 }
+
             }
             case CHARGING -> {
                 if (energy < 100.0)
@@ -46,13 +56,15 @@ public class Robot {
                     else energy += 1.0;
                 else if (energy == 100.0) powerState = RobotPowerState.STANDBY;
             }
+            default -> throw new IllegalStateException("Unexpected value: " + powerState);
         }
     }
 
     public boolean canReachDestination(Trajectory trajectory) {
-        Point destination = trajectory.getPoints().get(trajectory.getPoints().size() - 1);
+        ArrayList<Point> points = trajectory.getPoints();
+        Point destination = points.get(points.size() - 1);
         int distanceFromEndToChargingStation = findTrajectory(destination, chargingStation).getPoints().size();
-        return energy / 0.1 < distanceFromEndToChargingStation + trajectory.getPoints().size();
+        return energy / 0.1 > distanceFromEndToChargingStation + trajectory.getPoints().size();
     }
 
     public void setPath(Trajectory trajectory) {
@@ -68,23 +80,28 @@ public class Robot {
         String formattedX = String.format("%03d", currentPosition.x());
         String formattedY = String.format("%03d", currentPosition.y());
         String symbol = this.energy < 10 ? "-" : "*";
-        return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol + ")";
+        return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol + "," + powerState + ")";
     }
 
     private void moveToNextPosition() {
-        if(this.trajectoryPointIterator.hasNext()) {
+        if (this.trajectoryPointIterator.hasNext()) {
             this.currentPosition = trajectoryPointIterator.next();
         }
-        if(!this.trajectoryPointIterator.hasNext()){
-            this.powerState = RobotPowerState.STANDBY;
-            manager.notify(this, this.powerState);
+        if (!this.trajectoryPointIterator.hasNext()) {
+            if (needToCharge) this.powerState = RobotPowerState.CHARGING;
+            else {
+                this.powerState = RobotPowerState.STANDBY;
+                manager.notify(this, this.powerState);
+            }
         }
     }
 
-    private void goToChargingStation() {setPath(findTrajectory(currentPosition, chargingStation));}
+    private void goToChargingStation() {
+        setPath(findTrajectory(currentPosition, chargingStation));
+    }
 
     public Trajectory findTrajectory(Point start, Point destination) {
-        int[] lengths = generator.ints(30, 0, 30).toArray();
+        int[] lengths = generator.ints(20, (int) (start.dist(destination)/100+5), (int) (start.dist(destination)/100)+10).toArray();
         Planner planner = new Planner(0.5, 0.25, 0.25, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }

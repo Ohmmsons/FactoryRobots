@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Random;
 
 /*
 Class Rectangle used to form Rectangles
@@ -17,6 +18,19 @@ public class Rectangle extends Polygon {
             System.out.println("Rectangle:vi");
             System.exit(0);
         }
+    }
+
+    Rectangle(Random generator){
+        super(generator);
+        Point Corner1 = new Point(generator.nextInt(100,950),generator.nextInt(100,950));
+        Point Corner2 = new Point(Corner1.x()-generator.nextInt(10,50),Corner1.y()-generator.nextInt(10,50));
+        while (Corner1.x()==Corner2.x()||Corner1.y()==Corner2.y()){
+            Corner1 = new Point(generator.nextInt(50,950),generator.nextInt(50,950));
+            Corner2 = new Point(Corner1.x()-generator.nextInt(10,50),Corner1.y()-generator.nextInt(10,50));
+        }
+        Point Corner3 = new Point(Corner1.x(), Corner2.y());
+        Point Corner4 = new Point(Corner2.x(),Corner1.y());
+        this.points = new Point[]{Corner1,Corner2,Corner3,Corner4};
     }
 
     /*

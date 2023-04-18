@@ -1,10 +1,12 @@
+import java.util.Random;
+
 /*
 Class Shape
 @author Jude Adam
 @version 1.0.0 16/02/2023
  */
 public abstract class Shape {
-    protected final Point[] points;
+    protected Point[] points;
 
     /*
    Constructor method for Shape class
@@ -13,6 +15,12 @@ public abstract class Shape {
     Shape(Point[] points) {
         this.points = points;
     }
+
+    /*
+    Constructor method for creating a Random Shape
+    @params Random generator
+   */
+    Shape(Random generator){}
 
     public abstract boolean surrounds(Point p);
 

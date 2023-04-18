@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /*
 Class Circle
 @author Jude Adam
@@ -19,6 +21,12 @@ public class Circle extends Shape {
             System.exit(0);
         }
         this.r = r;
+    }
+
+    Circle(Random generator){
+        super(generator);
+        this.points = new Point[]{new Point(generator.nextInt(50,950),generator.nextInt(50,950))};
+        this.r = generator.nextInt(5,30);
     }
 
     /*

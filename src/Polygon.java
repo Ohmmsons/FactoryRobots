@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /*
 Class Polygon
 @author Jude Adam
@@ -12,7 +14,11 @@ public class Polygon extends Shape {
     Polygon(Point[] points) {
         super(points);
     }
-
+    /*
+         Constructor for creating random polygon
+        @param Random generator
+       */
+    Polygon(Random generator){super(generator);}
     /*
      surrounds,
      @params Point p
