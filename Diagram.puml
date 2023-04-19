@@ -161,6 +161,8 @@ DeliveryMap o-- Shape
 Simulator *-- Shape
 LineSegment o-- Point
 Shape o-- Point
+Trajectory *-- Point
+Planner - DeliveryMap
 SimulatorUI <|.. SimulatorCLI
 SimulatorUI <|.. SimulatorGUI
 @enduml

@@ -20,6 +20,9 @@ public class DeliveryMap {
     }
 
     public boolean isDeliveryPointValid(Point p){
+        //In any of corners
+        if((p.x()>950&&p.y()>950)||(p.x()<50&&p.y()<50)||(p.x()>950&&p.y()<50)||(p.x()<50&&p.y()>950))
+            return false;
         for(Shape obstacle: obstacles)
             if(obstacle.surrounds(p))
                 return false;

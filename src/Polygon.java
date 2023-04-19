@@ -14,11 +14,15 @@ public class Polygon extends Shape {
     Polygon(Point[] points) {
         super(points);
     }
+
     /*
          Constructor for creating random polygon
         @param Random generator
        */
-    Polygon(Random generator){super(generator);}
+    Polygon(Random generator) {
+        super(generator);
+    }
+
     /*
      surrounds,
      @params Point p
@@ -30,9 +34,9 @@ public class Polygon extends Shape {
         boolean inside = false;
         int nPoints = points.length;
         int j = nPoints - 1;
-        for(int i = 0; i<nPoints; j = i++){
-            if(((points[i].y()>p.y()) != (points[j].y()>p.y())) && (p.x()<(points[j].y()-points[i].x())*(p.y()-points[i].y())/(points[j].y()-points[i].y()) + points[i].x())){
-                inside=!inside;
+        for (int i = 0; i < nPoints; j = i++) {
+            if (((points[i].y() > p.y()) != (points[j].y() > p.y())) && (p.x() < (points[j].x() - points[i].x()) * (p.y() - points[i].y()) / (points[j].y() - points[i].y()) + points[i].x())) {
+                inside = !inside;
             }
         }
         return inside;

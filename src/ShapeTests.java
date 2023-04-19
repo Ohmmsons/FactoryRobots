@@ -93,6 +93,13 @@ public class ShapeTests {
         Point p = new Point(0,3);
         assertFalse(rectangle.surrounds(p));
     }
+    @Test
+    public void testSurroundsRectangle3(){
+        Point[] points = new Point[]{new Point(60,60), new Point(80,60), new Point(80,80), new Point(60,80)};
+        Rectangle rectangle = new Rectangle(points);
+        Point p = new Point(70,70);
+        assertTrue(rectangle.surrounds(p));
+    }
 
 }
 
