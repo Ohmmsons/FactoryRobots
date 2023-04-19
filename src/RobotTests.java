@@ -21,8 +21,6 @@ public class RobotTests {
         robot.update();
         assertEquals(initialEnergy - 0.1, robot.getEnergy(), 0.0001);
     }
-
-
     @Test
     public void testCanReachDestination1() {
         Point startingPoint = new Point(0, 0);
@@ -87,6 +85,20 @@ public class RobotTests {
         assertEquals(RobotPowerState.MOVING, robot.getPowerState());
     }
 
-
+    @Test
+    public void testGoesBackToStandbyAfterDelivery() {
+        DeliveryMap map = new DeliveryMap(new ArrayList<>());
+        Robot robot = new Robot(new Point(0, 0), map, new Random());
+        Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), new Point(1,1));
+        ArrayList<Robot> robots = new ArrayList<>();
+        robots.add(robot);
+        RobotManager rm = new RobotManager(robots);
+        robot.subscribeToManager(rm);
+        robot.setPath(trajectory);
+        int n = trajectory.getPoints().size();
+        for(int i = 0; i<n;i++)
+            robot.update();
+        assertEquals(RobotPowerState.STANDBY, robot.getPowerState());
+    }
 
 }
