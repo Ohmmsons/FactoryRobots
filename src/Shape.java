@@ -13,6 +13,7 @@ public abstract class Shape {
    @params Point[] points
     */
     Shape(Point[] points) {
+        if(points.length == 0) throw  new IllegalArgumentException("No points");
         this.points = points;
     }
 

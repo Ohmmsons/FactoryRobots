@@ -13,6 +13,7 @@ public class Polygon extends Shape {
    */
     Polygon(Point[] points) {
         super(points);
+        if(points.length <= 2) throw  new IllegalArgumentException("Not enough points");
     }
 
     /*

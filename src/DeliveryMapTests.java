@@ -2,8 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DeliveryMapTests {
     @Test
@@ -85,6 +84,12 @@ public class DeliveryMapTests {
         ArrayList<Shape> obstacles = new ArrayList<>();
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
         assertFalse(deliveryMap.isDeliveryPointValid(new Point(40,980 )));
+    }
+    @Test
+    void  testisDeliveryPointValid11(){
+        ArrayList<Shape> obstacles = new ArrayList<>();
+        DeliveryMap deliveryMap = new DeliveryMap(obstacles);
+        assertThrows(IllegalArgumentException.class,() -> deliveryMap.isDeliveryPointValid(new Point(-40,980 )));
     }
 
 

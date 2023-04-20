@@ -27,8 +27,7 @@ public class Triangle extends Polygon {
     Triangle(Point[] points) {
         super(points);
         if (points.length != 3 || (points[0].x() * (points[1].y() - points[2].y()) + points[1].x() * (points[2].y() - points[0].y()) + points[2].x() * (points[0].y() - points[1].y())) == 0) {
-            System.out.println("Triangle:vi");
-            System.exit(0);
+            throw new IllegalArgumentException("Not a valid triangle");
         }
     }
 }

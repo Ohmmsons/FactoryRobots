@@ -17,8 +17,7 @@ public class Circle extends Shape {
     Circle(Point[] points, double r) {
         super(points);
         if (r < 0) {
-            System.out.println("Circle:vi");
-            System.exit(0);
+            throw  new IllegalArgumentException("Not a valid circle");
         }
         this.r = r;
     }

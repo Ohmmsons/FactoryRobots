@@ -15,8 +15,7 @@ public class Rectangle extends Polygon {
     Rectangle(Point[] points) {
         super(points);
         if (points.length != 4 || Arrays.stream(points).distinct().count()!=points.length || !(isOrthogonal(points[0], points[1], points[2]) && isOrthogonal(points[1], points[2], points[3]) && isOrthogonal(points[2], points[3], points[0]))) {
-            System.out.println("Rectangle:vi");
-            System.exit(0);
+            throw  new IllegalArgumentException("Not a valid rectangle");
         }
     }
 

@@ -10,7 +10,7 @@ public record LineSegment(Point p1, Point p2) {
     @params Point p1,p2
      */
     public LineSegment{
-        if(p1.x()==p2.x() && p1.y()==p2.y()){System.out.println("Segmento:vi"); System.exit(0);}
+        if(p1.x()==p2.x() && p1.y()==p2.y()){throw new IllegalArgumentException("Invalid Line Segment");}
     }
     /*
     ccw method to see if 3 points are in counter clockwise order

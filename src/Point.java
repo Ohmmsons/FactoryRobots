@@ -5,7 +5,7 @@ Class Point used for forming line segments
 @inv Point must be in the 1000x1000 area
  */
 public record Point(int x, int y) {
-    public Point{if(x<0||y<0||x>999||y>999) System.out.println("Point:vi");}
+    public Point{if(x<0||y<0||x>999||y>999) throw new IllegalArgumentException("Invalid Point");}
     @Override
     public String toString() {
         return "("+x+";"+y+")";
