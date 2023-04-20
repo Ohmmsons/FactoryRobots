@@ -111,13 +111,10 @@ public class RobotTests {
         RobotManager rm = new RobotManager(robots);
         robot.subscribeToManager(rm);
         robot.setPath(trajectory);
-        int n = trajectory.getPoints().size();
-        for(int i = 0; i<n;i++)
-            robot.update();
         boolean working = false;
         while(true) {
             robot.update();
-            if (robot.getEnergy() < 50.0 && robot.getPowerState() == RobotPowerState.MOVING) {
+            if (robot.getEnergy() <= 50.0 && robot.getPowerState() == RobotPowerState.MOVING) {
                 working = true;
                 break;
             }

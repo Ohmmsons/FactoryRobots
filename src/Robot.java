@@ -108,7 +108,7 @@ public class Robot {
 
     public Trajectory findTrajectory(Point start, Point destination) {
         int[] lengths = generator.ints(20, (int) (start.dist(destination)/100+5), (int) (start.dist(destination)/100)+10).toArray();
-        Planner planner = new Planner(0.8, 0.5, 0.3, start, destination, lengths, generator, deliveryMap.getObstacles());
+        Planner planner = new Planner(0.5, 0.5, 0.3, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }
 
