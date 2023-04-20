@@ -1,4 +1,7 @@
-import java.io.IOException;
+import Simulator.Simulator;
+import UI.SimulatorCLI;
+import UI.SimulatorGUI;
+
 import java.util.Scanner;
 
 public class Client {

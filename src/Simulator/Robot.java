@@ -1,3 +1,5 @@
+package Simulator;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.Random;
  * periodically to avoid running out of power.
  *  @author Jude Adam
  * @version 1.0.0 20/04/2023
- * @implSpec : A robot's battery level must always be between 0 and 100.
+ * A robot's battery level must always be between 0 and 100.
  * If a robot's battery level drops to 0, it must return to its charging point
  * to recharge.
  */
@@ -26,7 +28,7 @@ public class Robot {
 
     private final DeliveryMap deliveryMap;
     /**
-     * Robot Constructor
+     * Simulator.Simulator.Robot Constructor
      *
      * @param startingPoint the starting point of the robot
      * @param deliveryMap the delivery map that the robot will navigate through
@@ -71,7 +73,7 @@ public class Robot {
      */
     public void update() {
         switch (powerState) {
-            case DELIVERING,RETURNING -> {
+            case DELIVERING, RETURNING -> {
                 energy -= 0.1;
                 this.moveToNextPosition();
             }
@@ -174,7 +176,7 @@ public class Robot {
      * @return the trajectory between the start and destination points
      */
     public Trajectory findTrajectory(Point start, Point destination) {
-        int[] lengths = generator.ints(20, 30,50 ).toArray();
+        int[] lengths = generator.ints(20, 5,10 ).toArray();
         Planner planner = new Planner(0.5, 0.5, 0.3, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }

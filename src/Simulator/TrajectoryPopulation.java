@@ -1,4 +1,4 @@
-/*
+package Simulator;/*
 Class Population used to generate and manage Populations of Trajectories
 @author Jude Adam
 @version 1.0.0 09/03/2023
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 /**
- Class Trajectory Population, used to perform selection of trajectories based on fitness
+ Class Simulator.Trajectory Population, used to perform selection of trajectories based on fitness
  @author Jude Adam
  @version 1.0.0 20/02/2023
  @implSpec Points in the path must be sequential and in the 1st quadrant
@@ -23,7 +23,7 @@ public class TrajectoryPopulation {
     private Random generator;
 
     /**
-    Constructor for TrajectoryPopulation Class
+    Constructor for Simulator.TrajectoryPopulation Class
      @param start starting point of trajectories
      @param end ending point of trajectories
      @param n size of population

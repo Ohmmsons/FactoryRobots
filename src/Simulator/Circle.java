@@ -1,21 +1,23 @@
+package Simulator;
+
 import java.util.Random;
 
 /**
-Class Circle
+Class Simulator.Simulator.Circle
 @author Jude Adam
 @version 1.0.0 16/02/2023
-@implSpec  Radius cannot be less than or equal to 0
+  Radius cannot be less than or equal to 0
  */
 public class Circle extends Shape {
 
     private final double r;
 
     /**
-    Constructor for Circle Class
+    Constructor for Simulator.Simulator.Circle Class
     @param points Center
     @param r radius
  */
-    Circle(Point[] points, double r) {
+    public Circle(Point[] points, double r) {
         super(points);
         if (r < 0) {
             throw  new IllegalArgumentException("Not a valid circle");
@@ -23,7 +25,7 @@ public class Circle extends Shape {
         this.r = r;
     }
 
-    Circle(Random generator){
+    public Circle(Random generator){
         super(generator);
         this.points = new Point[]{new Point(generator.nextInt(50,950),generator.nextInt(50,950))};
         this.r = generator.nextInt(5,30);
@@ -32,7 +34,7 @@ public class Circle extends Shape {
 
     /**
      surrounds,
-     @param p Point
+     @param p Simulator.Point
      @return True if the point is inside the circle, this happens when the distance from the point to the center <= radius
       */
     @Override
@@ -42,7 +44,7 @@ public class Circle extends Shape {
 
     /*
        Method to see if circle is intercepted by segment
-       @params LineSegment segment
+       @params Simulator.Simulator.LineSegment segment
        @return true if segment intersects caller
         */
     @Override

@@ -1,9 +1,13 @@
+package UI;
+
+import Simulator.Point;
+import Simulator.Robot;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * The `SimulatorCLI` class is responsible for handling the command-line interface of the robot delivery simulator.
- * It implements the `SimulatorUI` interface to provide an interface to the user to interact with the simulator.
+ * The `UI.SimulatorCLI` class is responsible for handling the command-line interface of the robot delivery simulator.
+ * It implements the `UI.SimulatorUI` interface to provide an interface to the user to interact with the simulator.
  *  @author Jude Adam
  *  @version 1.0.0 20/04/2023
  */

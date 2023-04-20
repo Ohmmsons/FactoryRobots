@@ -1,7 +1,11 @@
+package UI;
+
+import Simulator.Point;
+import Simulator.Robot;
 import java.util.List;
 
 /**
- * A graphical user interface implementation of the SimulatorUI interface.
+ * A graphical user interface implementation of the UI.SimulatorUI interface.
  *  @author Jude Adam
  *  @version 1.0.0 20/04/2023
  */
@@ -17,9 +21,9 @@ public class SimulatorGUI implements SimulatorUI {
     }
 
     /**
-     * Asks the user to input a Point (x, y) through the GUI, and returns it.
+     * Asks the user to input a Simulator.Point (x, y) through the GUI, and returns it.
      *
-     * @return the Point (x, y) input by the user
+     * @return the Simulator.Point (x, y) input by the user
      */
     @Override
     public Point askForPoint() {
@@ -27,8 +31,8 @@ public class SimulatorGUI implements SimulatorUI {
     }
 
     /**
-     * Returns true if the GUI is asking for a new Point, false otherwise.
-     * @return true if the GUI is asking for a new Point, false otherwise
+     * Returns true if the GUI is asking for a new Simulator.Point, false otherwise.
+     * @return true if the GUI is asking for a new Simulator.Point, false otherwise
      */
     @Override
     public boolean isAskingForNewPoint() {

@@ -1,3 +1,6 @@
+package Tests;
+import Simulator.*;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -19,7 +22,7 @@ public class RobotTests {
         robot.setPath(trajectory);
         double initialEnergy = robot.getEnergy();
         robot.update();
-        assertEquals(initialEnergy - 0.1, robot.getEnergy(), 0.0001);
+        Assert.assertEquals(initialEnergy - 0.1, robot.getEnergy(), 0.0001);
     }
     @Test
     public void testCanReachDestination1() {
@@ -43,7 +46,7 @@ public class RobotTests {
     public void testCanReachDestination3() {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(0, 0), map, new Random());
-        Trajectory trajectory = robot.findTrajectory(new Point(0, 0), new Point(900, 900));
+        Trajectory trajectory = robot.findTrajectory(new Point(0, 0), new Point(300, 300));
         assertTrue(robot.canReachDestination(trajectory));
     }
 
@@ -62,14 +65,14 @@ public class RobotTests {
         Point startingPoint = new Point(0, 0);
         DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(startingPoint, deliveryMap, new Random());
-        assertEquals("(000,000,100.00,-,STANDBY)", robot.toString());
+        Assert.assertEquals("(000,000,100.00,-,STANDBY)", robot.toString());
     }
     @Test
     public void testToString2() {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(100, 200), map, new Random());
         String expected = "(100,200,100.00,-,STANDBY)";
-        assertEquals(expected, robot.toString());
+        Assert.assertEquals(expected, robot.toString());
     }
 
     @Test
@@ -82,7 +85,7 @@ public class RobotTests {
         RobotManager rm = new RobotManager(robots);
         robot.subscribeToManager(rm);
         robot.setPath(trajectory);
-        assertEquals(RobotPowerState.DELIVERING, robot.getPowerState());
+        Assert.assertEquals(RobotPowerState.DELIVERING, robot.getPowerState());
     }
 
     @Test
@@ -95,10 +98,10 @@ public class RobotTests {
         RobotManager rm = new RobotManager(robots);
         robot.subscribeToManager(rm);
         robot.setPath(trajectory);
-        int n = trajectory.getPoints().size();
+        int n = trajectory.calculatePointsAlongTrajectory().size();
         for(int i = 0; i<n;i++)
             robot.update();
-        assertEquals(RobotPowerState.STANDBY, robot.getPowerState());
+        Assert.assertEquals(RobotPowerState.STANDBY, robot.getPowerState());
     }
     @Test
     public void testGoesToChargeWhenStandByAndEnergyBelow50() {

@@ -1,5 +1,8 @@
-import org.junit.Test;
+package Tests;
 
+import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import Simulator.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +20,7 @@ public class TrajectoryTests {
         ArrayList<Shape> figuras = new ArrayList<>();
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras);
-        assertEquals(trajectory.nCollisions(),1);
+        Assertions.assertEquals(trajectory.nCollisions(),1);
     }
     @Test
     public void testFitness(){
@@ -28,7 +31,7 @@ public class TrajectoryTests {
         ArrayList<Shape> figuras = new ArrayList<>();
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras);
-        assertEquals(trajectory.fitness(),0.1802870870702775);
+        Assertions.assertEquals(trajectory.fitness(),0.1802870870702775);
     }
     @Test
     public void testCrossover1(){
@@ -54,7 +57,7 @@ public class TrajectoryTests {
         Trajectory testtrajectory1 = new Trajectory(testpontosAL1,generator,figuras);
         Trajectory[] testChildren = new Trajectory[]{testtrajectory,testtrajectory1};
         System.out.println(Arrays.toString(children));
-        assertArrayEquals(children,testChildren);
+        Assertions.assertArrayEquals(children,testChildren);
     }
     @Test
     public void testCrossover2(){
@@ -80,7 +83,7 @@ public class TrajectoryTests {
         Trajectory testtrajectory1 = new Trajectory(testpontosAL1,generator,figuras);
         Trajectory[] testChildren = new Trajectory[]{testtrajectory,testtrajectory1};
         System.out.println(Arrays.toString(children));
-        assertArrayEquals(children,testChildren);
+        Assertions.assertArrayEquals(children,testChildren);
     }
     @Test
     public void testMutate1(){
@@ -95,7 +98,7 @@ public class TrajectoryTests {
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras);
         trajectory.mutate(1);
-        assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
+        Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
     } @Test
     public void testMutate2(){
         Random generator = new Random(0);
@@ -109,7 +112,7 @@ public class TrajectoryTests {
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras);
         trajectory.mutate(0);
-        assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
+        Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
     }
     @Test
     public void testAddPoint1(){
@@ -124,7 +127,7 @@ public class TrajectoryTests {
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras);
         trajectory.addPoint(1);
-        assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
+        Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
     }
     @Test
     public void testAddPoint2(){
@@ -139,7 +142,7 @@ public class TrajectoryTests {
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras);
         trajectory.addPoint(0);
-        assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
+        Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
     }
     @Test
     public void testRemovePoint1(){
@@ -154,7 +157,7 @@ public class TrajectoryTests {
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras);
         trajectory.removePoint(1);
-        assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
+        Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
     }
     @Test
     public void testRemovePoint2(){
@@ -169,7 +172,7 @@ public class TrajectoryTests {
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras);
         trajectory.removePoint(0);
-        assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
+        Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras));
     }
 
 }

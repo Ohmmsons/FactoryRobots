@@ -1,3 +1,5 @@
+package Simulator;
+
 /**
  * This enum represents the power state of a robot. A robot can be in one of the following states:
  * - DELIVERING: The robot is delivering a package and using battery power.

@@ -1,12 +1,14 @@
+package Simulator;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
 /**
-Class Planner
+Class Simulator.Simulator.Planner
 @author Jude Adam
 @version 1.0.0 14/04/2023
-@implSpec  generator != null population != null
+generator != null population != null
  */
 public class Planner {
 
@@ -35,7 +37,7 @@ public class Planner {
         this.generator = generator;
     }
     /**
-        Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
+        Simulator.Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
         algorithm performs tournament selection, crossover , mutation, gene addition and gene removal on the population
         and replaces the old population with the new one.
         @return best trajectory found

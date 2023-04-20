@@ -1,3 +1,5 @@
+package Tests;
+import Simulator.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

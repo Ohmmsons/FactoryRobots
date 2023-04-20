@@ -1,7 +1,11 @@
+package UI;
+
+import Simulator.Point;
+import Simulator.Robot;
 import java.util.List;
 
 /**
- * An interface for a Simulator UI which defines methods for communicating with the user
+ * An interface for a Simulator.Simulator UI which defines methods for communicating with the user
  * during the simulation.
  *  @author Jude Adam
  *  @version 1.0.0 20/04/2023
@@ -17,7 +21,7 @@ public interface SimulatorUI {
     /**
      * Asks the user for a point to add to the map.
      *
-     * @return a Point object representing the location of the point to add
+     * @return a Simulator.Point object representing the location of the point to add
      */
     Point askForPoint();
 
@@ -32,7 +36,7 @@ public interface SimulatorUI {
      * Displays the current status of the robots to the user.
      *
      * @param step   the current step of the simulation
-     * @param robots a List of Robot objects representing the robots in the simulation
+     * @param robots a List of Simulator.Simulator.Robot objects representing the robots in the simulation
      */
     void displayRobotStatus(int step, List<Robot> robots);
 

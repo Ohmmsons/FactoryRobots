@@ -1,7 +1,8 @@
-import java.io.IOException;
+package Simulator;
+import UI.SimulatorUI;
 import java.util.*;
 /**
- * The Simulator class is responsible for controlling the simulation.
+ * The Simulator.Simulator class is responsible for controlling the simulation.
  * @author Jude Adam
  * @version 1.0 20/04/2023
  * @implSpec ui!= null
@@ -10,7 +11,7 @@ public class Simulator {
 
     private final SimulatorUI ui;
     /**
-     * Creates a new Simulator object.
+     * Creates a new Simulator.Simulator object.
      * @param ui The user interface for the simulator.
      */
     public Simulator(SimulatorUI ui) {

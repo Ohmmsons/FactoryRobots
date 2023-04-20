@@ -1,16 +1,18 @@
+package Simulator;
+
 import java.util.ArrayList;
 /**
- * The DeliveryMap class represents a map that contains obstacles that robots must navigate around in order to deliver packages.
+ * The Simulator.Simulator.DeliveryMap class represents a map that contains obstacles that robots must navigate around in order to deliver packages.
  * It keeps track of all the obstacles on the map and provides methods to add or remove them. It also provides a method to check
  * whether a given delivery point is valid or not based on whether it is within an obstacle or outside the delivery area.
  *  @author Jude Adam
  *  @version 1.0.0 20/04/2023
- * @implSpec Delivery point is considered valid if it is within the boundaries of the map, and not surrounded by any obstacles.
+ * Delivery point is considered valid if it is within the boundaries of the map, and not surrounded by any obstacles.
  */
 public class DeliveryMap {
     private ArrayList<Shape> obstacles;
     /**
-     * Constructs a new DeliveryMap with the given list of obstacles.
+     * Constructs a new Simulator.Simulator.DeliveryMap with the given list of obstacles.
      * @param obstacles The initial list of obstacles on the map.
      */
     public DeliveryMap(ArrayList<Shape> obstacles){

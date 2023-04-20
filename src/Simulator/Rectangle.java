@@ -1,18 +1,20 @@
+package Simulator;
+
 import java.util.Arrays;
 import java.util.Random;
 
 /**
-Class Rectangle used to form Rectangles
+Class Simulator.Rectangle used to form Rectangles
 @author Jude Adam
 @version 1.0.0 16/02/2023
-@implSpec  The rectangle has 4 points, no 2 points can be equal and the rectangle must have 4 right angles
+ The rectangle has 4 points, no 2 points can be equal and the rectangle must have 4 right angles
  */
 public class Rectangle extends Polygon {
     /**
-    Constructor for Rectangle class
+    Constructor for Simulator.Rectangle class
     @param points
      */
-    Rectangle(Point[] points) {
+    public Rectangle(Point[] points) {
         super(points);
         if (points.length != 4 || Arrays.stream(points).distinct().count()!=points.length || !(isOrthogonal(points[0], points[1], points[2]) && isOrthogonal(points[1], points[2], points[3]) && isOrthogonal(points[2], points[3], points[0]))) {
             throw  new IllegalArgumentException("Not a valid rectangle");
@@ -23,7 +25,7 @@ public class Rectangle extends Polygon {
      Constructor for creating random rectangle
      @param generator RNG
      */
-    Rectangle(Random generator){
+    public Rectangle(Random generator){
         super(generator);
         Point Corner1 = new Point(generator.nextInt(100,950),generator.nextInt(100,950));
         Point Corner2 = new Point(Corner1.x()-generator.nextInt(10,50),Corner1.y()-generator.nextInt(10,50));
@@ -38,9 +40,9 @@ public class Rectangle extends Polygon {
 
     /**
     isOrthogonal method to check if points a b and c form a right angle
-    @param a Point a
-    @param b Point b
-    @param c Point c
+    @param a Simulator.Point a
+    @param b Simulator.Point b
+    @param c Simulator.Point c
     @return True if a,b and c form a right angle
      */
     private boolean isOrthogonal(Point a, Point b, Point c) {

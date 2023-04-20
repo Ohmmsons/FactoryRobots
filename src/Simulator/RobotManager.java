@@ -1,10 +1,12 @@
+package Simulator;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 /**
- * The `RobotManager` class manages a list of `Robot` objects and handles incoming delivery requests.
+ * The `Simulator.RobotManager` class manages a list of `Simulator.Simulator.Robot` objects and handles incoming delivery requests.
  * It subscribes to each robot and sends them new delivery requests as they come in. It also keeps track of
- * the status of each robot and reports this information to the `SimulatorUI`.
+ * the status of each robot and reports this information to the `UI.SimulatorUI`.
  *  @author Jude Adam
  *  @version 1.0.0 20/04/2023
  */
@@ -13,9 +15,9 @@ public class RobotManager {
     private Queue<Point> requests;
 
     /**
-     * Constructor for RobotManager.
+     * Constructor for Simulator.RobotManager.
      *
-     * @param robots An ArrayList of robots that will subscribe to the RobotManager.
+     * @param robots An ArrayList of robots that will subscribe to the Simulator.RobotManager.
      */
     public RobotManager(ArrayList<Robot> robots) {
         this.requests = new LinkedList<>();
@@ -73,7 +75,7 @@ public class RobotManager {
     }
 
     /**
-     * Notifies the RobotManager of a change in a robot's power state.
+     * Notifies the Simulator.RobotManager of a change in a robot's power state.
      * If a robot is in standby mode, it will be added to the subscribers list.
      * If a robot is delivering, it will be removed from the subscribers list.
      *

@@ -1,18 +1,20 @@
+package Simulator;
+
 import java.util.Random;
 
 /**
-Class Polygon
+Class Simulator.Simulator.Polygon
 @author Jude Adam
 @version 1.0.0 16/02/2023
- @implSpec  Points must be in clockwise or counterclockwise order
+ Points must be in clockwise or counterclockwise order
  */
 public class Polygon extends Shape {
 
     /**
-     Constructor for Polygon Class
+     Constructor for Simulator.Simulator.Polygon Class
     @param points Points that make up a polygon
    */
-    Polygon(Point[] points) {
+    public Polygon(Point[] points) {
         super(points);
         if(points.length <= 2) throw  new IllegalArgumentException("Not enough points");
     }
@@ -21,13 +23,13 @@ public class Polygon extends Shape {
         Constructor for creating random polygon
         @param generator RNG
        */
-    Polygon(Random generator) {
+    public Polygon(Random generator) {
         super(generator);
     }
 
     /**
      Surrounds
-     @param p Point
+     @param p Simulator.Point
      @return True if the point is inside the polygon, this is done using the ray casting algorithm inspired by the reference given.
      @see <a href="https://observablehq.com/@tmcw/understanding-point-in-polygon">...</a>
      */
