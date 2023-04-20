@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 /**
- Class Simulator.Trajectory Population, used to perform selection of trajectories based on fitness
+ Class Trajectory Population, used to perform selection of trajectories based on fitness
  @author Jude Adam
  @version 1.0.0 20/02/2023
- @implSpec Points in the path must be sequential and in the 1st quadrant
+ Points in the path must be sequential and in the 1st quadrant
  */
 public class TrajectoryPopulation {
 
@@ -23,7 +23,7 @@ public class TrajectoryPopulation {
     private Random generator;
 
     /**
-    Constructor for Simulator.TrajectoryPopulation Class
+    Constructor for TrajectoryPopulation Class
      @param start starting point of trajectories
      @param end ending point of trajectories
      @param n size of population

@@ -3,14 +3,14 @@ package Simulator;
 import java.util.ArrayList;
 
 /**
-Class Simulator.Simulator.LineSegment used to form Shapes
+Class LineSegment used to form Shapes
 @author Jude Adam
 @version 1.0.0 16/02/2023
  The two points must have different coordinates
  */
 public record LineSegment(Point p1, Point p2) {
     /**
-    Constructor method for Simulator.Simulator.LineSegment class
+    Constructor method for LineSegment class
     @param p1 Simulator.Point 1
      @param p2 Simulator.Point 2
      */

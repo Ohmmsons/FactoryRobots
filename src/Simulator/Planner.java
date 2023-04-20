@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
-Class Simulator.Simulator.Planner
+Class Planner
 @author Jude Adam
 @version 1.0.0 14/04/2023
 generator != null population != null

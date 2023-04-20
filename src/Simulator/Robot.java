@@ -28,7 +28,7 @@ public class Robot {
 
     private final DeliveryMap deliveryMap;
     /**
-     * Simulator.Simulator.Robot Constructor
+     * Robot Constructor
      *
      * @param startingPoint the starting point of the robot
      * @param deliveryMap the delivery map that the robot will navigate through

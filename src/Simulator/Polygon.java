@@ -3,7 +3,7 @@ package Simulator;
 import java.util.Random;
 
 /**
-Class Simulator.Simulator.Polygon
+Class Polygon
 @author Jude Adam
 @version 1.0.0 16/02/2023
  Points must be in clockwise or counterclockwise order
@@ -11,7 +11,7 @@ Class Simulator.Simulator.Polygon
 public class Polygon extends Shape {
 
     /**
-     Constructor for Simulator.Simulator.Polygon Class
+     Constructor Polygon Class
     @param points Points that make up a polygon
    */
     public Polygon(Point[] points) {

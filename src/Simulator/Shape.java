@@ -3,7 +3,7 @@ package Simulator;
 import java.util.Random;
 
 /**
- * Class Simulator.Shape
+ * Class Shape
  *
  * @author Jude Adam
  * @version 1.0.0 16/02/2023
@@ -12,7 +12,7 @@ public abstract class Shape {
     protected Point[] points;
 
     /**
-     * Constructor method for Simulator.Shape class
+     * Constructor method for Shape class
      *
      * @param points Points that make up shape
      */
@@ -32,13 +32,13 @@ public abstract class Shape {
     /**
      * Surrounds
      *
-     * @param p Simulator.Point
+     * @param p Point
      * @return True if the point is inside the shape
      */
     public abstract boolean surrounds(Point p);
 
     /**
-     * Method to see if Simulator.Shape is intercepted by segment
+     * Method to see if Shape is intercepted by segment
      *
      * @param segment Line segment
      * @return True if caller is intercepted by segment

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 /**
- * The `Simulator.RobotManager` class manages a list of `Simulator.Simulator.Robot` objects and handles incoming delivery requests.
+ * The RobotManager class manages a list of Robots and handles incoming delivery requests.
  * It subscribes to each robot and sends them new delivery requests as they come in. It also keeps track of
- * the status of each robot and reports this information to the `UI.SimulatorUI`.
+ * the status of each robot and reports this information to the SimulatorUI.
  *  @author Jude Adam
  *  @version 1.0.0 20/04/2023
  */
@@ -15,7 +15,7 @@ public class RobotManager {
     private Queue<Point> requests;
 
     /**
-     * Constructor for Simulator.RobotManager.
+     * Constructor for RobotManager.
      *
      * @param robots An ArrayList of robots that will subscribe to the Simulator.RobotManager.
      */

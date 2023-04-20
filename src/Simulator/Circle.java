@@ -3,7 +3,7 @@ package Simulator;
 import java.util.Random;
 
 /**
-Class Simulator.Simulator.Circle
+Class Circle
 @author Jude Adam
 @version 1.0.0 16/02/2023
   Radius cannot be less than or equal to 0
@@ -13,7 +13,7 @@ public class Circle extends Shape {
     private final double r;
 
     /**
-    Constructor for Simulator.Simulator.Circle Class
+    Constructor for Circle Class
     @param points Center
     @param r radius
  */
@@ -35,7 +35,7 @@ public class Circle extends Shape {
     /**
      surrounds,
      @param p Simulator.Point
-     @return True if the point is inside the circle, this happens when the distance from the point to the center <= radius
+     @return True if the point is inside the circle, this happens when the distance from the point to the center less or equal radius
       */
     @Override
     public boolean surrounds(Point p) {

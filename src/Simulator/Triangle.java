@@ -5,10 +5,10 @@ import Simulator.Point;
 import java.util.Random;
 
 /**
-Class Simulator.Triangle
+Class Triangle
 @author Jude Adam
 @version 1.0.0 09/03/2023
-@implSpec  The figure must have 3 points and have an angle sum of 180
+  The figure must have 3 points and have an angle sum of 180
  */
 public class Triangle extends Polygon {
     /**

@@ -5,10 +5,10 @@ import java.util.LinkedHashSet;
 import java.util.Random;
 
 /**
-Class Simulator.Trajectory
+Class Trajectory
 @author Jude Adam
 @version 1.0.0 20/02/2023
-@implSpec Points in the path must be sequential and in the 1st quadrant
+Points in the path must be sequential and in the 1st quadrant
  */
 public class Trajectory {
     private final ArrayList<Point> points;
@@ -17,7 +17,7 @@ public class Trajectory {
 
     private final ArrayList<Shape> obstacles;
     /**
-     * Creates a new Simulator.Trajectory object.
+     * Creates a new Trajectory object.
      * @param pontos - the list of points that define the trajectory.
      * @param generator - the random number generator used for mutation and crossover operations.
      * @param obstacles - the list of obstacles that the trajectory must avoid.

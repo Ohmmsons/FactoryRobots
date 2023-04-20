@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
-Class Simulator.Rectangle used to form Rectangles
+Class Rectangle used to form Rectangles
 @author Jude Adam
 @version 1.0.0 16/02/2023
  The rectangle has 4 points, no 2 points can be equal and the rectangle must have 4 right angles
  */
 public class Rectangle extends Polygon {
     /**
-    Constructor for Simulator.Rectangle class
+    Constructor for Rectangle class
     @param points
      */
     public Rectangle(Point[] points) {
