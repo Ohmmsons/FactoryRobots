@@ -1,11 +1,13 @@
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Random;
 
-/*
+/**
 Class Trajectory
 @author Jude Adam
 @version 1.0.0 20/02/2023
-@inv Points in the path must be sequential and in the 1st quadrant
+@implSpec Points in the path must be sequential and in the 1st quadrant
  */
 public class Trajectory {
     private final ArrayList<Point> points;
@@ -13,9 +15,11 @@ public class Trajectory {
     public Random generator;
 
     private final ArrayList<Shape> obstacles;
-    /*
-    Constructor for Trajectory class
-    @params LineSegment[] segments
+    /**
+     * Creates a new Trajectory object.
+     * @param pontos - the list of points that define the trajectory.
+     * @param generator - the random number generator used for mutation and crossover operations.
+     * @param obstacles - the list of obstacles that the trajectory must avoid.
      */
     Trajectory(ArrayList<Point> pontos, Random generator, ArrayList<Shape> obstacles) {
         this.obstacles = obstacles;
@@ -34,6 +38,9 @@ public class Trajectory {
     }
 
 
+    /**
+     * @return a string representation of the Trajectory object.
+     */
     public String toString() {
         if (points.isEmpty()) return "[]";
         StringBuilder str = new StringBuilder("[");
@@ -44,12 +51,24 @@ public class Trajectory {
         str.append("]");
         return new String(str);
     }
+    /**
+     * Calculates all the points along the trajectory.
+     * @return an ArrayList of all the points along the trajectory.
+     */
+    public ArrayList<Point> calculatePointsAlongTrajectory(){
+        LinkedHashSet<Point> set = new LinkedHashSet<>();
+        int n = points.size();
+        for (int i = 0; i < n - 1; i++){
+            LineSegment lineSegment = new LineSegment(points.get(i), points.get(i+1));
+            set.addAll(lineSegment.drawLine());
+        }
+        return new ArrayList<>(set.stream().toList());
+    }
 
-    /*
-   nCollisions method to calculate how many collision there are between the path and a given array of rectangles
-   @params ArrayList<Shape> obstacles
-   @return Number of collisions 
-    */
+    /**
+     * Calculates the number of collisions between the trajectory and a given list of obstacles.
+     * @return the number of collisions between the trajectory and the obstacles.
+     */
     public int nCollisions() {
         int result = 0;
         int n = points.size();
@@ -62,18 +81,18 @@ public class Trajectory {
         return result;
     }
 
-    /*
-  getFitness method to the fitness function of a trajectory
-  @return 1/(comprimento_total(T) + exp(T.interseção(obstáculos))
-   */
+    /**
+     * Calculates the fitness of the trajectory.
+     * @return the fitness of the trajectory.
+     */
     public double fitness() {
         return 1.00 / (length + Math.exp(nCollisions()));
     }
 
-    /*
+    /**
       onePointCrossover method to perform one point crossover between two trajectories and generate 2 offspring
-      @params Trajectory other, Random generator
-      @return Trajectory[] offspring
+      @param other other trajectory
+      @return offspring
        */
     public Trajectory[] crossover(Trajectory other) {
         ArrayList<Point> otherPoints = other.getPoints();
@@ -87,9 +106,9 @@ public class Trajectory {
         for (int i = point1; i < points.size(); i++) child2.add(points.get(i));
         return new Trajectory[]{new Trajectory(child1,generator,obstacles), new Trajectory(child2,generator,obstacles)};
     }
-    /*
+    /**
           mutate method to perform one point mutation with probability pm
-          @params double pm
+          @param pm mutation probability
     */
     public void mutate(double pm) {
         if (points.size() > 2) {
@@ -105,6 +124,11 @@ public class Trajectory {
         }
     }
 
+    /**
+     * Equals method
+     * @param other other trajectory
+     * @return true if trajectories are equal
+     */
     public boolean equals(Object other){
         if(other.getClass()!=this.getClass())return false;
         Trajectory otherTrajectory = (Trajectory) other;
@@ -114,9 +138,9 @@ public class Trajectory {
                 return false;
         return true;
     }
-    /*
+    /**
           addPoint method to add a random point in a random spot in the trajectory with probability pa
-          @params double pa
+          @param pa addition probability
     */
     public void addPoint(double pa) {
         if(generator.nextDouble() < pa) {
@@ -130,9 +154,9 @@ public class Trajectory {
             }
         }
     }
-    /*
+    /**
          removePoint method to remove a random point with probability pr
-         @params double pr
+         @param pr removal probability
    */
     public void removePoint(double pr) {
         if (points.size() > 2){
@@ -145,7 +169,10 @@ public class Trajectory {
             }
         }
     }
-
+    /**
+     hashCode method
+     @return hashcode of trajectory
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -153,10 +180,15 @@ public class Trajectory {
         return hash;
     }
 
+    /**
+     @return Points of trajectory
+     */
     public ArrayList<Point> getPoints() {
         return points;
     }
-
+    /**
+     @return Length of trajectory
+     */
     public double getLength() {
         return length;
     }

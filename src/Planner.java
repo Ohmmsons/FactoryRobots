@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-/*
+/**
 Class Planner
 @author Jude Adam
 @version 1.0.0 14/04/2023
-@inv generator != null population != null
+@implSpec  generator != null population != null
  */
 public class Planner {
 
@@ -17,9 +17,15 @@ public class Planner {
     private final Random generator;
 
     private ArrayList<Shape> obstacles;
-    /*
+    /**
        Constructor for SGA class
-       @params double pm, double pa, double pr, Random generator, Population population
+       @param pm  mutation probability
+       @param pa  addition probability
+       @param pr  removal probability
+       @param start starting point
+       @param lengths trajectory lengths
+       @param generator RNG
+       @param obstacles obstacles in map
         */
     public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
         this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles);
@@ -28,7 +34,7 @@ public class Planner {
         this.pr = pr;
         this.generator = generator;
     }
-    /*
+    /**
         Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
         algorithm performs tournament selection, crossover , mutation, gene addition and gene removal on the population
         and replaces the old population with the new one.

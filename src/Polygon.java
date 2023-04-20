@@ -1,35 +1,36 @@
 import java.util.Random;
 
-/*
+/**
 Class Polygon
 @author Jude Adam
 @version 1.0.0 16/02/2023
+ @implSpec  Points must be in clockwise or counterclockwise order
  */
 public class Polygon extends Shape {
 
-    /*
+    /**
      Constructor for Polygon Class
-    @param Point[] points
+    @param points Points that make up a polygon
    */
     Polygon(Point[] points) {
         super(points);
         if(points.length <= 2) throw  new IllegalArgumentException("Not enough points");
     }
 
-    /*
-         Constructor for creating random polygon
-        @param Random generator
+    /**
+        Constructor for creating random polygon
+        @param generator RNG
        */
     Polygon(Random generator) {
         super(generator);
     }
 
-    /*
-     surrounds,
-     @params Point p
+    /**
+     Surrounds
+     @param p Point
      @return True if the point is inside the polygon, this is done using the ray casting algorithm inspired by the reference given.
-     @see https://observablehq.com/@tmcw/understanding-point-in-polygon
-      */
+     @see <a href="https://observablehq.com/@tmcw/understanding-point-in-polygon">...</a>
+     */
     @Override
     public boolean surrounds(Point p) {
         boolean inside = false;
@@ -43,9 +44,9 @@ public class Polygon extends Shape {
         return inside;
     }
 
-    /*
+    /**
     isIntercepted,
-    @params LineSegment segment
+    @param segment Line Segment
     @return True if the segment intercepts the caller
      */
     @Override

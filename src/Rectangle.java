@@ -1,16 +1,16 @@
 import java.util.Arrays;
 import java.util.Random;
 
-/*
+/**
 Class Rectangle used to form Rectangles
 @author Jude Adam
 @version 1.0.0 16/02/2023
-@inv No 2 points can be equal and 4 right angles must be formed
+@implSpec  The rectangle has 4 points, no 2 points can be equal and the rectangle must have 4 right angles
  */
 public class Rectangle extends Polygon {
-    /*
+    /**
     Constructor for Rectangle class
-    @params Point points[]
+    @param points
      */
     Rectangle(Point[] points) {
         super(points);
@@ -19,6 +19,10 @@ public class Rectangle extends Polygon {
         }
     }
 
+    /**
+     Constructor for creating random rectangle
+     @param generator RNG
+     */
     Rectangle(Random generator){
         super(generator);
         Point Corner1 = new Point(generator.nextInt(100,950),generator.nextInt(100,950));
@@ -32,9 +36,11 @@ public class Rectangle extends Polygon {
         this.points = new Point[]{Corner1,Corner2,Corner3,Corner4};
     }
 
-    /*
+    /**
     isOrthogonal method to check if points a b and c form a right angle
-    @params Point a,b,c
+    @param a Point a
+    @param b Point b
+    @param c Point c
     @return True if a,b and c form a right angle
      */
     private boolean isOrthogonal(Point a, Point b, Point c) {

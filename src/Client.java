@@ -21,7 +21,7 @@ public class Client {
          simulator = new Simulator(new SimulatorGUI());
         try {
             simulator.startSimulation();
-        } catch (InterruptedException | IOException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

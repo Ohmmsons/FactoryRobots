@@ -9,16 +9,27 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
+/**
+ Class Trajectory Population, used to perform selection of trajectories based on fitness
+ @author Jude Adam
+ @version 1.0.0 20/02/2023
+ @implSpec Points in the path must be sequential and in the 1st quadrant
+ */
 public class TrajectoryPopulation {
 
-    private  ArrayList<Trajectory> individuals;
+    private ArrayList<Trajectory> individuals;
     private final ArrayList<Shape> obstacles;
 
     private Random generator;
-    /*
-  Constructor for TrajectoryPopulation Class
-  @param int n, int[] lengths, Random generator
+
+    /**
+    Constructor for TrajectoryPopulation Class
+     @param start starting point of trajectories
+     @param end ending point of trajectories
+     @param n size of population
+     @param lengths lengths of trajectories
+     @param generator RNG
+     @param obstacles Obstacles
    */
     public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
         this.individuals = new ArrayList<>();
@@ -31,50 +42,47 @@ public class TrajectoryPopulation {
                 points.add(j, new Point(generator.nextInt(100), generator.nextInt(100)));
             }
             points.add(end);
-            this.individuals.add(new Trajectory(points,generator,obstacles));
+            this.individuals.add(new Trajectory(points, generator, obstacles));
         }
     }
 
-    public TrajectoryPopulation(ArrayList<Trajectory> individuals, Random generator, ArrayList<Shape> obstacles){
+
+    public TrajectoryPopulation(ArrayList<Trajectory> individuals, Random generator, ArrayList<Shape> obstacles) {
         this.individuals = individuals;
         this.generator = generator;
         this.obstacles = obstacles;
     }
 
+    /**
+     * @return individuals of the population
+     */
     public ArrayList<Trajectory> getIndividuals() {
         return individuals;
     }
 
-    public String populationInfo(){
+
+    /**
+     *
+     * @return String representation of population
+     */
+    public String toString() {
         DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
         unusualSymbols.setDecimalSeparator('.');
         DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
         Trajectory maxFitness = Collections.max(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
         Trajectory minFitness = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        Trajectory minCollision =  Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.nCollisions() - s2.nCollisions()));
+        Trajectory minCollision = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.nCollisions() - s2.nCollisions()));
         double average = 0;
         for (Trajectory t : individuals) average += t.fitness();
         average /= individuals.size();
         return (df.format(maxFitness.fitness()) + " " + df.format(average) + " " + df.format(minFitness.fitness()) + " " + df.format(minCollision.getLength()) + " " + minCollision.nCollisions());
     }
 
-    public void sortByFitness(){
-        individuals.sort((s1, s2) -> (int) Math.signum(s2.fitness() - s1.fitness()));
-    }
-
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        for (Trajectory t : individuals) {
-            str.append(t.toString()).append("\n");
-        }
-        return str.toString();
-    }
-
-    /*
- tournament method to perform tournament selection on population
- @params Random generator, ArrayList<Shape> obstacles
- @return winners of selection
-  */
+    /**
+     * tournament method to perform tournament selection on population
+     *
+     * @return winners of selection
+     */
     public TrajectoryPopulation tournament() {
         ArrayList<Trajectory> vencedores = new ArrayList<>();
         for (int i = 0; i < individuals.size(); i++) {
@@ -84,6 +92,6 @@ public class TrajectoryPopulation {
             double f2 = individuals.get(p2).fitness();
             vencedores.add(f1 >= f2 ? individuals.get(p1) : individuals.get(p2));
         }
-        return new TrajectoryPopulation(vencedores,generator,obstacles);
+        return new TrajectoryPopulation(vencedores, generator, obstacles);
     }
 }

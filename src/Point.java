@@ -1,8 +1,8 @@
-/*
+/**
 Class Point used for forming line segments
 @author Jude Adam
 @version 1.0.0 16/02/2023
-@inv Point must be in the 1000x1000 area
+@implSpec Point must be in the 1000x1000 area
  */
 public record Point(int x, int y) {
     public Point{if(x<0||y<0||x>999||y>999) throw new IllegalArgumentException("Invalid Point");}

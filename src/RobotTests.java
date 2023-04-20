@@ -82,7 +82,7 @@ public class RobotTests {
         RobotManager rm = new RobotManager(robots);
         robot.subscribeToManager(rm);
         robot.setPath(trajectory);
-        assertEquals(RobotPowerState.MOVING, robot.getPowerState());
+        assertEquals(RobotPowerState.DELIVERING, robot.getPowerState());
     }
 
     @Test
@@ -114,7 +114,7 @@ public class RobotTests {
         boolean working = false;
         while(true) {
             robot.update();
-            if (robot.getEnergy() <= 50.0 && robot.getPowerState() == RobotPowerState.MOVING) {
+            if (robot.getEnergy() <= 50.0 && robot.getPowerState() == RobotPowerState.RETURNING) {
                 working = true;
                 break;
             }
