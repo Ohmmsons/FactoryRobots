@@ -100,5 +100,32 @@ public class RobotTests {
             robot.update();
         assertEquals(RobotPowerState.STANDBY, robot.getPowerState());
     }
+    @Test
+    public void testGoesToChargeWhenStandByAndEnergyBelow50() {
+        DeliveryMap map = new DeliveryMap(new ArrayList<>());
+        Robot robot = new Robot(new Point(0, 0), map, new Random());
+        //Get out of Spawn
+        Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), new Point(1,1));
+        ArrayList<Robot> robots = new ArrayList<>();
+        robots.add(robot);
+        RobotManager rm = new RobotManager(robots);
+        robot.subscribeToManager(rm);
+        robot.setPath(trajectory);
+        int n = trajectory.getPoints().size();
+        for(int i = 0; i<n;i++)
+            robot.update();
+        boolean working = false;
+        while(true) {
+            robot.update();
+            if (robot.getEnergy() < 50.0 && robot.getPowerState() == RobotPowerState.MOVING) {
+                working = true;
+                break;
+            }
+            if(robot.getEnergy()<=0.0)
+                break;
+        }
+        assertTrue(working);
+    }
+
 
 }
