@@ -25,7 +25,7 @@ public class Simulator {
      */
     private boolean validInputCheck(DeliveryMap deliveryMap, Point request) {
         if (deliveryMap.isDeliveryPointValid(request)) return true;
-        else System.out.println("Request invalid, please input a new one");
+        else ui.displayErrorMessage("Request invalid, please input a new one");
         return false;
     }
 
@@ -49,12 +49,15 @@ public class Simulator {
         // Create delivery map with obstacles
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
 
+        //Inform the UI about the Map
+        ui.sendMapInformation(deliveryMap);
+
         // Create and initialize robots
         ArrayList<Robot> robots = new ArrayList<>(4);
         Point chargingPoint0 = new Point(0, 0);
-        Point chargingPoint1 = new Point(0, 999);
-        Point chargingPoint2 = new Point(999, 999);
-        Point chargingPoint3 = new Point(999, 0);
+        Point chargingPoint1 = new Point(0, 985);
+        Point chargingPoint2 = new Point(985, 985);
+        Point chargingPoint3 = new Point(985, 0);
         Robot robot0 = new Robot(chargingPoint0, deliveryMap, generator);
         Robot robot1 = new Robot(chargingPoint1, deliveryMap, generator);
         Robot robot2 = new Robot(chargingPoint2, deliveryMap, generator);
@@ -69,10 +72,10 @@ public class Simulator {
         for (Robot robot : robots)
             robot.subscribeToManager(robotManager);
 
+
         // Run simulation
         for (int i = 0; true; i++) {
-            // Ask for request every 1000 iterations
-            if (i%1000==0) {
+            if (ui.isAskingForNewPoint()) {
                 Point request;
                 do {
                     request = ui.askForPoint();

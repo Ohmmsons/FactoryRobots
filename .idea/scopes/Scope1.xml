@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Scope1" pattern="gitignore||src:Simulator.*||src:UI.*" />
+</component>

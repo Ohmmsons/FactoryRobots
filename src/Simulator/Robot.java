@@ -88,7 +88,10 @@ public class Robot {
                 if (energy < 100.0)
                     if (energy >= 99.0) energy = 100.0;
                     else energy += 1.0;
-                else if (energy == 100.0) powerState = RobotPowerState.STANDBY;
+                else if (energy == 100.0) {
+                    powerState = RobotPowerState.STANDBY;
+                    manager.notify(this,powerState);
+                }
             }
             default -> throw new IllegalStateException("Unexpected value: " + powerState);
         }
@@ -176,8 +179,8 @@ public class Robot {
      * @return the trajectory between the start and destination points
      */
     public Trajectory findTrajectory(Point start, Point destination) {
-        int[] lengths = generator.ints(20, 5,10 ).toArray();
-        Planner planner = new Planner(0.5, 0.5, 0.3, start, destination, lengths, generator, deliveryMap.getObstacles());
+        int[] lengths = generator.ints(200, 1,3).toArray();
+        Planner planner = new Planner(0.8, 0.6, 0.6, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }
 

@@ -2,6 +2,7 @@ import Simulator.Simulator;
 import UI.SimulatorCLI;
 import UI.SimulatorGUI;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 public class Client {
@@ -19,9 +20,17 @@ public class Client {
         } while(mode != 0 && mode != 1);
         Simulator simulator;
         if(mode == 0)
-         simulator = new Simulator(new SimulatorCLI());
-        else
-         simulator = new Simulator(new SimulatorGUI());
+            simulator = new Simulator(new SimulatorCLI());
+        else {
+            SimulatorGUI gui = new SimulatorGUI();
+            simulator = new Simulator(gui);
+            JFrame frame = new JFrame("Simulator");
+            frame.add(gui);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            frame.setVisible(true);
+        }
+
         try {
             simulator.startSimulation();
         } catch (InterruptedException e) {

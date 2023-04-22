@@ -1,5 +1,6 @@
 package UI;
 
+import Simulator.DeliveryMap;
 import Simulator.Point;
 import Simulator.Robot;
 import java.util.List;
@@ -80,6 +81,11 @@ public class SimulatorCLI implements SimulatorUI {
      */
     @Override
     public void displayErrorMessage(String message) {
+        System.out.println(message);
+    }
+
+    @Override
+    public void sendMapInformation(DeliveryMap map) {
 
     }
 }

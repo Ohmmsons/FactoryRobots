@@ -25,6 +25,10 @@ public class Circle extends Shape {
         this.r = r;
     }
 
+    public double getRadius(){
+        return r;
+    }
+
     public Circle(Random generator){
         super(generator);
         this.points = new Point[]{new Point(generator.nextInt(50,950),generator.nextInt(50,950))};

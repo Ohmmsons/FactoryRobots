@@ -1,5 +1,6 @@
 package UI;
 
+import Simulator.DeliveryMap;
 import Simulator.Point;
 import Simulator.Robot;
 import java.util.List;
@@ -46,4 +47,11 @@ public interface SimulatorUI {
      * @param message the error message to display
      */
     void displayErrorMessage(String message);
+
+    /**
+     * Simulator sends map to UI so it can display it.
+     *
+     * @param map The map of the simulation
+     */
+    void sendMapInformation(DeliveryMap map);
 }
