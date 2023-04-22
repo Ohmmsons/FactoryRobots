@@ -54,10 +54,10 @@ public class Simulator {
 
         // Create and initialize robots
         ArrayList<Robot> robots = new ArrayList<>(4);
-        Point chargingPoint0 = new Point(0, 0);
-        Point chargingPoint1 = new Point(0, 985);
-        Point chargingPoint2 = new Point(985, 985);
-        Point chargingPoint3 = new Point(985, 0);
+        Point chargingPoint0 = new Point(15, 15);
+        Point chargingPoint1 = new Point(15, 975);
+        Point chargingPoint2 = new Point(975, 975);
+        Point chargingPoint3 = new Point(975, 15);
         Robot robot0 = new Robot(chargingPoint0, deliveryMap, generator);
         Robot robot1 = new Robot(chargingPoint1, deliveryMap, generator);
         Robot robot2 = new Robot(chargingPoint2, deliveryMap, generator);
@@ -81,6 +81,7 @@ public class Simulator {
                     request = ui.askForPoint();
                 }
                 while (!validInputCheck(deliveryMap, request));
+                ui.addRequest(request);
                 robotManager.addRequest(request);
             }
 

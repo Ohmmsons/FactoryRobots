@@ -6,21 +6,22 @@ import Simulator.Robot;
 import Simulator.Shape;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 /**
  * A graphical user interface implementation of the UI.SimulatorUI interface.
- *  @author Jude Adam
- *  @version 1.0.0 20/04/2023
+ *
+ * @author Jude Adam
+ * @version 1.0.0 20/04/2023
  */
 public class SimulatorGUI extends JPanel implements SimulatorUI {
 
@@ -31,11 +32,14 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private Point point;
     private List<Robot> robots;
     private boolean isKeyPressed;
+    private ArrayList<Point> requests;
     private Scanner scanner;
     private JLabel messageLabel;
     private int currentFrame;
+    private boolean hasError;
 
-    public SimulatorGUI(){
+    public SimulatorGUI() {
+        this.hasError = false;
         currentFrame = 0;
         scanner = new Scanner(System.in);
         isKeyPressed = false;
@@ -45,68 +49,137 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         this.addMouseListener(mouseChecker);
         shapes = new ArrayList<>();
         robots = new ArrayList<>();
+        requests = new ArrayList<>();
         pointSemaphore = new Semaphore(0);
         setPreferredSize(new Dimension(1000, 1000));
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         requestFocusInWindow();
         messageLabel = new JLabel("");
-        messageLabel.setForeground(Color.RED); // sets the text color to red
+        messageLabel.setForeground(Color.BLACK);
+        messageLabel.setBorder(new LineBorder(Color.BLACK , 2, true));
+        messageLabel.setOpaque(true);
+        messageLabel.setBackground(Color.WHITE);
         add(messageLabel);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Draw the grid
-        for (int i = 0; i <= 1000; i += 10) {
-            g.drawLine(i, 0, i, 1000); // Vertical lines
-            g.drawLine(0, i, 1000, i); // Horizontal lines
+
+        // Draw brick tiles with screws
+        g.setColor(new Color(217, 217, 217));
+        int tileSize = 50;
+        int screwSize = 10;
+        int numCols = getWidth() / tileSize;
+        int numRows = getHeight() / tileSize;
+
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                int tileX = col * tileSize;
+                int tileY = row * tileSize;
+
+                g.fillRect(tileX, tileY, tileSize, tileSize);
+
+                g.setColor(Color.gray);
+                g.fillOval(tileX + screwSize, tileY + screwSize, screwSize, screwSize);
+                g.fillOval(tileX + tileSize - screwSize * 2, tileY + screwSize, screwSize, screwSize);
+                g.fillOval(tileX + screwSize, tileY + tileSize - screwSize * 2, screwSize, screwSize);
+                g.fillOval(tileX + tileSize - screwSize * 2, tileY + tileSize - screwSize * 2, screwSize, screwSize);
+
+                g.setColor(new Color(217, 217, 217));
+            }
+        }
+        g.setColor(Color.BLACK);
+        for (int row = 0; row <= numRows; row++) {
+            g.drawLine(0, row * tileSize, getWidth(), row * tileSize);
+        }
+        for (int col = 0; col <= numCols; col++) {
+            g.drawLine(col * tileSize, 0, col * tileSize, getHeight());
         }
 
+        g.setColor(Color.yellow);
+        g.fillRect(0, 0, 55, 55);
+        g.fillRect(0, 945, 55, 55);
+        g.fillRect(945, 945, 55, 55);
+        g.fillRect(945, 0, 55, 55);
+        g.setColor(Color.darkGray);
+        g.fillRect(0, 0, 50, 50);
+        g.fillRect(0, 950, 50, 50);
+        g.fillRect(950, 950, 50, 50);
+        g.fillRect(950, 0, 50, 50);
 
+        g.setColor(new Color(220, 19, 19));
         // Draw the shapes
         for (Shape shape : shapes) {
             if (shape instanceof Circle) {
                 Circle circle = (Circle) shape;
-                g.setColor(Color.BLUE);
-                g.fillOval((int)circle.getPoints()[0].x() - (int)circle.getRadius(), circle.getPoints()[0].y() - (int)circle.getRadius(),
-                        (int)circle.getRadius() * 2, (int)circle.getRadius() * 2);
+                g.fillOval((int) circle.getPoints()[0].x() - (int) circle.getRadius(), circle.getPoints()[0].y() - (int) circle.getRadius(),
+                        (int) circle.getRadius() * 2, (int) circle.getRadius() * 2);
             } else if (shape instanceof Triangle) {
                 Triangle tri = (Triangle) shape;
-                g.setColor(Color.GREEN);
                 Point[] points = tri.getPoints();
-                int[] xPoints = { points[0].x(), points[1].x(), points[2].x() };
-                int[] yPoints = { points[0].y(),points[1].y(), points[2].y() };
+                int[] xPoints = {points[0].x(), points[1].x(), points[2].x()};
+                int[] yPoints = {points[0].y(), points[1].y(), points[2].y()};
                 g.fillPolygon(xPoints, yPoints, 3);
-            }
-            else if (shape.getPoints().length==4) {
-                g.setColor(Color.RED);
+            } else if (shape.getPoints().length == 4) {
                 Point[] points = shape.getPoints();
-                int[] xPoints = { points[0].x(), points[2].x(), points[1].x(),points[3].x() };
-                int[] yPoints = { points[0].y(),points[2].y(), points[1].y(),points[3].y() };
+                int[] xPoints = {points[0].x(), points[2].x(), points[1].x(), points[3].x()};
+                int[] yPoints = {points[0].y(), points[2].y(), points[1].y(), points[3].y()};
                 g.fillPolygon(xPoints, yPoints, 4);
             }
-
-            for (Robot robot: robots){
-                g.setColor(Color.BLACK);
-                Point pos = robot.getCurrentPosition();
-                int[] xPoints = { pos.x(), pos.x()+15, pos.x()+15,pos.x() };
-                int[] yPoints = { pos.y(),  pos.y(),pos.y()+15,pos.y()+15 };
-                g.fillPolygon(xPoints, yPoints, 4);
-                double energy = robot.getEnergy()/100;
-                g.setColor(Color.YELLOW);
-                int[] energyxPoints = { pos.x(), (int) (pos.x()+ energy*15), (int) (pos.x()+energy*15),pos.x() };
-                int[] energyyPoints = { pos.y()+7,  pos.y()+7,pos.y()+5,pos.y()+5 };
-                g.fillPolygon(energyxPoints, energyyPoints, 4);
+        }
+        for (int i = 0; i<robots.size(); i++) {
+            Robot robot = robots.get(i);
+            requests.removeIf(request -> robot.getCurrentPosition().equals(request));
+            switch(i){
+                case 0 -> g.setColor(new Color(21, 21, 21));
+                case 1 ->  g.setColor(new Color(223, 81, 81));
+                case 2 ->  g.setColor(new Color(98, 109, 85));
+                case 3 ->  g.setColor(new Color(29, 50, 190));
             }
-
+            Point pos = robot.getCurrentPosition();
+            int[] xPoints = {pos.x(), pos.x() + 15, pos.x() + 15, pos.x()};
+            int[] yPoints = {pos.y(), pos.y(), pos.y() + 15, pos.y() + 15};
+            g.fillPolygon(xPoints, yPoints, 4);
+            double energy = robot.getEnergy() / 100;
+            g.setColor(Color.green);
+            int[] energyxPoints = {pos.x(), (int) (pos.x() + energy * 15), (int) (pos.x() + energy * 15), pos.x()};
+            int[] energyyPoints = {pos.y() + 7, pos.y() + 7, pos.y() + 5, pos.y() + 5};
+            g.fillPolygon(energyxPoints, energyyPoints, 4);
+            if(robot.getPowerState()==RobotPowerState.DELIVERING){
+                g.setColor(new Color(234, 123, 54));
+                int[] cratexPoints = {pos.x()+3,pos.x() + 12, pos.x() + 12 , pos.x()+3};
+                int[] crateyPoints = {pos.y() , pos.y() , pos.y() -9, pos.y() -9};
+                g.fillPolygon(cratexPoints, crateyPoints, 4);
+                g.setColor(new Color(21, 21, 21));
+                g.drawLine(pos.x(),pos.y(),pos.x(),pos.y()-4);
+                g.drawLine(pos.x(),pos.y()-4,pos.x()+5,pos.y()-4);
+                g.drawLine(pos.x()+14,pos.y(),pos.x()+14,pos.y()-4);
+                g.drawLine(pos.x()+14,pos.y()-4,pos.x()+10,pos.y()-4);
+            }
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 9));
+            FontMetrics fm = g.getFontMetrics();
+            int textWidth = fm.stringWidth(robot.getPowerState().toString());
+            g.drawString(robot.getPowerState().toString(),robot.getCurrentPosition().x()-textWidth/3,robot.getCurrentPosition().y()+23);
+        }
+        g.setColor(Color.BLACK);
+        Font font = new Font("Arial", Font.PLAIN, 12);
+        g.setFont(font);
+        for (int i = 0; i < requests.size(); i++) {
+            Point request = requests.get(i);
+            g.fillOval(request.x() - 5, request.y() - 5, 10, 10);
+            String index = String.valueOf(i);
+            int labelWidth = g.getFontMetrics().stringWidth(index);
+            g.drawString(index, request.x() - labelWidth / 2, request.y() + 15);
         }
     }
 
 
     /**
      * Returns the number of obstacles on the map, obtained through the GUI.
+     *
      * @return the number of obstacles on the map
      */
     @Override
@@ -140,18 +213,21 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     public Point askForPoint() {
         // Block the method until the mouse is clicked
         try {
-            messageLabel.setText( "Click where you want your next delivery" );
+            if (!hasError)
+                messageLabel.setText("Click where you want your next delivery");
             pointSemaphore.acquire();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         messageLabel.setText("Press any key to make new request");
         // Return the point that was clicked
+        hasError = false;
         return point;
     }
 
     /**
      * Returns true if the GUI is asking for a new Simulator.Point, false otherwise.
+     *
      * @return true if the GUI is asking for a new Simulator.Point, false otherwise
      */
     @Override
@@ -161,7 +237,8 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
 
     /**
      * Displays the status of the robots on the GUI.
-     * @param step the current step of the simulation
+     *
+     * @param step   the current step of the simulation
      * @param robots the list of robots to display
      */
     @Override
@@ -179,6 +256,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     @Override
     public void displayErrorMessage(String message) {
         messageLabel.setText(message);
+        this.hasError = true;
     }
 
     @Override
@@ -188,18 +266,20 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         repaint();
     }
 
-
-
-
+    @Override
+    public void addRequest(Point request) {
+        this.requests.add(request);
+    }
 
 
     // Inner class to handle mouse clicks
     private static class MouseChecker implements MouseListener {
         private SimulatorGUI parent;
 
-        public MouseChecker(SimulatorGUI parent){
+        public MouseChecker(SimulatorGUI parent) {
             this.parent = parent;
         }
+
         @Override
         public void mouseClicked(MouseEvent e) {
             int x = e.getX();
@@ -230,10 +310,11 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
 
         }
     }
+
     private static class KeyChecker implements KeyListener {
         private SimulatorGUI parent;
 
-        public KeyChecker(SimulatorGUI parent){
+        public KeyChecker(SimulatorGUI parent) {
             this.parent = parent;
         }
 
@@ -248,7 +329,8 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         }
 
         @Override
-        public synchronized void keyTyped(KeyEvent e) {}
+        public synchronized void keyTyped(KeyEvent e) {
+        }
 
     }
 }

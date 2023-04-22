@@ -88,4 +88,9 @@ public class SimulatorCLI implements SimulatorUI {
     public void sendMapInformation(DeliveryMap map) {
 
     }
+
+    @Override
+    public void addRequest(Point request) {
+
+    }
 }

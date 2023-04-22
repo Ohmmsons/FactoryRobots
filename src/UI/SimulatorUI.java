@@ -54,4 +54,6 @@ public interface SimulatorUI {
      * @param map The map of the simulation
      */
     void sendMapInformation(DeliveryMap map);
+
+    void addRequest(Point request);
 }

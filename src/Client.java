@@ -29,6 +29,7 @@ public class Client {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();
             frame.setVisible(true);
+            System.out.println("Opened Java Swing Window");
         }
 
         try {

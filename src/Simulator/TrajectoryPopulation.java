@@ -39,7 +39,7 @@ public class TrajectoryPopulation {
             ArrayList<Point> points = new ArrayList<>();
             points.add(start);
             for (int j = 1; j < lengths[i] + 1; j++) {
-                points.add(j, new Point(generator.nextInt(100), generator.nextInt(100)));
+                points.add(j, new Point(generator.nextInt(1000), generator.nextInt(1000)));
             }
             points.add(end);
             this.individuals.add(new Trajectory(points, generator, obstacles));

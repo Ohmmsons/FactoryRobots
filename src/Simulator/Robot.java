@@ -27,6 +27,8 @@ public class Robot {
     private boolean goingToChargingStation;
 
     private final DeliveryMap deliveryMap;
+    private Trajectory trajectoryBackToChargingStation;
+
     /**
      * Robot Constructor
      *
@@ -39,6 +41,7 @@ public class Robot {
         this.deliveryMap = deliveryMap;
         this.generator = generator;
         this.chargingStation = startingPoint;
+        this.trajectoryBackToChargingStation = null;
         this.energy = 100.00;
         this.powerState = RobotPowerState.STANDBY;
         this.goingToChargingStation = false;
@@ -80,7 +83,7 @@ public class Robot {
             case STANDBY -> {
                 if(!this.currentPosition.equals(chargingStation))
                     energy -= 0.01;
-                if (energy < 50.0) {
+                if (energy / 0.1 <= distanceToChargingStation() + 1) {
                     this.goToChargingStation();
                 }
             }
@@ -91,6 +94,7 @@ public class Robot {
                 else if (energy == 100.0) {
                     powerState = RobotPowerState.STANDBY;
                     manager.notify(this,powerState);
+                    this.trajectoryBackToChargingStation = null;
                 }
             }
             default -> throw new IllegalStateException("Unexpected value: " + powerState);
@@ -106,16 +110,18 @@ public class Robot {
     public boolean canReachDestination(Trajectory trajectory) {
         ArrayList<Point> points = trajectory.getPoints();
         Point destination = points.get(points.size() - 1);
+        int distanceFromCurrentPosToEnd = trajectory.calculatePointsAlongTrajectory().size();
         int distanceFromEndToChargingStation = findTrajectory(destination, chargingStation).calculatePointsAlongTrajectory().size();
-        return energy / 0.1 > distanceFromEndToChargingStation + trajectory.calculatePointsAlongTrajectory().size();
+        return energy / 0.1 > distanceFromEndToChargingStation + distanceFromCurrentPosToEnd ;
     }
     /**
      * Determines whether the robot can reach the charging station from its current position without running out of energy.
      * @return true if the robot can reach the charging station without running out of energy, false otherwise
      */
-    public boolean canReachChargingStation() {
-        int distanceFromEndToChargingStation = findTrajectory(currentPosition, chargingStation).calculatePointsAlongTrajectory().size();
-        return energy / 0.1 > distanceFromEndToChargingStation;
+    public int distanceToChargingStation() {
+        if(trajectoryBackToChargingStation==null)
+            trajectoryBackToChargingStation = findTrajectory(currentPosition, chargingStation);
+        return trajectoryBackToChargingStation.calculatePointsAlongTrajectory().size();
     }
 
     /**
@@ -169,7 +175,10 @@ public class Robot {
      * power state to CHARGING if it was RETURNING, or to STANDBY if it was DELIVERING, and notifies the manager.
      */
     private void goToChargingStation() {
-        setPath(findTrajectory(currentPosition, chargingStation));
+        if(this.trajectoryBackToChargingStation!=null)
+            setPath(trajectoryBackToChargingStation);
+        else
+            setPath(findTrajectory(currentPosition, chargingStation));
         this.powerState = RobotPowerState.RETURNING;
     }
     /**
@@ -179,8 +188,8 @@ public class Robot {
      * @return the trajectory between the start and destination points
      */
     public Trajectory findTrajectory(Point start, Point destination) {
-        int[] lengths = generator.ints(200, 1,3).toArray();
-        Planner planner = new Planner(0.8, 0.6, 0.6, start, destination, lengths, generator, deliveryMap.getObstacles());
+        int[] lengths = generator.ints(1000, 0,4).toArray();
+        Planner planner = new Planner(0.5, 0.25, 0.25, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }
 
