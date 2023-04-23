@@ -43,8 +43,9 @@ public class Planner {
         @return best trajectory found
     */
     public Trajectory findTrajectory() {
+        int i = 0;
         Trajectory bestTrajectory = Collections.max(population.getIndividuals(), (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        while (bestTrajectory.nCollisions() > 0) {
+        while (bestTrajectory.nCollisions() > 0 && i<300) {
             TrajectoryPopulation offspring = population.tournament();
             ArrayList<Trajectory> tournamentWinners = offspring.getIndividuals();
             ArrayList<Trajectory> offspringIndividuals = new ArrayList<>();
@@ -69,7 +70,9 @@ public class Planner {
             offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles);
             bestTrajectory = Collections.max(offspringIndividuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
             population = offspring;
+            i++;
         }
+        if(i == 300) bestTrajectory = null;
         return bestTrajectory;
     }
 }

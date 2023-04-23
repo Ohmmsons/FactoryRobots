@@ -20,6 +20,7 @@ public class RobotManager {
      * @param robots An ArrayList of robots that will subscribe to the Simulator.RobotManager.
      */
     public RobotManager(ArrayList<Robot> robots) {
+        if(robots == null) throw new IllegalArgumentException("Can't be constructed with null arguments");
         this.requests = new LinkedList<>();
         this.subscribers = new ArrayList<>(robots);
     }
@@ -100,4 +101,12 @@ public class RobotManager {
         this.requests.add(deliveryPoint);
     }
 
+
+    public Queue<Point> getRequests(){
+        return this.requests;
+    }
+
+    public ArrayList<Robot> getSubscribers() {
+        return subscribers;
+    }
 }

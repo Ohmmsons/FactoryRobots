@@ -9,6 +9,20 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 public class RobotTests {
+
+    @Test
+    public void testConstructor1(){
+        assertThrows(IllegalArgumentException.class,() -> new Robot(null, null, new Random()));
+    }
+    @Test
+    public void testConstructor2(){
+        Point startingPoint = new Point(0, 0);
+        DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
+        Robot robot = new Robot(startingPoint, deliveryMap, new Random());
+        assertEquals(robot.getCurrentPosition(),startingPoint);
+    }
+
+
     @Test
     public void testUpdate_movesRobotAndReducesEnergy() {
         Point startingPoint = new Point(0, 0);
@@ -57,7 +71,7 @@ public class RobotTests {
         deliveryMap.addObstacle(new Circle(new Point[]{new Point(100, 100)},10));
         Robot robot = new Robot(startingPoint, deliveryMap, new Random());
         Trajectory trajectory = robot.findTrajectory(startingPoint, new Point(300, 300));
-        assertFalse(trajectory.getPoints().stream().anyMatch(x -> deliveryMap.getObstacles().get(0).surrounds(x)));
+        assertTrue(trajectory.nCollisions()==0);
     }
 
     @Test

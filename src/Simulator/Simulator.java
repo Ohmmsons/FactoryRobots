@@ -15,6 +15,7 @@ public class Simulator {
      * @param ui The user interface for the simulator.
      */
     public Simulator(SimulatorUI ui) {
+        if(ui == null) throw new IllegalArgumentException("UI must exist");
         this.ui = ui;
     }
     /**
@@ -23,7 +24,7 @@ public class Simulator {
      * @param request The delivery point to check.
      * @return True if the delivery point is valid, false otherwise.
      */
-    private boolean validInputCheck(DeliveryMap deliveryMap, Point request) {
+    public boolean validInputCheck(DeliveryMap deliveryMap, Point request) {
         if (deliveryMap.isDeliveryPointValid(request)) return true;
         else ui.displayErrorMessage("Request invalid, please input a new one");
         return false;

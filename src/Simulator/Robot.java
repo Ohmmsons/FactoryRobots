@@ -37,6 +37,7 @@ public class Robot {
      * @param generator the random number generator used to generate trajectory lengths
      */
     public Robot(Point startingPoint, DeliveryMap deliveryMap, Random generator) {
+        if(startingPoint==null || deliveryMap == null || generator == null) throw new IllegalArgumentException("Can't be constructed with null arguments");
         this.currentPosition = startingPoint;
         this.deliveryMap = deliveryMap;
         this.generator = generator;
@@ -108,10 +109,17 @@ public class Robot {
      * @return true if the robot can reach its destination, false otherwise
      */
     public boolean canReachDestination(Trajectory trajectory) {
+        if(trajectory == null)
+            return false;
         ArrayList<Point> points = trajectory.getPoints();
         Point destination = points.get(points.size() - 1);
         int distanceFromCurrentPosToEnd = trajectory.calculatePointsAlongTrajectory().size();
-        int distanceFromEndToChargingStation = findTrajectory(destination, chargingStation).calculatePointsAlongTrajectory().size();
+        trajectoryBackToChargingStation = findTrajectory(destination, chargingStation);
+        int distanceFromEndToChargingStation;
+        if(trajectoryBackToChargingStation == null)
+            return false;
+        else
+            distanceFromEndToChargingStation = trajectoryBackToChargingStation.calculatePointsAlongTrajectory().size();
         return energy / 0.1 > distanceFromEndToChargingStation + distanceFromCurrentPosToEnd ;
     }
     /**
@@ -121,6 +129,8 @@ public class Robot {
     public int distanceToChargingStation() {
         if(trajectoryBackToChargingStation==null)
             trajectoryBackToChargingStation = findTrajectory(currentPosition, chargingStation);
+        if(trajectoryBackToChargingStation==null)
+            return 100000000;
         return trajectoryBackToChargingStation.calculatePointsAlongTrajectory().size();
     }
 
@@ -188,8 +198,8 @@ public class Robot {
      * @return the trajectory between the start and destination points
      */
     public Trajectory findTrajectory(Point start, Point destination) {
-        int[] lengths = generator.ints(1000, 0,4).toArray();
-        Planner planner = new Planner(0.5, 0.25, 0.25, start, destination, lengths, generator, deliveryMap.getObstacles());
+        int[] lengths = generator.ints(500, 0,15).toArray();
+        Planner planner = new Planner(0.1, 0.1, 0.1, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }
 
