@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Jude Adam a71254
+ */
 public class DeliveryMapTests {
     @Test
     void  testisDeliveryPointValid1() {

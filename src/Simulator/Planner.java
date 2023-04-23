@@ -16,7 +16,7 @@ public class Planner {
     private final double pm;
     private final double pa;
     private final double pr;
-    private final Random generator;
+    private final Generator generator;
 
     private ArrayList<Shape> obstacles;
     /**
@@ -29,7 +29,7 @@ public class Planner {
        @param generator RNG
        @param obstacles obstacles in map
         */
-    public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
+    public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, Generator generator, ArrayList<Shape> obstacles) {
         this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles);
         this.pm = pm;
         this.pa = pa;
@@ -45,14 +45,14 @@ public class Planner {
     public Trajectory findTrajectory() {
         int i = 0;
         Trajectory bestTrajectory = Collections.max(population.getIndividuals(), (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        while (bestTrajectory.nCollisions() > 0 && i<300) {
-            TrajectoryPopulation offspring = population.tournament();
+        while (bestTrajectory.nCollisions() > 0 && i<100) {
+            TrajectoryPopulation offspring = population.roulette();
             ArrayList<Trajectory> tournamentWinners = offspring.getIndividuals();
             ArrayList<Trajectory> offspringIndividuals = new ArrayList<>();
             while (true) {
                 int index1 = generator.nextInt(tournamentWinners.size());
                 int index2 = generator.nextInt(tournamentWinners.size());
-                Trajectory[] filhos = tournamentWinners.get(index1).crossover(tournamentWinners.get(index2));
+                Trajectory[] filhos = tournamentWinners.get(index1).uniformCrossover(tournamentWinners.get(index2));
                 offspringIndividuals.add(filhos[0]);
                 if (offspringIndividuals.size() == tournamentWinners.size()) break;
                 offspringIndividuals.add(filhos[1]);
@@ -72,7 +72,7 @@ public class Planner {
             population = offspring;
             i++;
         }
-        if(i == 300) bestTrajectory = null;
+        if(i == 100) bestTrajectory = null;
         return bestTrajectory;
     }
 }

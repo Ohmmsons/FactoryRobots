@@ -25,16 +25,12 @@ public class Rectangle extends Polygon {
      Constructor for creating random rectangle
      @param generator RNG
      */
-    public Rectangle(Random generator){
+    public Rectangle(Generator generator){
         super(generator);
-        Point Corner1 = new Point(generator.nextInt(100,950),generator.nextInt(100,950));
-        Point Corner2 = new Point(Corner1.x()-generator.nextInt(10,50),Corner1.y()-generator.nextInt(10,50));
-        while (Corner1.x()==Corner2.x()||Corner1.y()==Corner2.y()){
-            Corner1 = new Point(generator.nextInt(50,950),generator.nextInt(50,950));
-            Corner2 = new Point(Corner1.x()-generator.nextInt(10,50),Corner1.y()-generator.nextInt(10,50));
-        }
-        Point Corner3 = new Point(Corner1.x(), Corner2.y());
-        Point Corner4 = new Point(Corner2.x(),Corner1.y());
+        Point Corner1 = new Point(generator.nextInt(100,900),generator.nextInt(100,900));
+        Point Corner2 = new Point(Corner1.x()+generator.nextInt(10,50),Corner1.y());
+        Point Corner3 = new Point(Corner2.x(), Corner2.y()-generator.nextInt(10,50));
+        Point Corner4 = new Point(Corner1.x(),Corner3.y());
         this.points = new Point[]{Corner1,Corner2,Corner3,Corner4};
     }
 

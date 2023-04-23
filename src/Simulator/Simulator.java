@@ -34,7 +34,7 @@ public class Simulator {
      * Starts the simulation.
      */
     public void startSimulation() throws InterruptedException{
-        Random generator = new Random();
+        Generator generator = new Generator();
         // Generate random obstacles
         int nObstacles = ui.askForNumberOfObstacles();
         ArrayList<Shape> obstacles = new ArrayList<>();

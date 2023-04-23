@@ -29,7 +29,7 @@ public class Circle extends Shape {
         return r;
     }
 
-    public Circle(Random generator){
+    public Circle(Generator generator){
         super(generator);
         this.points = new Point[]{new Point(generator.nextInt(50,950),generator.nextInt(50,950))};
         this.r = generator.nextInt(5,30);

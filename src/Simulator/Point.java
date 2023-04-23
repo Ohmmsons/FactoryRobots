@@ -7,7 +7,7 @@ Class Point used for forming line segments
  Simulator.Point must be in the 1000x1000 area
  */
 public record Point(int x, int y) {
-    public Point{if(x<0||y<0||x>999||y>999) throw new IllegalArgumentException("Invalid Simulator.Point");}
+    public Point{if(x<0||y<0||x>999||y>999) throw new IllegalArgumentException("Invalid Point");}
     @Override
     public String toString() {
         return "("+x+";"+y+")";
@@ -30,4 +30,6 @@ public record Point(int x, int y) {
         double dy = y - p.y;
         return Math.sqrt(dx * dx + dy * dy);
     }
+
+
 }

@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * @author Jude Adam a71254
+ */
 public class ShapeTests {
     @Test
     public void testInterceptTriangle1(){

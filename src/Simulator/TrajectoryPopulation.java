@@ -20,7 +20,7 @@ public class TrajectoryPopulation {
     private ArrayList<Trajectory> individuals;
     private final ArrayList<Shape> obstacles;
 
-    private Random generator;
+    private Generator generator;
 
     /**
     Constructor for TrajectoryPopulation Class
@@ -31,23 +31,23 @@ public class TrajectoryPopulation {
      @param generator RNG
      @param obstacles Obstacles
    */
-    public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, Random generator, ArrayList<Shape> obstacles) {
+    public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, Generator generator, ArrayList<Shape> obstacles) {
         this.individuals = new ArrayList<>();
         this.generator = generator;
         this.obstacles = obstacles;
         for (int i = 0; i < n; i++) {
             ArrayList<Point> points = new ArrayList<>();
             points.add(start);
-            for (int j = 1; j < lengths[i] + 1; j++) {
-                points.add(j, new Point(generator.nextInt(1000), generator.nextInt(1000)));
+            for (int j = 0; j < lengths[i]; j++) {
+                Point p = generator.generateGaussianPoint(points.get(0),points.get(points.size()-1));
+                points.add(p);
             }
             points.add(end);
             this.individuals.add(new Trajectory(points, generator, obstacles));
         }
     }
 
-
-    public TrajectoryPopulation(ArrayList<Trajectory> individuals, Random generator, ArrayList<Shape> obstacles) {
+    public TrajectoryPopulation(ArrayList<Trajectory> individuals, Generator generator, ArrayList<Shape> obstacles) {
         this.individuals = individuals;
         this.generator = generator;
         this.obstacles = obstacles;
@@ -93,5 +93,25 @@ public class TrajectoryPopulation {
             vencedores.add(f1 >= f2 ? individuals.get(p1) : individuals.get(p2));
         }
         return new TrajectoryPopulation(vencedores, generator, obstacles);
+    }
+
+    /**
+     * roulette method to perform roulette selection on population
+     * @return winners of selection
+     */
+    public TrajectoryPopulation roulette() {
+        ArrayList<Trajectory> winners = new ArrayList<>();
+        double totalFitness = individuals.stream().mapToDouble(Trajectory::fitness).sum();
+        for (int i = 0; i < individuals.size(); i++) {
+            double randomValue = generator.nextDouble() * totalFitness;
+            for (Trajectory individual : individuals) {
+                randomValue -= individual.fitness();
+                if (randomValue <= 0) {
+                    winners.add(individual);
+                    break;
+                }
+            }
+        }
+        return new TrajectoryPopulation(winners, generator, obstacles);
     }
 }

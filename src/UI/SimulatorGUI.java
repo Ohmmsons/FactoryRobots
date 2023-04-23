@@ -124,8 +124,8 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
                 g.fillPolygon(xPoints, yPoints, 3);
             } else if (shape.getPoints().length == 4) {
                 Point[] points = shape.getPoints();
-                int[] xPoints = {points[0].x(), points[2].x(), points[1].x(), points[3].x()};
-                int[] yPoints = {points[0].y(), points[2].y(), points[1].y(), points[3].y()};
+                int[] xPoints = {points[0].x(), points[1].x(), points[2].x(), points[3].x()};
+                int[] yPoints = {points[0].y(), points[1].y(), points[2].y(), points[3].y()};
                 g.fillPolygon(xPoints, yPoints, 4);
             }
         }
@@ -139,49 +139,49 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
                 case 3 ->  g.setColor(new Color(29, 50, 190));
             }
             Point pos = robot.getCurrentPosition();
-            int[] xPoints = {pos.x(), pos.x() + 15, pos.x() + 15, pos.x()};
-            int[] yPoints = {pos.y(), pos.y(), pos.y() + 15, pos.y() + 15};
+            int[] xPoints = {pos.x()-7, pos.x()-7 + 15, pos.x()-7 + 15, pos.x()-7};
+            int[] yPoints = {pos.y()-7, pos.y()-7, pos.y()-7 + 15, pos.y()-7 + 15};
             g.fillPolygon(xPoints, yPoints, 4);
             g.setColor(new Color(21, 21, 21));
             g.drawPolygon(xPoints, yPoints, 4);
             double energy = robot.getEnergy() / 100;
             g.setColor(Color.green);
-            int[] energyxPoints = {pos.x(), (int) (pos.x() + energy * 15), (int) (pos.x() + energy * 15), pos.x()};
-            int[] energyyPoints = {pos.y() + 7, pos.y() + 7, pos.y() + 5, pos.y() + 5};
+            int[] energyxPoints = {pos.x()-7, (int) (pos.x()-7 + energy * 15), (int) (pos.x()-7 + energy * 15), pos.x()-7};
+            int[] energyyPoints = {pos.y()-7 + 7, pos.y()-7 + 7, pos.y()-7 + 5, pos.y()-7 + 5};
             g.fillPolygon(energyxPoints, energyyPoints, 4);
             switch(robot.getPowerState()){
                 case DELIVERING -> {
                     g.setColor(new Color(234, 123, 54));
-                    int[] cratexPoints = {pos.x()+3,pos.x() + 12, pos.x() + 12 , pos.x()+3};
-                    int[] crateyPoints = {pos.y() , pos.y() , pos.y() -9, pos.y() -9};
+                    int[] cratexPoints = {pos.x()-7+3,pos.x()-7 + 12, pos.x()-7 + 12 , pos.x()-7+3};
+                    int[] crateyPoints = {pos.y()-7 , pos.y()-7 , pos.y()-7 -9, pos.y()-7 -9};
                     g.fillPolygon(cratexPoints, crateyPoints, 4);
                     g.setColor(new Color(21, 21, 21));
-                    g.drawLine(pos.x(),pos.y(),pos.x(),pos.y()-4);
-                    g.drawLine(pos.x(),pos.y()-4,pos.x()+5,pos.y()-4);
-                    g.drawLine(pos.x()+14,pos.y(),pos.x()+14,pos.y()-4);
-                    g.drawLine(pos.x()+14,pos.y()-4,pos.x()+10,pos.y()-4);
+                    g.drawLine(pos.x()-7,pos.y()-7,pos.x()-7,pos.y()-7-4);
+                    g.drawLine(pos.x()-7,pos.y()-7-4,pos.x()-7+5,pos.y()-7-4);
+                    g.drawLine(pos.x()-7+14,pos.y()-7,pos.x()-7+14,pos.y()-7-4);
+                    g.drawLine(pos.x()-7+14,pos.y()-7-4,pos.x()-7+10,pos.y()-7-4);
                 }
                 case RETURNING -> {
                     g.setColor(new Color(47, 236, 41));
-                    int[] batteryXPoints = {pos.x()+3,pos.x() + 10, pos.x() + 10 , pos.x()+12,pos.x()+12, pos.x()+10,pos.x()+10,pos.x()+3};
-                    int[] batteryYPoints = {pos.y()-2 , pos.y()-2 , pos.y() - 4 ,pos.y()-4, pos.y() - 6, pos.y()- 6, pos.y()-8, pos.y()-8};
+                    int[] batteryXPoints = {pos.x()-7+3,pos.x()-7 + 10, pos.x()-7 + 10 , pos.x()-7+12,pos.x()-7+12, pos.x()-7+10,pos.x()-7+10,pos.x()-7+3};
+                    int[] batteryYPoints = {pos.y()-7-2 , pos.y()-7-2 , pos.y()-7 - 4 ,pos.y()-7-4, pos.y()-7 - 6, pos.y()-7- 6, pos.y()-7-8, pos.y()-7-8};
                     g.fillPolygon(batteryXPoints,batteryYPoints, 8);
                     g.setColor(Color.BLACK);
                     g.drawPolygon(batteryXPoints,batteryYPoints, 8);
                     g.setColor(new Color(220, 19, 19));
-                    g.drawLine(pos.x()+13,pos.y()-9,pos.x()+2,pos.y()-1);
+                    g.drawLine(pos.x()-7+13,pos.y()-7-9,pos.x()-7+2,pos.y()-7-1);
                 }
                 case STANDBY -> {
                     g.setColor(Color.BLACK);
-                    g.drawLine(pos.x()+14,pos.y(),pos.x()+14,pos.y()-8);
+                    g.drawLine(pos.x()-7+14,pos.y()-7,pos.x()-7+14,pos.y()-7-8);
                     g.setColor(new Color(220, 19, 19));
-                    g.fillOval(pos.x() +14 , pos.y() - 8, 2, 2);
+                    g.fillOval(pos.x()-7 +14 , pos.y()-7 - 8, 2, 2);
                     g.setColor(new Color(0, 0, 255));
                     for (int j = 0; j < 6; j += 2) {
-                        int x = pos.x() + 10 + j;
-                        int y = pos.y() - 12;
+                        int x = pos.x()-7 + 10 + j;
+                        int y = pos.y()-7 - 12;
                         g.drawArc(x, y, 10, 10, -60, 120);
-                        x = pos.x() + 10 - j;
+                        x = pos.x()-7 + 10 - j;
                         g.drawArc(x, y, 10, 10, 120, 120);
                     }
                 }

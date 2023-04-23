@@ -26,7 +26,7 @@ public abstract class Shape {
      *
      * @param generator RNG
      */
-    Shape(Random generator) {
+    Shape(Generator generator) {
     }
 
     /**

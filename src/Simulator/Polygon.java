@@ -23,7 +23,7 @@ public class Polygon extends Shape {
         Constructor for creating random polygon
         @param generator RNG
        */
-    public Polygon(Random generator) {
+    public Polygon(Generator generator) {
         super(generator);
     }
 

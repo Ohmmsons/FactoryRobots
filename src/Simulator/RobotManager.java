@@ -55,11 +55,13 @@ public class RobotManager {
             Trajectory bestTrajectory = null;
             double minDistance = 1000000000;
             for (Robot robot : subscribers) {
-                Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), nextRequest);
-                if (robot.canReachDestination(trajectory) && trajectory.getLength() < minDistance) {
-                    minDistance = trajectory.getLength();
-                    bestRobot = robot;
-                    bestTrajectory = trajectory;
+                if(robot.getCurrentPosition().dist(nextRequest) < 703) {
+                    Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), nextRequest);
+                    if (robot.canReachDestination(trajectory) && trajectory.getLength() < minDistance) {
+                        minDistance = trajectory.getLength();
+                        bestRobot = robot;
+                        bestTrajectory = trajectory;
+                    }
                 }
             }
             //If there is a robot that can reach the request
@@ -88,8 +90,6 @@ public class RobotManager {
             case STANDBY -> addSubscriber(sender);
             case DELIVERING -> removeSubscriber(sender);
         }
-
-
     }
 
     /**

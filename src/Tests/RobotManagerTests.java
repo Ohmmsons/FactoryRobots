@@ -4,10 +4,11 @@ import Simulator.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import static org.junit.Assert.*;
-
+/**
+ * @author Jude Adam a71254
+ */
 public class RobotManagerTests {
     @Test
     public void testConstructor1(){
@@ -15,7 +16,7 @@ public class RobotManagerTests {
     }
     @Test
     public void testConstructor2(){
-        Random generator = new Random(0);
+        Generator generator = new Generator(0);
         ArrayList<Shape> obstacles = new ArrayList<>();
         Point[] points = new Point[]{new Point(60,60)};
         Circle circle = new Circle(points,5);
@@ -41,7 +42,7 @@ public class RobotManagerTests {
 
     @Test
     public void testRobotUnsubscribesWhenDelivering1(){
-        Random generator = new Random(0);
+        Generator generator = new Generator(0);
         ArrayList<Shape> obstacles = new ArrayList<>();
         Point[] points = new Point[]{new Point(60,60)};
         Circle circle = new Circle(points,5);
@@ -71,7 +72,7 @@ public class RobotManagerTests {
     }
     @Test
     public void testRobotUnsubscribesWhenDelivering2(){
-        Random generator = new Random(0);
+        Generator generator = new Generator(0);
         ArrayList<Shape> obstacles = new ArrayList<>();
         Point[] points = new Point[]{new Point(60,60)};
         Circle circle = new Circle(points,5);
