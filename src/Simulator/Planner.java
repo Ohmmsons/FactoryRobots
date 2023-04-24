@@ -38,7 +38,7 @@ public class Planner {
     }
     /**
         Simulator.Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
-        algorithm performs tournament selection, crossover , mutation, gene addition and gene removal on the population
+        algorithm performs roulette selection, uniform crossover , mutation, gene addition and gene removal on the population
         and replaces the old population with the new one.
         @return best trajectory found
     */

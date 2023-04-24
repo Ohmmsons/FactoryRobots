@@ -147,50 +147,51 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
                 case 2 ->  g.setColor(new Color(98, 109, 85));
                 case 3 ->  g.setColor(new Color(29, 50, 190));
             }
-            Point pos = robot.getCurrentPosition();
-            int[] xPoints = {pos.x()-7, pos.x()-7 + 15, pos.x()-7 + 15, pos.x()-7};
-            int[] yPoints = {pos.y()-7, pos.y()-7, pos.y()-7 + 15, pos.y()-7 + 15};
+            Point posRobot = robot.getCurrentPosition();
+            Point centerRobot = new Point(posRobot.x()-7,posRobot.y());
+            int[] xPoints = {centerRobot.x(), centerRobot.x() + 15, centerRobot.x() + 15, centerRobot.x()};
+            int[] yPoints = {centerRobot.y(), centerRobot.y(), centerRobot.y() + 15, centerRobot.y() + 15};
             g.fillPolygon(xPoints, yPoints, 4);
             g.setColor(new Color(21, 21, 21));
             g.drawPolygon(xPoints, yPoints, 4);
             double energy = robot.getEnergy() / 100;
             g.setColor(Color.green);
-            int[] energyxPoints = {pos.x()-7, (int) (pos.x()-7 + energy * 15), (int) (pos.x()-7 + energy * 15), pos.x()-7};
-            int[] energyyPoints = {pos.y()-7 + 7, pos.y()-7 + 7, pos.y()-7 + 5, pos.y()-7 + 5};
+            int[] energyxPoints = {centerRobot.x(), (int) (centerRobot.x() + energy * 15), (int) (centerRobot.x() + energy * 15), centerRobot.x()};
+            int[] energyyPoints = {centerRobot.y() + 7, centerRobot.y() + 7, centerRobot.y() + 5, centerRobot.y() + 5};
             g.fillPolygon(energyxPoints, energyyPoints, 4);
             switch(robot.getPowerState()){
                 case DELIVERING -> {
                     g.setColor(new Color(234, 123, 54));
-                    int[] cratexPoints = {pos.x()-7+3,pos.x()-7 + 12, pos.x()-7 + 12 , pos.x()-7+3};
-                    int[] crateyPoints = {pos.y()-7 , pos.y()-7 , pos.y()-7 -9, pos.y()-7 -9};
+                    int[] cratexPoints = {centerRobot.x()+3,centerRobot.x() + 12, centerRobot.x() + 12 , centerRobot.x()+3};
+                    int[] crateyPoints = {centerRobot.y() , centerRobot.y() , centerRobot.y() -9, centerRobot.y() -9};
                     g.fillPolygon(cratexPoints, crateyPoints, 4);
                     g.setColor(new Color(21, 21, 21));
-                    g.drawLine(pos.x()-7,pos.y()-7,pos.x()-7,pos.y()-7-4);
-                    g.drawLine(pos.x()-7,pos.y()-7-4,pos.x()-7+5,pos.y()-7-4);
-                    g.drawLine(pos.x()-7+14,pos.y()-7,pos.x()-7+14,pos.y()-7-4);
-                    g.drawLine(pos.x()-7+14,pos.y()-7-4,pos.x()-7+10,pos.y()-7-4);
+                    g.drawLine(centerRobot.x(),centerRobot.y(),centerRobot.x(),centerRobot.y()-4);
+                    g.drawLine(centerRobot.x(),centerRobot.y()-4,centerRobot.x()+5,centerRobot.y()-4);
+                    g.drawLine(centerRobot.x()+14,centerRobot.y(),centerRobot.x()+14,centerRobot.y()-4);
+                    g.drawLine(centerRobot.x()+14,centerRobot.y()-4,centerRobot.x()+10,centerRobot.y()-4);
                 }
                 case RETURNING -> {
                     g.setColor(new Color(47, 236, 41));
-                    int[] batteryXPoints = {pos.x()-7+3,pos.x()-7 + 10, pos.x()-7 + 10 , pos.x()-7+12,pos.x()-7+12, pos.x()-7+10,pos.x()-7+10,pos.x()-7+3};
-                    int[] batteryYPoints = {pos.y()-7-2 , pos.y()-7-2 , pos.y()-7 - 4 ,pos.y()-7-4, pos.y()-7 - 6, pos.y()-7- 6, pos.y()-7-8, pos.y()-7-8};
+                    int[] batteryXPoints = {centerRobot.x()+3,centerRobot.x() + 10, centerRobot.x() + 10 , centerRobot.x()+12,centerRobot.x()+12, centerRobot.x()+10,centerRobot.x()+10,centerRobot.x()+3};
+                    int[] batteryYPoints = {centerRobot.y()-2 , centerRobot.y()-2 , centerRobot.y() - 4 ,centerRobot.y()-4, centerRobot.y() - 6, centerRobot.y()- 6, centerRobot.y()-8, centerRobot.y()-8};
                     g.fillPolygon(batteryXPoints,batteryYPoints, 8);
                     g.setColor(Color.BLACK);
                     g.drawPolygon(batteryXPoints,batteryYPoints, 8);
                     g.setColor(new Color(220, 19, 19));
-                    g.drawLine(pos.x()-7+13,pos.y()-7-9,pos.x()-7+2,pos.y()-7-1);
+                    g.drawLine(centerRobot.x()+13,centerRobot.y()-9,centerRobot.x()+2,centerRobot.y()-1);
                 }
                 case STANDBY -> {
                     g.setColor(Color.BLACK);
-                    g.drawLine(pos.x()-7+14,pos.y()-7,pos.x()-7+14,pos.y()-7-8);
+                    g.drawLine(centerRobot.x()+14,centerRobot.y(),centerRobot.x()+14,centerRobot.y()-8);
                     g.setColor(new Color(220, 19, 19));
-                    g.fillOval(pos.x()-7 +14 , pos.y()-7 - 8, 2, 2);
+                    g.fillOval(centerRobot.x() +14 , centerRobot.y() - 8, 2, 2);
                     g.setColor(new Color(0, 0, 255));
                     for (int j = 0; j < 6; j += 2) {
-                        int x = pos.x()-7 + 10 + j;
-                        int y = pos.y()-7 - 12;
+                        int x = centerRobot.x() + 10 + j;
+                        int y = centerRobot.y() - 12;
                         g.drawArc(x, y, 10, 10, -60, 120);
-                        x = pos.x()-7 + 10 - j;
+                        x = centerRobot.x() + 10 - j;
                         g.drawArc(x, y, 10, 10, 120, 120);
                     }
                 }

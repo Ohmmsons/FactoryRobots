@@ -59,16 +59,15 @@ public class Simulator {
      * @return List of random obstacles.
      */
     private ArrayList<Shape> generateRandomObstacles(Generator generator){
-        ShapeGenerator shapeGenerator = new ShapeGenerator(generator);
         // Generate random obstacles
         int nObstacles = ui.askForNumberOfObstacles();
         ArrayList<Shape> obstacles = new ArrayList<>();
         for (int i = 0; i < nObstacles; i++) {
             int option = generator.nextInt(3);
             switch (option) {
-                case 0 -> obstacles.add(shapeGenerator.generateShape("Circle"));
-                case 1 -> obstacles.add(shapeGenerator.generateShape("Rectangle"));
-                case 2 -> obstacles.add(shapeGenerator.generateShape("Triangle"));
+                case 0 -> obstacles.add(generator.generateShape("Circle"));
+                case 1 -> obstacles.add(generator.generateShape("Rectangle"));
+                case 2 -> obstacles.add(generator.generateShape("Triangle"));
             }
         }
         return obstacles;

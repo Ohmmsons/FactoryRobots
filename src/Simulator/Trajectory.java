@@ -133,8 +133,9 @@ public class Trajectory {
         if (points.size() > 2) {
         if (generator.nextDouble() < pm) {
                 int i = generator.nextInt(points.size() - 2) + 1;
-                Point p = generator.generateGaussianPoint(points.get(0),points.get(points.size()-1));
+                Point p = generator.generateGaussianPoint(50, points.get(0),points.get(points.size()-1));
                 if (!points.contains(p)) {
+                    //Mutate point and update length
                     length-=(points.get(i-1).dist(points.get(i)) + points.get(i).dist(points.get(i+1)));
                     points.set(i, p);
                     length+=(points.get(i-1).dist(p) + p.dist(points.get(i+1)));
@@ -165,8 +166,9 @@ public class Trajectory {
         if(generator.nextDouble() < pa) {
             int i = 0;
             if (points.size() > 2) i = generator.nextInt(points.size() - 2) + 1;
-            Point p = generator.generateGaussianPoint(points.get(0),points.get(points.size()-1));
+            Point p = generator.generateGaussianPoint(50, points.get(0),points.get(points.size()-1));
             if (!points.contains(p)){
+                //Add point and update length
                 length-=(points.get(i).dist(points.get(i+1)));
                 points.add(i + 1, p);
                 length+=(points.get(i).dist(p) + p.dist(points.get(i+2)));

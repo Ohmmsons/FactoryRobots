@@ -1,6 +1,5 @@
 package Simulator;
 
-import java.util.Random;
 
 /**
 Class Polygon

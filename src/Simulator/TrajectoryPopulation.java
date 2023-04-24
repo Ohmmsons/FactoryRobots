@@ -39,7 +39,7 @@ public class TrajectoryPopulation {
             ArrayList<Point> points = new ArrayList<>();
             points.add(start);
             for (int j = 0; j < lengths[i]; j++) {
-                Point p = generator.generateGaussianPoint(points.get(0),points.get(points.size()-1));
+                Point p = generator.generateGaussianPoint(50, points.get(0),points.get(points.size()-1));
                 points.add(p);
             }
             points.add(end);
@@ -84,15 +84,15 @@ public class TrajectoryPopulation {
      * @return winners of selection
      */
     public TrajectoryPopulation tournament() {
-        ArrayList<Trajectory> vencedores = new ArrayList<>();
+        ArrayList<Trajectory> winners = new ArrayList<>();
         for (int i = 0; i < individuals.size(); i++) {
             int p1 = (generator.nextInt(individuals.size()));
             int p2 = (generator.nextInt(individuals.size()));
             double f1 = individuals.get(p1).fitness();
             double f2 = individuals.get(p2).fitness();
-            vencedores.add(f1 >= f2 ? individuals.get(p1) : individuals.get(p2));
+            winners.add(f1 >= f2 ? individuals.get(p1) : individuals.get(p2));
         }
-        return new TrajectoryPopulation(vencedores, generator, obstacles);
+        return new TrajectoryPopulation(winners, generator, obstacles);
     }
 
     /**

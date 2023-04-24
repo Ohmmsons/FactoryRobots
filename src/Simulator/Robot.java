@@ -141,6 +141,9 @@ public class Robot {
         return trajectoryBackToChargingStation.calculatePointsAlongTrajectory().size();
     }
 
+    public Point getChargingStation(){
+        return  chargingStation;
+    }
     /**
      * Sets the trajectory of the robot to the given one, and notifies the manager that the robot is delivering.
      * This method also sets the power state of the robot to DELIVERING.
@@ -204,14 +207,13 @@ public class Robot {
 
     /**
      * Finds a trajectory between the start and destination points using the provided planner.
-     *
      * @param start the starting point of the trajectory
      * @param destination the destination point of the trajectory
      * @return the trajectory between the start and destination points
      */
     public Trajectory findTrajectory(Point start, Point destination) {
         int[] lengths = generator.ints(200, 0, 2);
-        Planner planner = new Planner(0.045, 0.1, 0.045, start, destination, lengths, generator, deliveryMap.getObstacles());
+        Planner planner = new Planner(0.1, 0.1, 0.1, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }
 

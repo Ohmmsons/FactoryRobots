@@ -55,7 +55,7 @@ public class RobotManager {
             Trajectory bestTrajectory = null;
             double minDistance = 1000000000;
             for (Robot robot : subscribers) {
-                if(robot.getCurrentPosition().dist(nextRequest) < 703) {
+                if(robot.getCurrentPosition().dist(nextRequest) + nextRequest.dist(robot.getChargingStation()) <= robot.getEnergy()/0.1) {
                     Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), nextRequest);
                     if (robot.canReachDestination(trajectory) && trajectory.getLength() < minDistance) {
                         minDistance = trajectory.getLength();
