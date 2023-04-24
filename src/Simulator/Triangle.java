@@ -12,21 +12,6 @@ Class Triangle
  */
 public class Triangle extends Polygon {
     /**
-     Constructor method for creating random Simulator.Triangle
-     @param generator RNG
-     */
-    public Triangle(Generator generator){
-        super(generator);
-        Point Point1,Point2,Point3;
-        do{
-            Point1 = new Point(generator.nextInt(50,950),generator.nextInt(50,950));
-            Point2 = new Point(Point1.x()+generator.nextInt(10,50),Point1.y()+generator.nextInt(10,50));
-            Point3 =  new Point(Point1.x()+generator.nextInt(10,50),Point1.y()+generator.nextInt(10,50));
-        }
-        while ((Point1.x() * (Point2.y() - Point3.y()) + Point2.x() * (Point3.y() - Point1.y()) + Point3.x() * (Point1.y() - Point2.y())) == 0);
-        this.points = new Point[]{Point1,Point2,Point3};
-    }
-    /**
      Constructor method for Simulator.Triangle class
      @param points Points of triangle
      */

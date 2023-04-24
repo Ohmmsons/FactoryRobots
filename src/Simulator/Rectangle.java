@@ -22,19 +22,6 @@ public class Rectangle extends Polygon {
     }
 
     /**
-     Constructor for creating random rectangle
-     @param generator RNG
-     */
-    public Rectangle(Generator generator){
-        super(generator);
-        Point Corner1 = new Point(generator.nextInt(100,900),generator.nextInt(100,900));
-        Point Corner2 = new Point(Corner1.x()+generator.nextInt(10,50),Corner1.y());
-        Point Corner3 = new Point(Corner2.x(), Corner2.y()-generator.nextInt(10,50));
-        Point Corner4 = new Point(Corner1.x(),Corner3.y());
-        this.points = new Point[]{Corner1,Corner2,Corner3,Corner4};
-    }
-
-    /**
     isOrthogonal method to check if points a b and c form a right angle
     @param a Simulator.Point a
     @param b Simulator.Point b

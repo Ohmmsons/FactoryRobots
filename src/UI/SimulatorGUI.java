@@ -109,24 +109,33 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         g.fillRect(950, 950, 50, 50);
         g.fillRect(950, 0, 50, 50);
 
-        g.setColor(new Color(220, 19, 19));
         // Draw the shapes
         for (Shape shape : shapes) {
             if (shape instanceof Circle) {
                 Circle circle = (Circle) shape;
+                g.setColor(new Color(220, 19, 19));
                 g.fillOval((int) circle.getPoints()[0].x() - (int) circle.getRadius(), circle.getPoints()[0].y() - (int) circle.getRadius(),
+                        (int) circle.getRadius() * 2, (int) circle.getRadius() * 2);
+                g.setColor(Color.BLACK);
+                g.drawOval((int) circle.getPoints()[0].x() - (int) circle.getRadius(), circle.getPoints()[0].y() - (int) circle.getRadius(),
                         (int) circle.getRadius() * 2, (int) circle.getRadius() * 2);
             } else if (shape instanceof Triangle) {
                 Triangle tri = (Triangle) shape;
                 Point[] points = tri.getPoints();
                 int[] xPoints = {points[0].x(), points[1].x(), points[2].x()};
                 int[] yPoints = {points[0].y(), points[1].y(), points[2].y()};
+                g.setColor(new Color(220, 19, 19));
                 g.fillPolygon(xPoints, yPoints, 3);
+                g.setColor(Color.BLACK);
+                g.drawPolygon(xPoints, yPoints, 3);
             } else if (shape.getPoints().length == 4) {
                 Point[] points = shape.getPoints();
                 int[] xPoints = {points[0].x(), points[1].x(), points[2].x(), points[3].x()};
                 int[] yPoints = {points[0].y(), points[1].y(), points[2].y(), points[3].y()};
+                g.setColor(new Color(220, 19, 19));
                 g.fillPolygon(xPoints, yPoints, 4);
+                g.setColor(Color.BLACK);
+                g.drawPolygon(xPoints, yPoints, 4);
             }
         }
         for (int i = 0; i<robots.size(); i++) {

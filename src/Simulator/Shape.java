@@ -21,13 +21,6 @@ public abstract class Shape {
         this.points = points;
     }
 
-    /**
-     * Constructor method for creating a Random Simulator.Shape
-     *
-     * @param generator RNG
-     */
-    Shape(Generator generator) {
-    }
 
     /**
      * Surrounds

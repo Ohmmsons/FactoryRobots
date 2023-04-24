@@ -120,7 +120,6 @@ public class Robot {
             return false;
         ArrayList<Point> points = trajectory.getPoints();
         Point destination = points.get(points.size() - 1);
-
         Trajectory trajectoryBackToChargingStation = findTrajectory(destination, chargingStation);
         int distanceFromEndToChargingStation;
         if (trajectoryBackToChargingStation == null)
@@ -200,6 +199,7 @@ public class Robot {
     private void goToChargingStation() {
         setPath(findTrajectory(currentPosition, chargingStation));
         this.powerState = RobotPowerState.RETURNING;
+        manager.notify(this, this.powerState);
     }
 
     /**
@@ -210,8 +210,8 @@ public class Robot {
      * @return the trajectory between the start and destination points
      */
     public Trajectory findTrajectory(Point start, Point destination) {
-        int[] lengths = generator.ints(200, 0, 3);
-        Planner planner = new Planner(0.3, 0.2, 0.1, start, destination, lengths, generator, deliveryMap.getObstacles());
+        int[] lengths = generator.ints(200, 0, 2);
+        Planner planner = new Planner(0.045, 0.1, 0.045, start, destination, lengths, generator, deliveryMap.getObstacles());
         return planner.findTrajectory();
     }
 

@@ -9,7 +9,7 @@ import java.util.*;
  */
 public class Simulator {
 
-    private final SimulatorUI ui;
+    private SimulatorUI ui;
     /**
      * Creates a new Simulator object.
      * @param ui The user interface for the simulator.
@@ -31,29 +31,12 @@ public class Simulator {
     }
 
     /**
-     * Starts the simulation.
+     * Initializes the simulation's robots, one in each corner, all fully charged and in standby.
+     * @param generator The generator used.
+     * @param deliveryMap The delivery map.
+     * @return List of 4 robots, one in each corner, all fully charged and in standby.
      */
-    public void startSimulation() throws InterruptedException{
-        Generator generator = new Generator();
-        // Generate random obstacles
-        int nObstacles = ui.askForNumberOfObstacles();
-        ArrayList<Shape> obstacles = new ArrayList<>();
-        for (int i = 0; i < nObstacles; i++) {
-            int option = generator.nextInt(3);
-            switch (option) {
-                case 0 -> obstacles.add(new Circle(generator));
-                case 1 -> obstacles.add(new Rectangle(generator));
-                case 2 -> obstacles.add(new Triangle(generator));
-            }
-        }
-
-        // Create delivery map with obstacles
-        DeliveryMap deliveryMap = new DeliveryMap(obstacles);
-
-        //Inform the UI about the Map
-        ui.sendMapInformation(deliveryMap);
-
-        // Create and initialize robots
+    private ArrayList<Robot> initializeRobots(Generator generator, DeliveryMap deliveryMap){
         ArrayList<Robot> robots = new ArrayList<>(4);
         Point chargingPoint0 = new Point(15, 15);
         Point chargingPoint1 = new Point(15, 975);
@@ -67,15 +50,54 @@ public class Simulator {
         robots.add(robot1);
         robots.add(robot2);
         robots.add(robot3);
+        return robots;
+    }
+
+    /**
+     * Uses a ShapeGenerator to generate random obstacles using random numbers provided by the Generator variable.
+     * @param generator The generator used.
+     * @return List of random obstacles.
+     */
+    private ArrayList<Shape> generateRandomObstacles(Generator generator){
+        ShapeGenerator shapeGenerator = new ShapeGenerator(generator);
+        // Generate random obstacles
+        int nObstacles = ui.askForNumberOfObstacles();
+        ArrayList<Shape> obstacles = new ArrayList<>();
+        for (int i = 0; i < nObstacles; i++) {
+            int option = generator.nextInt(3);
+            switch (option) {
+                case 0 -> obstacles.add(shapeGenerator.generateShape("Circle"));
+                case 1 -> obstacles.add(shapeGenerator.generateShape("Rectangle"));
+                case 2 -> obstacles.add(shapeGenerator.generateShape("Triangle"));
+            }
+        }
+        return obstacles;
+    }
+
+    /**
+     * Starts the simulation.
+     */
+    public void startSimulation() throws InterruptedException{
+        //Initialize generator
+        Generator generator = new Generator();
+
+        // Create delivery map with obstacles
+        DeliveryMap deliveryMap = new DeliveryMap(generateRandomObstacles(generator));
+
+        //Inform the UI about the Map
+        ui.sendMapInformation(deliveryMap);
+
+        // Create and initialize robots
+        ArrayList<Robot> robots = initializeRobots(generator,deliveryMap);
 
         // Create robot manager and subscribe robots to it
         RobotManager robotManager = new RobotManager(robots);
         for (Robot robot : robots)
             robot.subscribeToManager(robotManager);
 
-
+        int step = 0;
         // Run simulation
-        for (int i = 0; true; i++) {
+        while(true) {
             if (ui.isAskingForNewPoint()) {
                 Point request;
                 do {
@@ -92,10 +114,11 @@ public class Simulator {
                 robot.update();
 
             // Display robot status on UI
-            ui.displayRobotStatus(i, robots);
+            ui.displayRobotStatus(step, robots);
 
             // Wait for 5 milliseconds
             Thread.sleep(5);
+            step++;
         }
     }
 

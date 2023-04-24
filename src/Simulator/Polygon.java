@@ -19,13 +19,6 @@ public class Polygon extends Shape {
         if(points.length <= 2) throw  new IllegalArgumentException("Not enough points");
     }
 
-    /**
-        Constructor for creating random polygon
-        @param generator RNG
-       */
-    public Polygon(Generator generator) {
-        super(generator);
-    }
 
     /**
      Surrounds

@@ -60,11 +60,7 @@ public class Planner {
             }
             for (Trajectory t : offspringIndividuals) {
                 t.mutate(pm);
-            }
-            for (Trajectory t : offspringIndividuals) {
                 t.addPoint(pa);
-            }
-            for (Trajectory t : offspringIndividuals) {
                 t.removePoint(pr);
             }
             offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles);

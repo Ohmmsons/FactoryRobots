@@ -29,12 +29,6 @@ public class Circle extends Shape {
         return r;
     }
 
-    public Circle(Generator generator){
-        super(generator);
-        this.points = new Point[]{new Point(generator.nextInt(50,950),generator.nextInt(50,950))};
-        this.r = generator.nextInt(5,30);
-    }
-
 
     /**
      surrounds,
@@ -46,9 +40,9 @@ public class Circle extends Shape {
         return p.dist(points[0])<=r;
     }
 
-    /*
+    /**
        Method to see if circle is intercepted by segment
-       @params Simulator.Simulator.LineSegment segment
+       @param segment Segment
        @return true if segment intersects caller
         */
     @Override

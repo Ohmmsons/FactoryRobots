@@ -88,7 +88,7 @@ public class RobotManager {
     public void notify(Robot sender, RobotPowerState event) {
         switch (event) {
             case STANDBY -> addSubscriber(sender);
-            case DELIVERING -> removeSubscriber(sender);
+            case DELIVERING, RETURNING -> removeSubscriber(sender);
         }
     }
 

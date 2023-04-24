@@ -20,9 +20,9 @@ public record Point(int x, int y) {
         hash = (71 * hash + this.y);
         return hash;
     }
-    /*
+    /**
     Method to see distance from this point to point p
-    @params Simulator.Point p
+    @param  p other point
     @return double value of distance from this to point p
      */
     public double dist(Point p) {
