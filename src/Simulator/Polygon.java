@@ -21,7 +21,7 @@ public class Polygon extends Shape {
 
     /**
      Surrounds
-     @param p Simulator.Point
+     @param p Point
      @return True if the point is inside the polygon, this is done using the ray casting algorithm inspired by the reference given.
      @see <a href="https://observablehq.com/@tmcw/understanding-point-in-polygon">...</a>
      */

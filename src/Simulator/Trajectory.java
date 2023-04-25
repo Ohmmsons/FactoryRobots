@@ -40,7 +40,7 @@ public class Trajectory {
 
 
     /**
-     * @return a string representation of the Simulator.Trajectory object.
+     * @return a string representation of the Trajectory object.
      */
     public String toString() {
         if (points.isEmpty()) return "[]";

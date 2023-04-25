@@ -2,6 +2,8 @@ package Simulator;
 
 /**
  * The CircleFactory class implements the ShapeFactory interface to create Circle objects.
+ * @author Jude Adam
+ * @version 1.0.0 24/04/2023
  */
 public class CircleFactory implements ShapeFactory {
     private Generator generator;

@@ -17,7 +17,7 @@ public class RobotManager {
     /**
      * Constructor for RobotManager.
      *
-     * @param robots An ArrayList of robots that will subscribe to the Simulator.RobotManager.
+     * @param robots An ArrayList of robots that will subscribe to the RobotManager.
      */
     public RobotManager(ArrayList<Robot> robots) {
         if(robots == null) throw new IllegalArgumentException("Can't be constructed with null arguments");
@@ -78,7 +78,7 @@ public class RobotManager {
     }
 
     /**
-     * Notifies the Simulator.RobotManager of a change in a robot's power state.
+     * Notifies the RobotManager of a change in a robot's power state.
      * If a robot is in standby mode, it will be added to the subscribers list.
      * If a robot is delivering, it will be removed from the subscribers list.
      *

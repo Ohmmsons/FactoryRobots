@@ -4,6 +4,8 @@ import java.util.Random;
 
 /**
  * The Generator class provides methods for generating random numbers and shapes.
+ * @author Jude Adam
+ * @version 1.0.0 24/04/2023
  */
 public class Generator{
 

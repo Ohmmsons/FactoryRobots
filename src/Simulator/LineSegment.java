@@ -3,16 +3,16 @@ package Simulator;
 import java.util.ArrayList;
 
 /**
-Class LineSegment used to form Shapes
-@author Jude Adam
-@version 1.0.0 16/02/2023
- The two points must have different coordinates
+*Class LineSegment used to form Shapes
+*@author Jude Adam
+*@version 1.0.0 16/02/2023
+ *The two points must have different coordinates
  */
 public record LineSegment(Point p1, Point p2) {
     /**
     Constructor method for LineSegment class
-    @param p1 Simulator.Point 1
-     @param p2 Simulator.Point 2
+    @param p1 Point 1
+     @param p2 Point 2
      */
     public LineSegment {
         if (p1.x() == p2.x() && p1.y() == p2.y()) {
@@ -21,11 +21,11 @@ public record LineSegment(Point p1, Point p2) {
     }
 
     /**
-     ccw method to see if 3 points are in counter clockwise order
-     @param a Simulator.Point a
-     @param b Simulator.Point b
-     @param c Simulator.Point c
-     @return True if a,b and c are in counter clockwise order
+     ccw method to see if 3 points are in counterclockwise order
+     @param a Point a
+     @param b Point b
+     @param c Point c
+     @return True if a,b and c are in counterclockwise order
      @see <a href="https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/">...</a>
      */
     private boolean ccw(Point a, Point b, Point c) {
@@ -91,7 +91,7 @@ public record LineSegment(Point p1, Point p2) {
 
     /**
      Method to see Segment  to point P
-     @param p Simulator.Point
+     @param p Point
      @return double value of shortest distance from s to point p
      */
     public double shortestDistance(Point p) {

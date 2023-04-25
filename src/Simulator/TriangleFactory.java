@@ -1,12 +1,23 @@
 package Simulator;
-
+/**
+ * The TriangleFactory class implements the ShapeFactory interface to create Triangle objects.
+ * @author Jude Adam
+ * @version 1.0.0 24/04/2023
+ */
 public class TriangleFactory implements ShapeFactory{
 
     private final Generator generator;
-
+    /**
+     * Constructs a new TriangleFactory with the specified Generator.
+     * @param generator the Generator used to generate random values
+     */
     public TriangleFactory(Generator generator){
         this.generator = generator;
     }
+    /**
+     * Creates a new Triangle object with random points.
+     * @return a new Triangle object
+     */
     @Override
     public Shape createShape() {
         Point Point1,Point2,Point3;

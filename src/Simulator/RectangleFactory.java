@@ -2,6 +2,8 @@ package Simulator;
 
 /**
  * The RectangleFactory class implements the ShapeFactory interface to create Rectangle objects.
+ * @author Jude Adam
+ * @version 1.0.0 24/04/2023
  */
 public class RectangleFactory implements ShapeFactory{
     private final Generator generator;

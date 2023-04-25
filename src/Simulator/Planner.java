@@ -8,7 +8,7 @@ import java.util.Random;
 Class Planner
 @author Jude Adam
 @version 1.0.0 14/04/2023
-generator != null population != null
+@inv generator != null population != null
  */
 public class Planner {
 
@@ -37,15 +37,15 @@ public class Planner {
         this.generator = generator;
     }
     /**
-        Simulator.Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
+       Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
         algorithm performs roulette selection, uniform crossover , mutation, gene addition and gene removal on the population
         and replaces the old population with the new one.
         @return best trajectory found
     */
     public Trajectory findTrajectory() {
-        int i = 0;
+        int gen = 0;
         Trajectory bestTrajectory = Collections.max(population.getIndividuals(), (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        while (bestTrajectory.nCollisions() > 0 && i<100) {
+        while (bestTrajectory.nCollisions() > 0 && gen<100) {
             TrajectoryPopulation offspring = population.roulette();
             ArrayList<Trajectory> tournamentWinners = offspring.getIndividuals();
             ArrayList<Trajectory> offspringIndividuals = new ArrayList<>();
@@ -66,9 +66,9 @@ public class Planner {
             offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles);
             bestTrajectory = Collections.max(offspringIndividuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
             population = offspring;
-            i++;
+            gen++;
         }
-        if(i == 100) bestTrajectory = null;
+        if(gen == 100) bestTrajectory = null;
         return bestTrajectory;
     }
 }

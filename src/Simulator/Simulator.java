@@ -74,7 +74,15 @@ public class Simulator {
     }
 
     /**
-     * Starts the simulation.
+     * Starts the simulation by initializing a generator, creating a delivery map with obstacles,
+     * and initializing robots. The method then enters an infinite loop to run the simulation.
+     * During each iteration of the loop, the method checks if the UI is asking for a new point.
+     * If it is, the method asks the UI for a point and adds it as a request to both the UI and
+     * the RobotManager. The RobotManager and all robots are then updated. The method also displays
+     * the robot status on the UI and waits for 5 milliseconds before starting the next iteration
+     * of the loop.
+     *
+     * @throws InterruptedException if the thread is interrupted while sleeping
      */
     public void startSimulation() throws InterruptedException{
         //Initialize generator

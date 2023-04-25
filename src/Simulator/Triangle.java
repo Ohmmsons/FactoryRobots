@@ -1,9 +1,5 @@
 package Simulator;
 
-import Simulator.Point;
-
-import java.util.Random;
-
 /**
 Class Triangle
 @author Jude Adam
@@ -12,7 +8,7 @@ Class Triangle
  */
 public class Triangle extends Polygon {
     /**
-     Constructor method for Simulator.Triangle class
+     Constructor method for Triangle class
      @param points Points of triangle
      */
     public Triangle(Point[] points) {

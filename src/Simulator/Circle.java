@@ -1,7 +1,5 @@
 package Simulator;
 
-import java.util.Random;
-
 /**
 Class Circle
 @author Jude Adam
@@ -32,7 +30,7 @@ public class Circle extends Shape {
 
     /**
      surrounds,
-     @param p Simulator.Point
+     @param p Point
      @return True if the point is inside the circle, this happens when the distance from the point to the center less or equal radius
       */
     @Override

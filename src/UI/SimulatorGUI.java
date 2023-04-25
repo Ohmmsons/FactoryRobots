@@ -1,10 +1,8 @@
 package UI;
-
 import Simulator.*;
 import Simulator.Point;
 import Simulator.Robot;
 import Simulator.Shape;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -14,7 +12,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -25,6 +22,12 @@ import java.util.concurrent.Semaphore;
  */
 public class SimulatorGUI extends JPanel implements SimulatorUI {
 
+    // Add instance variables for colors
+    private final Color backgroundColor = new Color(217, 217, 217);
+    private final Color grayColor = Color.gray;
+    private final Color blackColor = Color.BLACK;
+    private final Stroke defaultStroke = new BasicStroke();
+    private final Stroke robotStroke = new BasicStroke(2);
     private MouseChecker mouseChecker;
     private KeyChecker keyChecker;
     private Semaphore pointSemaphore;
@@ -33,15 +36,17 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private List<Robot> robots;
     private boolean isKeyPressed;
     private ArrayList<Point> requests;
-    private Scanner scanner;
     private JLabel messageLabel;
     private int currentFrame;
     private boolean hasError;
-
+    /**
+     * Constructor for the SimulatorGUI class. Initializes instance variables,
+     * adds listeners for key and mouse events, and sets up the initial appearance
+     * of the panel.
+     */
     public SimulatorGUI() {
         this.hasError = false;
         currentFrame = 0;
-        scanner = new Scanner(System.in);
         isKeyPressed = false;
         mouseChecker = new MouseChecker(this);
         keyChecker = new KeyChecker(this);
@@ -57,18 +62,36 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         requestFocusInWindow();
         messageLabel = new JLabel("");
         messageLabel.setForeground(Color.BLACK);
-        messageLabel.setBorder(new LineBorder(Color.BLACK , 2, true));
+        messageLabel.setBorder(new LineBorder(Color.BLACK, 2, true));
         messageLabel.setOpaque(true);
         messageLabel.setBackground(Color.WHITE);
         add(messageLabel);
     }
-
+    /**
+     * Overrides the paintComponent method of JPanel to draw the entire simulation,
+     * including tiles, shapes, robots, and requests.
+     *
+     * @param g Graphics object used for drawing the components.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        drawTiles(g);
+        drawShapes(g);
+        drawRobots(g);
+        drawRequests(g);
+        drawCurrentFrame(g);
+    }
 
-        // Draw brick tiles with screws
-        g.setColor(new Color(217, 217, 217));
+    /**
+     * Draws the background grid, consisting of tiles and screws, along with border
+     * lines and corner tiles.
+     *
+     * @param g Graphics object used for drawing the components.
+     */
+    private void drawTiles(Graphics g) {
+        g.setColor(backgroundColor);
         int tileSize = 50;
         int screwSize = 10;
         int numCols = getWidth() / tileSize;
@@ -81,23 +104,22 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
 
                 g.fillRect(tileX, tileY, tileSize, tileSize);
 
-                g.setColor(Color.gray);
+                g.setColor(grayColor);
                 g.fillOval(tileX + screwSize, tileY + screwSize, screwSize, screwSize);
                 g.fillOval(tileX + tileSize - screwSize * 2, tileY + screwSize, screwSize, screwSize);
                 g.fillOval(tileX + screwSize, tileY + tileSize - screwSize * 2, screwSize, screwSize);
                 g.fillOval(tileX + tileSize - screwSize * 2, tileY + tileSize - screwSize * 2, screwSize, screwSize);
 
-                g.setColor(new Color(217, 217, 217));
+                g.setColor(backgroundColor);
             }
         }
-        g.setColor(Color.BLACK);
+        g.setColor(blackColor);
         for (int row = 0; row <= numRows; row++) {
             g.drawLine(0, row * tileSize, getWidth(), row * tileSize);
         }
         for (int col = 0; col <= numCols; col++) {
             g.drawLine(col * tileSize, 0, col * tileSize, getHeight());
         }
-
         g.setColor(Color.yellow);
         g.fillRect(0, 0, 55, 55);
         g.fillRect(0, 945, 55, 55);
@@ -108,8 +130,14 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         g.fillRect(0, 950, 50, 50);
         g.fillRect(950, 950, 50, 50);
         g.fillRect(950, 0, 50, 50);
-
-        // Draw the shapes
+    }
+    /**
+     * Iterates through a list of shapes (circles, triangles, and quadrilaterals) and
+     * draws them using Graphics methods such as fillPolygon, fillOval, and drawOval.
+     *
+     * @param g Graphics object used for drawing the components.
+     */
+    private void drawShapes(Graphics g) {
         for (Shape shape : shapes) {
             if (shape instanceof Circle) {
                 Circle circle = (Circle) shape;
@@ -138,6 +166,17 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
                 g.drawPolygon(xPoints, yPoints, 4);
             }
         }
+    }
+    /**
+     * Iterates through a list of robots, drawing each robot based on their state
+     * (delivering, returning, or standby) and updating their energy levels. It also
+     * calls other helper methods to draw robots in each state.
+     *
+     * @param g Graphics object used for drawing the components.
+     */
+    private void drawRobots(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(robotStroke);
         for (int i = 0; i<robots.size(); i++) {
             Robot robot = robots.get(i);
             requests.removeIf(request -> robot.getCurrentPosition().equals(request));
@@ -148,64 +187,89 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
                 case 3 ->  g.setColor(new Color(29, 50, 190));
             }
             Point posRobot = robot.getCurrentPosition();
-            Point centerRobot = new Point(posRobot.x()-7,posRobot.y());
-            int[] xPoints = {centerRobot.x(), centerRobot.x() + 15, centerRobot.x() + 15, centerRobot.x()};
-            int[] yPoints = {centerRobot.y(), centerRobot.y(), centerRobot.y() + 15, centerRobot.y() + 15};
+            int[] xPoints = {posRobot.x()-7, posRobot.x()-7 + 15, posRobot.x()-7 + 15, posRobot.x()-7};
+            int[] yPoints = {posRobot.y(), posRobot.y(), posRobot.y() + 15, posRobot.y() + 15};
             g.fillPolygon(xPoints, yPoints, 4);
             g.setColor(new Color(21, 21, 21));
             g.drawPolygon(xPoints, yPoints, 4);
             double energy = robot.getEnergy() / 100;
             g.setColor(Color.green);
-            int[] energyxPoints = {centerRobot.x(), (int) (centerRobot.x() + energy * 15), (int) (centerRobot.x() + energy * 15), centerRobot.x()};
-            int[] energyyPoints = {centerRobot.y() + 7, centerRobot.y() + 7, centerRobot.y() + 5, centerRobot.y() + 5};
+            int[] energyxPoints = {posRobot.x()-7, (int) (posRobot.x()-7 + energy * 15), (int) (posRobot.x()-7 + energy * 15), posRobot.x()-7};
+            int[] energyyPoints = {posRobot.y() + 7, posRobot.y() + 7, posRobot.y() + 5, posRobot.y() + 5};
             g.fillPolygon(energyxPoints, energyyPoints, 4);
             switch(robot.getPowerState()){
-                case DELIVERING -> {
-                    g.setColor(new Color(234, 123, 54));
-                    int[] cratexPoints = {centerRobot.x()+3,centerRobot.x() + 12, centerRobot.x() + 12 , centerRobot.x()+3};
-                    int[] crateyPoints = {centerRobot.y() , centerRobot.y() , centerRobot.y() -9, centerRobot.y() -9};
-                    g.fillPolygon(cratexPoints, crateyPoints, 4);
-                    g.setColor(new Color(21, 21, 21));
-                    g.drawLine(centerRobot.x(),centerRobot.y(),centerRobot.x(),centerRobot.y()-4);
-                    g.drawLine(centerRobot.x(),centerRobot.y()-4,centerRobot.x()+5,centerRobot.y()-4);
-                    g.drawLine(centerRobot.x()+14,centerRobot.y(),centerRobot.x()+14,centerRobot.y()-4);
-                    g.drawLine(centerRobot.x()+14,centerRobot.y()-4,centerRobot.x()+10,centerRobot.y()-4);
-                }
-                case RETURNING -> {
-                    g.setColor(new Color(47, 236, 41));
-                    int[] batteryXPoints = {centerRobot.x()+3,centerRobot.x() + 10, centerRobot.x() + 10 , centerRobot.x()+12,centerRobot.x()+12, centerRobot.x()+10,centerRobot.x()+10,centerRobot.x()+3};
-                    int[] batteryYPoints = {centerRobot.y()-2 , centerRobot.y()-2 , centerRobot.y() - 4 ,centerRobot.y()-4, centerRobot.y() - 6, centerRobot.y()- 6, centerRobot.y()-8, centerRobot.y()-8};
-                    g.fillPolygon(batteryXPoints,batteryYPoints, 8);
-                    g.setColor(Color.BLACK);
-                    g.drawPolygon(batteryXPoints,batteryYPoints, 8);
-                    g.setColor(new Color(220, 19, 19));
-                    g.drawLine(centerRobot.x()+13,centerRobot.y()-9,centerRobot.x()+2,centerRobot.y()-1);
-                }
-                case STANDBY -> {
-                    g.setColor(Color.BLACK);
-                    g.drawLine(centerRobot.x()+14,centerRobot.y(),centerRobot.x()+14,centerRobot.y()-8);
-                    g.setColor(new Color(220, 19, 19));
-                    g.fillOval(centerRobot.x() +14 , centerRobot.y() - 8, 2, 2);
-                    g.setColor(new Color(0, 0, 255));
-                    for (int j = 0; j < 6; j += 2) {
-                        int x = centerRobot.x() + 10 + j;
-                        int y = centerRobot.y() - 12;
-                        g.drawArc(x, y, 10, 10, -60, 120);
-                        x = centerRobot.x() + 10 - j;
-                        g.drawArc(x, y, 10, 10, 120, 120);
-                    }
-                }
+                case DELIVERING -> drawDeliveringRobot(g, robot);
+                case RETURNING ->  drawReturningRobot(g, robot);
+                case STANDBY -> drawStandbyRobot(g,robot);
             }
-
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 9));
-            FontMetrics fm = g.getFontMetrics();
-            int textWidth = fm.stringWidth(robot.getPowerState().toString());
-            g.drawString(robot.getPowerState().toString(),robot.getCurrentPosition().x()-textWidth/3,robot.getCurrentPosition().y()+23);
         }
+        g2d.setStroke(defaultStroke);
+    }
+    /**
+     * Draws a robot in the delivering state, including a crate and connecting lines.
+     *
+     * @param g     Graphics object used for drawing the components.
+     * @param robot Robot object in the delivering state.
+     */
+    private void drawDeliveringRobot(Graphics g, Robot robot) {
+        Point pos = robot.getCurrentPosition();
+        g.setColor(new Color(234, 123, 54));
+        int[] cratexPoints = {pos.x()-4,pos.x() + 5, pos.x() + 5 , pos.x()-4};
+        int[] crateyPoints = {pos.y() , pos.y() , pos.y() -9, pos.y() -9};
+        g.fillPolygon(cratexPoints, crateyPoints, 4);
+        g.setColor(new Color(21, 21, 21));
+        g.drawLine(pos.x()-7,pos.y(),pos.x()-7,pos.y()-4);
+        g.drawLine(pos.x()-7,pos.y()-4,pos.x()-2,pos.y()-4);
+        g.drawLine(pos.x()+7,pos.y(),pos.x()+7,pos.y()-4);
+        g.drawLine(pos.x()+7,pos.y()-4,pos.x()+3,pos.y()-4);
+    }
+    /**
+     * Draws a robot in the returning state, including a battery and a red line.
+     *
+     * @param g     Graphics object used for drawing the components.
+     * @param robot Robot object in the returning state.
+     */
+    private void drawReturningRobot(Graphics g, Robot robot) {
+        Point pos = robot.getCurrentPosition();
+        g.setColor(new Color(47, 236, 41));
+        int[] batteryXPoints = {pos.x()-4,pos.x() + 3, pos.x() + 3 , pos.x()+5,pos.x()+5, pos.x()+3,pos.x()+3,pos.x()-4};
+        int[] batteryYPoints = {pos.y()-2 , pos.y()-2 , pos.y() - 4 ,pos.y()-4, pos.y() - 6, pos.y()- 6, pos.y()-8, pos.y()-8};
+        g.fillPolygon(batteryXPoints,batteryYPoints, 8);
         g.setColor(Color.BLACK);
-        Font font = new Font("Arial", Font.PLAIN, 12);
-        g.setFont(font);
+        g.drawPolygon(batteryXPoints,batteryYPoints, 8);
+        g.setColor(new Color(220, 19, 19));
+        g.drawLine(pos.x()+6,pos.y()-9,pos.x()-5,pos.y()-1);
+    }
+    /**
+     * Draws a robot in the standby state, including a connection line, red dot,
+     * and blue arcs.
+     *
+     * @param g     Graphics object used for drawing the components.
+     * @param robot Robot object in the standby state.
+     */
+    private void drawStandbyRobot(Graphics g, Robot robot) {
+        Point pos = robot.getCurrentPosition();
+        g.setColor(Color.BLACK);
+        g.drawLine(pos.x()+7,pos.y(),pos.x()+7,pos.y()-8);
+        g.setColor(new Color(220, 19, 19));
+        g.fillOval(pos.x() +7 , pos.y() - 8, 2, 2);
+        g.setColor(new Color(0, 0, 255));
+        for (int j = 0; j < 6; j += 2) {
+            int x = pos.x() + 3 + j;
+            int y = pos.y() - 12;
+            g.drawArc(x, y, 10, 10, -60, 120);
+            x = pos.x() + 3 - j;
+            g.drawArc(x, y, 10, 10, 120, 120);
+        }
+    }
+    /**
+     * Iterates through a list of requests, drawing black circles and indices for
+     * each request.
+     *
+     * @param g Graphics object used for drawing the components.
+     */
+    private void drawRequests(Graphics g) {
+        g.setColor(Color.BLACK);
         for (int i = 0; i < requests.size(); i++) {
             Point request = requests.get(i);
             g.fillOval(request.x() - 5, request.y() - 5, 10, 10);
@@ -213,10 +277,15 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
             int labelWidth = g.getFontMetrics().stringWidth(index);
             g.drawString(index, request.x() - labelWidth / 2, request.y() + 15);
         }
-        g.setFont(new Font("Arial", Font.BOLD, 16));
-        g.setColor(Color.BLACK);
-        String text = "Frame " + currentFrame;
-        g.drawString(text, 500, getHeight() - 20);
+    }
+    /**
+     * Displays the current frame number at the bottom of the panel.
+     *
+     * @param g Graphics object used for drawing the components.
+     */
+    private void drawCurrentFrame(Graphics g) {
+        g.setColor(blackColor);
+        g.drawString("Frame: " + currentFrame, 450, getHeight() - 20);
     }
 
 
@@ -262,7 +331,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        messageLabel.setText("Press any key to make new request");
+        messageLabel.setText("Press Space Bar to make new request");
         // Return the point that was clicked
         hasError = false;
         return point;
@@ -304,10 +373,12 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
 
     @Override
     public void sendMapInformation(DeliveryMap map) {
-        shapes = map.getObstacles();
-        messageLabel.setText("Press any key to make new request");
+        shapes = map.obstacles();
+        messageLabel.setText("Press Space Bar to make new request");
         repaint();
     }
+
+
 
     @Override
     public void addRequest(Point request) {
@@ -315,65 +386,66 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     }
 
 
-    // Inner class to handle mouse clicks
-    private static class MouseChecker implements MouseListener {
-        private SimulatorGUI parent;
+// Inner class to handle mouse clicks
+private static class MouseChecker implements MouseListener {
+    private SimulatorGUI parent;
 
-        public MouseChecker(SimulatorGUI parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            int x = e.getX();
-            int y = e.getY();
-
-            // Save the clicked point and release the semaphore to unblock the askForPoint() method
-            parent.point = new Point(x, y);
-            parent.pointSemaphore.release();
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
-        }
+    public MouseChecker(SimulatorGUI parent) {
+        this.parent = parent;
     }
 
-    private static class KeyChecker implements KeyListener {
-        private SimulatorGUI parent;
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
 
-        public KeyChecker(SimulatorGUI parent) {
-            this.parent = parent;
-        }
+        // Save the clicked point and release the semaphore to unblock the askForPoint() method
+        parent.point = new Point(x, y);
+        parent.pointSemaphore.release();
+    }
 
-        @Override
-        public synchronized void keyPressed(KeyEvent e) {
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+}
+
+private static class KeyChecker implements KeyListener {
+    private SimulatorGUI parent;
+
+    public KeyChecker(SimulatorGUI parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public synchronized void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE)
             parent.isKeyPressed = true;
-        }
-
-        @Override
-        public synchronized void keyReleased(KeyEvent e) {
-            parent.isKeyPressed = false;
-        }
-
-        @Override
-        public synchronized void keyTyped(KeyEvent e) {
-        }
-
     }
+
+    @Override
+    public synchronized void keyReleased(KeyEvent e) {
+        parent.isKeyPressed = false;
+    }
+
+    @Override
+    public synchronized void keyTyped(KeyEvent e) {
+    }
+
+}
 }

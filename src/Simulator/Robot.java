@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 
 /**
  * A robot that can move around and deliver packages on a delivery map.
@@ -25,7 +24,6 @@ public class Robot {
     private final Point chargingStation;
     private Iterator<Point> trajectoryPointIterator;
     private RobotManager manager;
-    private boolean goingToChargingStation;
 
     private final DeliveryMap deliveryMap;
 
@@ -45,7 +43,6 @@ public class Robot {
         this.chargingStation = startingPoint;
         this.energy = 100.00;
         this.powerState = RobotPowerState.STANDBY;
-        this.goingToChargingStation = false;
         this.trajectoryPointIterator = null;
     }
 
@@ -168,7 +165,7 @@ public class Robot {
         DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
         String formattedX = String.format("%03d", currentPosition.x());
         String formattedY = String.format("%03d", currentPosition.y());
-        String symbol = (this.powerState == RobotPowerState.DELIVERING && !goingToChargingStation) ? "*" : "-";
+        String symbol = (this.powerState == RobotPowerState.DELIVERING) ? "*" : "-";
         return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol + "," + powerState + ")";
     }
 
@@ -213,7 +210,7 @@ public class Robot {
      */
     public Trajectory findTrajectory(Point start, Point destination) {
         int[] lengths = generator.ints(200, 0, 2);
-        Planner planner = new Planner(0.1, 0.1, 0.1, start, destination, lengths, generator, deliveryMap.getObstacles());
+        Planner planner = new Planner(0.1, 0.1, 0.1, start, destination, lengths, generator, deliveryMap.obstacles());
         return planner.findTrajectory();
     }
 

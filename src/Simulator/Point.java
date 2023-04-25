@@ -2,9 +2,9 @@ package Simulator;
 
 /**
  * Class Point used for forming line segments.
- * Point must be in the 1000x1000 area.
  * @author Jude Adam
  * @version 1.0.0 16/02/2023
+ * @inv Point must be in the 1000x1000 area.
  */
 public record Point(int x, int y) {
     /**

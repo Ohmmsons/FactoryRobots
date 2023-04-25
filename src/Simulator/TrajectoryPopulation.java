@@ -1,14 +1,9 @@
-package Simulator;/*
-Class Population used to generate and manage Populations of Trajectories
-@author Jude Adam
-@version 1.0.0 09/03/2023
- */
+package Simulator;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 /**
  Class Trajectory Population, used to perform selection of trajectories based on fitness
  @author Jude Adam

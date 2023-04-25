@@ -57,7 +57,6 @@ public class TrajectoryTests {
         Trajectory testtrajectory = new Trajectory(testpontosAL,generator,figuras);
         Trajectory testtrajectory1 = new Trajectory(testpontosAL1,generator,figuras);
         Trajectory[] testChildren = new Trajectory[]{testtrajectory,testtrajectory1};
-        System.out.println(Arrays.toString(children));
         assertArrayEquals(children,testChildren);
     }
     @Test
@@ -83,7 +82,6 @@ public class TrajectoryTests {
         Trajectory testtrajectory = new Trajectory(testpontosAL,generator,figuras);
         Trajectory testtrajectory1 = new Trajectory(testpontosAL1,generator,figuras);
         Trajectory[] testChildren = new Trajectory[]{testtrajectory,testtrajectory1};
-        System.out.println(Arrays.toString(children));
         Assertions.assertArrayEquals(children,testChildren);
     }
     @Test
