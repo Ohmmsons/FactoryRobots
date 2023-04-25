@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 
 import static org.junit.Assert.*;
@@ -31,9 +32,9 @@ public class RobotTests {
         DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(startingPoint, deliveryMap, new Generator());
         Trajectory trajectory = robot.findTrajectory(startingPoint, new Point(2, 2));
-        ArrayList<Robot> robots = new ArrayList<>();
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         robots.add(robot);
-        RobotManager rm = new RobotManager(robots);
+        RobotManager rm = new RobotManager(robots,new RequestQueue());
         robot.subscribeToManager(rm);
         robot.setPath(trajectory);
         double initialEnergy = robot.getEnergy();
@@ -96,9 +97,9 @@ public class RobotTests {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(0, 0), map, new Generator());
         Trajectory trajectory = robot.findTrajectory(new Point(0, 0), new Point(500, 500));
-        ArrayList<Robot> robots = new ArrayList<>();
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         robots.add(robot);
-        RobotManager rm = new RobotManager(robots);
+        RobotManager rm = new RobotManager(robots,new RequestQueue());
         robot.subscribeToManager(rm);
         robot.setPath(trajectory);
         Assert.assertEquals(RobotPowerState.DELIVERING, robot.getPowerState());
@@ -109,9 +110,9 @@ public class RobotTests {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(0, 0), map, new Generator());
         Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), new Point(1,1));
-        ArrayList<Robot> robots = new ArrayList<>();
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         robots.add(robot);
-        RobotManager rm = new RobotManager(robots);
+        RobotManager rm = new RobotManager(robots, new RequestQueue());
         robot.subscribeToManager(rm);
         robot.setPath(trajectory);
         int n = trajectory.calculatePointsAlongTrajectory().size();
@@ -125,9 +126,9 @@ public class RobotTests {
         Robot robot = new Robot(new Point(0, 0), map, new Generator());
         //Get out of Spawn
         Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), new Point(1,1));
-        ArrayList<Robot> robots = new ArrayList<>();
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         robots.add(robot);
-        RobotManager rm = new RobotManager(robots);
+        RobotManager rm = new RobotManager(robots, new RequestQueue());
         robot.subscribeToManager(rm);
         robot.setPath(trajectory);
         boolean working = false;

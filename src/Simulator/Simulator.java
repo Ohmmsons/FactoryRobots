@@ -32,12 +32,13 @@ public class Simulator {
 
     /**
      * Initializes the simulation's robots, one in each corner, all fully charged and in standby.
-     * @param generator The generator used.
+     *
+     * @param generator   The generator used.
      * @param deliveryMap The delivery map.
      * @return List of 4 robots, one in each corner, all fully charged and in standby.
      */
-    private ArrayList<Robot> initializeRobots(Generator generator, DeliveryMap deliveryMap){
-        ArrayList<Robot> robots = new ArrayList<>(4);
+    private LinkedHashSet<Robot> initializeRobots(Generator generator, DeliveryMap deliveryMap){
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         Point chargingPoint0 = new Point(15, 15);
         Point chargingPoint1 = new Point(15, 975);
         Point chargingPoint2 = new Point(975, 975);
@@ -85,6 +86,9 @@ public class Simulator {
      * @throws InterruptedException if the thread is interrupted while sleeping
      */
     public void startSimulation() throws InterruptedException{
+        //Initialize Request Queue
+        RequestQueue requestQueue = new RequestQueue();
+
         //Initialize generator
         Generator generator = new Generator();
 
@@ -95,12 +99,10 @@ public class Simulator {
         ui.sendMapInformation(deliveryMap);
 
         // Create and initialize robots
-        ArrayList<Robot> robots = initializeRobots(generator,deliveryMap);
+        LinkedHashSet<Robot> robots = initializeRobots(generator,deliveryMap);
 
         // Create robot manager and subscribe robots to it
-        RobotManager robotManager = new RobotManager(robots);
-        for (Robot robot : robots)
-            robot.subscribeToManager(robotManager);
+        RobotManager robotManager = new RobotManager(robots,requestQueue);
 
         int step = 0;
         // Run simulation
@@ -111,8 +113,8 @@ public class Simulator {
                     request = ui.askForPoint();
                 }
                 while (!validInputCheck(deliveryMap, request));
-                ui.addRequest(request);
                 robotManager.addRequest(request);
+                ui.addRequest(request);
             }
 
             // Update robot manager and robots

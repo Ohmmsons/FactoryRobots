@@ -11,7 +11,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -33,7 +33,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private Semaphore pointSemaphore;
     private ArrayList<Shape> shapes;
     private Point point;
-    private List<Robot> robots;
+    private LinkedHashSet<Robot> robots;
     private boolean isKeyPressed;
     private ArrayList<Point> requests;
     private JLabel messageLabel;
@@ -53,7 +53,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         this.addKeyListener(keyChecker);
         this.addMouseListener(mouseChecker);
         shapes = new ArrayList<>();
-        robots = new ArrayList<>();
+        robots = new LinkedHashSet<Robot>();
         requests = new ArrayList<>();
         pointSemaphore = new Semaphore(0);
         setPreferredSize(new Dimension(1000, 1000));
@@ -177,8 +177,8 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private void drawRobots(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(robotStroke);
-        for (int i = 0; i<robots.size(); i++) {
-            Robot robot = robots.get(i);
+        int i = 0;
+        for (Robot robot: robots) {
             requests.removeIf(request -> robot.getCurrentPosition().equals(request));
             switch(i){
                 case 0 -> g.setColor(new Color(21, 21, 21));
@@ -202,6 +202,13 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
                 case RETURNING ->  drawReturningRobot(g, robot);
                 case STANDBY -> drawStandbyRobot(g,robot);
             }
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 9));
+            FontMetrics fm = g.getFontMetrics();
+            int textWidth = fm.stringWidth(robot.getPowerState().toString());
+            g.drawString(robot.getPowerState().toString(),posRobot.x()-7-textWidth/3,robot.getCurrentPosition().y()+23);
+            i++;
+            g.setFont(new Font("Arial", Font.BOLD, 14));
         }
         g2d.setStroke(defaultStroke);
     }
@@ -354,7 +361,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * @param robots the list of robots to display
      */
     @Override
-    public void displayRobotStatus(int step, List<Robot> robots) {
+    public void displayRobotStatus(int step, LinkedHashSet<Robot> robots) {
         currentFrame = step;
         this.robots = robots;
         repaint();

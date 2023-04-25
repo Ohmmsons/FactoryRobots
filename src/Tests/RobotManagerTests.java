@@ -4,6 +4,7 @@ import Simulator.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import static org.junit.Assert.*;
 /**
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
 public class RobotManagerTests {
     @Test
     public void testConstructor1(){
-        assertThrows(IllegalArgumentException.class,()-> new RobotManager(null));
+        assertThrows(IllegalArgumentException.class,()-> new RobotManager(null,null));
     }
     @Test
     public void testConstructor2(){
@@ -22,7 +23,7 @@ public class RobotManagerTests {
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
-        ArrayList<Robot> robots = new ArrayList<>(4);
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         Point chargingPoint0 = new Point(15, 15);
         Point chargingPoint1 = new Point(15, 975);
         Point chargingPoint2 = new Point(975, 975);
@@ -35,7 +36,7 @@ public class RobotManagerTests {
         robots.add(robot1);
         robots.add(robot2);
         robots.add(robot3);
-        RobotManager manager = new RobotManager(robots);
+        RobotManager manager = new RobotManager(robots,new RequestQueue());
         assertTrue(manager.getRequests().isEmpty());
         assertTrue(manager.getSubscribers().size()==4);
     }
@@ -48,7 +49,7 @@ public class RobotManagerTests {
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
-        ArrayList<Robot> robots = new ArrayList<>(4);
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         Point chargingPoint0 = new Point(15, 15);
         Point chargingPoint1 = new Point(15, 975);
         Point chargingPoint2 = new Point(975, 975);
@@ -61,7 +62,7 @@ public class RobotManagerTests {
         robots.add(robot1);
         robots.add(robot2);
         robots.add(robot3);
-        RobotManager manager = new RobotManager(robots);
+        RobotManager manager = new RobotManager(robots,new RequestQueue());
         for(Robot robot:robots)
             robot.subscribeToManager(manager);
         manager.addRequest(new Point(900,900));
@@ -78,7 +79,7 @@ public class RobotManagerTests {
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
-        ArrayList<Robot> robots = new ArrayList<>(4);
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         Point chargingPoint0 = new Point(15, 15);
         Point chargingPoint1 = new Point(15, 975);
         Point chargingPoint2 = new Point(975, 975);
@@ -91,7 +92,7 @@ public class RobotManagerTests {
         robots.add(robot1);
         robots.add(robot2);
         robots.add(robot3);
-        RobotManager manager = new RobotManager(robots);
+        RobotManager manager = new RobotManager(robots,new RequestQueue());
         for(Robot robot:robots)
             robot.subscribeToManager(manager);
         manager.addRequest(new Point(900,900));

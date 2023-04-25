@@ -3,7 +3,9 @@ package Simulator;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A robot that can move around and deliver packages on a delivery map.
@@ -24,7 +26,7 @@ public class Robot {
     private final Point chargingStation;
     private Iterator<Point> trajectoryPointIterator;
     private RobotManager manager;
-
+    private final Map<String, Trajectory> trajectoryCache;
     private final DeliveryMap deliveryMap;
 
     /**
@@ -44,6 +46,7 @@ public class Robot {
         this.energy = 100.00;
         this.powerState = RobotPowerState.STANDBY;
         this.trajectoryPointIterator = null;
+        this.trajectoryCache = new HashMap<>();
     }
 
     /**
@@ -76,6 +79,7 @@ public class Robot {
      * charging the battery, or updating the robot manager with its current state.
      */
     public void update() {
+        if(energy<0) throw new IllegalStateException("ENERGY BELOW 0");
         switch (powerState) {
             case DELIVERING, RETURNING -> {
                 energy -= 0.1;
@@ -112,32 +116,28 @@ public class Robot {
     public boolean canReachDestination(Trajectory trajectory) {
         if (trajectory == null)
             return false;
-        int distanceFromCurrentPosToEnd = trajectory.calculatePointsAlongTrajectory().size();
-        if (energy / 0.1 <= distanceFromCurrentPosToEnd)
-            return false;
         ArrayList<Point> points = trajectory.getPoints();
         Point destination = points.get(points.size() - 1);
-        Trajectory trajectoryBackToChargingStation = findTrajectory(destination, chargingStation);
-        int distanceFromEndToChargingStation;
-        if (trajectoryBackToChargingStation == null)
-            return false;
-        else
-            distanceFromEndToChargingStation = trajectoryBackToChargingStation.calculatePointsAlongTrajectory().size();
-        return energy / 0.1 > distanceFromEndToChargingStation + distanceFromCurrentPosToEnd;
+        int totalDistance = distanceToDestination(currentPosition, destination) + distanceToDestination(destination, chargingStation);
+        return energy / 0.1 > totalDistance;
     }
+
 
     /**
      * Determines whether the robot can reach the charging station from its current position without running out of energy.
      *
      * @return true if the robot can reach the charging station without running out of energy, false otherwise
      */
-    public int distanceToChargingStation() {
-        Trajectory trajectoryBackToChargingStation = findTrajectory(currentPosition, chargingStation);
+    public int distanceToDestination(Point start, Point destination) {
+        if(start==null||destination==null) throw new IllegalArgumentException("Start and destination must be non null");
+        Trajectory trajectoryBackToChargingStation = findTrajectory(start,destination);
         if (trajectoryBackToChargingStation == null)
             return 100000000;
         return trajectoryBackToChargingStation.calculatePointsAlongTrajectory().size();
     }
-
+    public int distanceToChargingStation() {
+        return distanceToDestination(currentPosition, chargingStation);
+    }
     public Point getChargingStation(){
         return  chargingStation;
     }
@@ -148,6 +148,8 @@ public class Robot {
      * @param trajectory the trajectory that the robot will follow
      */
     public void setPath(Trajectory trajectory) {
+        if (trajectory == null)
+            throw new IllegalArgumentException("Trajectory cannot be null");
         this.trajectoryPointIterator = trajectory.calculatePointsAlongTrajectory().iterator();
         this.powerState = RobotPowerState.DELIVERING;
         manager.notify(this, this.powerState);
@@ -203,15 +205,34 @@ public class Robot {
     }
 
     /**
-     * Finds a trajectory between the start and destination points using the provided planner.
+     * Finds a trajectory (if it hasn't already been found), between the start and destination points using the provided planner.
      * @param start the starting point of the trajectory
      * @param destination the destination point of the trajectory
      * @return the trajectory between the start and destination points
      */
     public Trajectory findTrajectory(Point start, Point destination) {
+        if (start == null || destination == null)
+            throw new IllegalArgumentException("Start and destination points cannot be null");
+
+        String cacheKey = start + "-" + destination;
+        Trajectory cachedTrajectory = trajectoryCache.get(cacheKey);
+        if (cachedTrajectory != null) {
+            return cachedTrajectory;
+        }
+
         int[] lengths = generator.ints(200, 0, 2);
         Planner planner = new Planner(0.1, 0.1, 0.1, start, destination, lengths, generator, deliveryMap.obstacles());
-        return planner.findTrajectory();
+        Trajectory trajectory = planner.findTrajectory();
+
+        trajectoryCache.put(cacheKey, trajectory);
+        return trajectory;
+    }
+
+    public double getDistanceToNextRequest() {
+        if (manager.getNextRequest() == null) {
+            return Double.MAX_VALUE;
+        }
+        return currentPosition.dist(manager.getNextRequest());
     }
 
     public Point getCurrentPosition() {

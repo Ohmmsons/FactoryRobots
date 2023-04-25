@@ -3,7 +3,8 @@ package UI;
 import Simulator.DeliveryMap;
 import Simulator.Point;
 import Simulator.Robot;
-import java.util.List;
+
+import java.util.LinkedHashSet;
 import java.util.Scanner;
 
 /**
@@ -67,7 +68,7 @@ public class SimulatorCLI implements SimulatorUI {
      * @param robots A list of robots.
      */
     @Override
-    public void displayRobotStatus(int step, List<Robot> robots) {
+    public void displayRobotStatus(int step, LinkedHashSet<Robot> robots) {
         StringBuilder info = new StringBuilder("Step " + step);
         for (Robot robot : robots)
             info.append(robot);
