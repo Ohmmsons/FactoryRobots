@@ -2,6 +2,7 @@ package Simulator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 /**
@@ -35,6 +36,7 @@ public class Planner {
         this.pa = pa;
         this.pr = pr;
         this.generator = generator;
+        this.obstacles = obstacles;
     }
     /**
        Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
@@ -43,32 +45,65 @@ public class Planner {
         @return best trajectory found
     */
     public Trajectory findTrajectory() {
-        int gen = 0;
-        Trajectory bestTrajectory = Collections.max(population.getIndividuals(), (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        while (bestTrajectory.nCollisions() > 0 && gen<100) {
+        int maxGenerations = 100;
+        Trajectory bestTrajectory = getBestTrajectory(population);
+
+        // Evolve the population to find the best trajectory
+        for (int gen = 0; gen < maxGenerations && bestTrajectory.nCollisions() > 0; gen++) {
             TrajectoryPopulation offspring = population.roulette();
-            ArrayList<Trajectory> tournamentWinners = offspring.getIndividuals();
-            ArrayList<Trajectory> offspringIndividuals = new ArrayList<>();
-            while (true) {
-                int index1 = generator.nextInt(tournamentWinners.size());
-                int index2 = generator.nextInt(tournamentWinners.size());
-                Trajectory[] filhos = tournamentWinners.get(index1).uniformCrossover(tournamentWinners.get(index2));
-                offspringIndividuals.add(filhos[0]);
-                if (offspringIndividuals.size() == tournamentWinners.size()) break;
-                offspringIndividuals.add(filhos[1]);
-                if (offspringIndividuals.size() == tournamentWinners.size()) break;
-            }
-            for (Trajectory t : offspringIndividuals) {
-                t.mutate(pm);
-                t.addPoint(pa);
-                t.removePoint(pr);
-            }
+            ArrayList<Trajectory> offspringIndividuals = generateOffspring(offspring);
+            applyMutations(offspringIndividuals);
+
             offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles);
-            bestTrajectory = Collections.max(offspringIndividuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
+            bestTrajectory = getBestTrajectory(offspring);
             population = offspring;
-            gen++;
         }
-        if(gen == 100) bestTrajectory = null;
-        return bestTrajectory;
+
+        return bestTrajectory.nCollisions() > 0 ? null : bestTrajectory;
+    }
+
+    /**
+     * Gets the best trajectory based on the highest fitness value from a given population.
+     *
+     * @param population the population of trajectories
+     * @return the trajectory with the highest fitness value
+     */
+    private Trajectory getBestTrajectory(TrajectoryPopulation population) {
+        return Collections.max(population.getIndividuals(), Comparator.comparingDouble(Trajectory::fitness));
+    }
+
+    /**
+     * Generates a new offspring population by performing crossover on the tournament winners.
+     *
+     * @param offspring the offspring population containing tournament winners
+     * @return a list of offspring individuals created by crossover
+     */
+    private ArrayList<Trajectory> generateOffspring(TrajectoryPopulation offspring) {
+        ArrayList<Trajectory> tournamentWinners = offspring.getIndividuals();
+        ArrayList<Trajectory> offspringIndividuals = new ArrayList<>();
+
+        // Perform crossover on tournament winners to generate offspring
+        while (offspringIndividuals.size() < tournamentWinners.size()) {
+            int index1 = generator.nextInt(tournamentWinners.size());
+            int index2 = generator.nextInt(tournamentWinners.size());
+            Trajectory[] children = tournamentWinners.get(index1).uniformCrossover(tournamentWinners.get(index2));
+            offspringIndividuals.add(children[0]);
+            offspringIndividuals.add(children[1]);
+        }
+
+        return offspringIndividuals;
+    }
+
+    /**
+     * Applies mutations to the given list of offspring individuals.
+     *
+     * @param offspringIndividuals the list of offspring individuals to mutate
+     */
+    private void applyMutations(ArrayList<Trajectory> offspringIndividuals) {
+        for (Trajectory t : offspringIndividuals) {
+            t.mutate(pm);
+            t.addPoint(pa);
+            t.removePoint(pr);
+        }
     }
 }

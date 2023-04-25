@@ -14,7 +14,7 @@ public class Trajectory {
     private final ArrayList<Point> points;
     private double length;
     public Generator generator;
-
+    private int collisionCount;
     private final ArrayList<Shape> obstacles;
     /**
      * Creates a new Trajectory object.
@@ -36,6 +36,7 @@ public class Trajectory {
             }
         }
         this.points = points;
+        this.collisionCount = nCollisions();
     }
 
 
@@ -86,7 +87,7 @@ public class Trajectory {
      * Calculates the fitness of the trajectory.
      * @return the fitness of the trajectory.
      */
-    public double fitness() {return Math.exp((200/length)*nCollisions()==0?1:0)-1;}
+    public double fitness() {return Math.exp((200/length)*collisionCount==0?1:0)-1;}
 
     /**
       onePointCrossover method to perform one point crossover between two trajectories and generate 2 offspring
@@ -140,6 +141,7 @@ public class Trajectory {
                     points.set(i, p);
                     length+=(points.get(i-1).dist(p) + p.dist(points.get(i+1)));
                 }
+                this.collisionCount = nCollisions();
             }
         }
     }
@@ -172,6 +174,7 @@ public class Trajectory {
                 length-=(points.get(i).dist(points.get(i+1)));
                 points.add(i + 1, p);
                 length+=(points.get(i).dist(p) + p.dist(points.get(i+2)));
+                this.collisionCount = nCollisions();
             }
         }
     }
@@ -187,6 +190,7 @@ public class Trajectory {
                 length-=(points.get(i-1).dist(points.get(i)) + points.get(i).dist(points.get(i+1)));
                 points.remove(i);
                 length+=points.get(i-1).dist(points.get(i));
+                this.collisionCount = nCollisions();
             }
         }
     }

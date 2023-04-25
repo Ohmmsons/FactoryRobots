@@ -57,7 +57,6 @@ public class RobotManager {
             }
             case DELIVERING, RETURNING -> distanceSortedSubscribers.remove(robot);
         }
-
     }
 
     /**

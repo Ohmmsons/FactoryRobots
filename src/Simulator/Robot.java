@@ -2,10 +2,7 @@ package Simulator;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A robot that can move around and deliver packages on a delivery map.
@@ -26,6 +23,8 @@ public class Robot {
     private final Point chargingStation;
     private Iterator<Point> trajectoryPointIterator;
     private RobotManager manager;
+    private final int CACHE_SIZE = 15;
+
     private final Map<String, Trajectory> trajectoryCache;
     private final DeliveryMap deliveryMap;
 
@@ -102,7 +101,7 @@ public class Robot {
                     manager.notify(this, powerState);
                 }
             }
-            default -> throw new IllegalStateException("Unexpected value: " + powerState);
+            default -> throw new IllegalStateException("Unexpected power state: " + powerState);
         }
     }
 
@@ -220,8 +219,8 @@ public class Robot {
             return cachedTrajectory;
         }
 
-        int[] lengths = generator.ints(200, 0, 2);
-        Planner planner = new Planner(0.1, 0.1, 0.1, start, destination, lengths, generator, deliveryMap.obstacles());
+        int[] lengths = generator.ints(200, 0, 2).toArray();
+        Planner planner = new Planner(0.045, 0.15, 0.15, start, destination, lengths, generator, deliveryMap.obstacles());
         Trajectory trajectory = planner.findTrajectory();
 
         trajectoryCache.put(cacheKey, trajectory);

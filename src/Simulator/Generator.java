@@ -7,88 +7,11 @@ import java.util.Random;
  * @author Jude Adam
  * @version 1.0.0 24/04/2023
  */
-public class Generator{
+public class Generator extends Random{
 
-    public Random rng;
+    public Generator(int seed){super(seed);}
 
-    /**
-     * Constructs a new Generator object with a default seed for the Random object.
-     */
-    public Generator(){
-        rng = new Random();
-    }
-
-    /**
-     * Constructs a new Generator object with the specified seed for the Random object.
-     * @param seed the seed for the Random object
-     */
-    public Generator(int seed){
-        rng = new Random(seed);
-    }
-
-    /**
-     * Constructs a new Generator object with the specified Random object.
-     * @param r the Random object to use
-     */
-    public Generator(Random r){
-        rng = r;
-    }
-
-    /**
-     * Returns the next pseudorandom, uniformly distributed int value from this random number generator's sequence.
-     * @return the next pseudorandom, uniformly distributed int value from this random number generator's sequence
-     */
-    public int nextInt(){
-        return rng.nextInt();
-    }
-
-    /**
-     * Returns the next pseudorandom, uniformly distributed boolean value from this random number generator's sequence.
-     * @return the next pseudorandom, uniformly distributed boolean value from this random number generator's sequence
-     */
-    public boolean nextBoolean(){
-        return rng.nextBoolean();
-    }
-
-    /**
-     * Returns an array of pseudorandom, uniformly distributed int values between start (inclusive) and bound (exclusive) from this random number generator's sequence.
-     * @param n the number of values to generate
-     * @param start the lower bound (inclusive) of the range of generated values
-     * @param bound the upper bound (exclusive) of the range of generated values
-     * @return an array of pseudorandom, uniformly distributed int values between start (inclusive) and bound (exclusive) from this random number generator's sequence
-     */
-    public int[] ints(int n, int start, int bound){
-        return rng.ints(n, start, bound).toArray();
-    }
-
-    /**
-     * Returns the next pseudorandom, uniformly distributed double value between 0.0 and 1.0 from this random number generator's sequence.
-     * @return the next pseudorandom, uniformly distributed double value between 0.0 and 1.0 from this random number generator's sequence
-     */
-    public double nextDouble(){
-        return rng.nextDouble();
-    }
-
-    /**
-     * Returns a pseudorandom, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive), drawn from this random number generator's sequence.
-     * @param bound the upper bound (exclusive) on the range of generated values
-     * @return a pseudorandom, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive), drawn from this random number generator's sequence
-     */
-    public int nextInt(int bound){
-        return rng.nextInt(bound);
-    }
-
-    /**
-     * Returns a pseudorandom, uniformly distributed int value between start (inclusive) and bound (exclusive), drawn from this random number generator's sequence.
-     * @param start the lower bound (inclusive) on the range of generated values
-     * @param bound the upper bound (exclusive) on the range of generated values
-     * @return a pseudorandom, uniformly distributed int value between start (inclusive) and bound (exclusive), drawn from this random number generator's sequence
-     */
-    public int nextInt(int start, int bound){
-        return rng.nextInt(start,bound);
-    }
-
-
+    public Generator(){super();}
     /**
      * Generates a Point object with x and y coordinates following a Gaussian distribution with mean at the midpoint between start and end points and standard deviation stdDev.
      * The generated point is guaranteed to have x and y coordinates within [0,1000).
@@ -104,8 +27,8 @@ public class Generator{
         double midY = (start.y() + end.y()) / 2.0;
         int x,y;
         do {
-            x = (int) (midX + rng.nextGaussian() * stdDev);
-            y = (int) (midY + rng.nextGaussian() * stdDev);
+            x = (int) (midX + this.nextGaussian() * stdDev);
+            y = (int) (midY + this.nextGaussian() * stdDev);
         } while (x < 0 || x >= 1000 || y < 0 || y >= 1000);
         return new Point(x,y);
     }
