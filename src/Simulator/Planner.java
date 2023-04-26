@@ -86,7 +86,7 @@ public class Planner {
         while (offspringIndividuals.size() < tournamentWinners.size()) {
             int index1 = generator.nextInt(tournamentWinners.size());
             int index2 = generator.nextInt(tournamentWinners.size());
-            Trajectory[] children = tournamentWinners.get(index1).uniformCrossover(tournamentWinners.get(index2));
+            Trajectory[] children = tournamentWinners.get(index1).onePointCrossover(tournamentWinners.get(index2));
             offspringIndividuals.add(children[0]);
             offspringIndividuals.add(children[1]);
         }

@@ -33,5 +33,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="openjfx-20.0.1_windows-x86_bin-jmods" level="project" />
   </component>
 </module>
