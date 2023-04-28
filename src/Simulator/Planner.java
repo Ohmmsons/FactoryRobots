@@ -13,11 +13,12 @@ Class Planner
  */
 public class Planner {
 
+    private final Random rng;
     private TrajectoryPopulation population;
     private final double pm;
     private final double pa;
     private final double pr;
-    private final Generator generator;
+    private final PointGenerator generator;
 
     private ArrayList<Shape> obstacles;
     /**
@@ -30,13 +31,14 @@ public class Planner {
        @param generator RNG
        @param obstacles obstacles in map
         */
-    public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, Generator generator, ArrayList<Shape> obstacles) {
-        this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles);
+    public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
+        this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles,rng);
         this.pm = pm;
         this.pa = pa;
         this.pr = pr;
         this.generator = generator;
         this.obstacles = obstacles;
+        this.rng = rng;
     }
     /**
        Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
@@ -54,7 +56,7 @@ public class Planner {
             ArrayList<Trajectory> offspringIndividuals = generateOffspring(offspring);
             applyMutations(offspringIndividuals);
 
-            offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles);
+            offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles,rng);
             bestTrajectory = getBestTrajectory(offspring);
             population = offspring;
         }
@@ -84,8 +86,8 @@ public class Planner {
 
         // Perform crossover on tournament winners to generate offspring
         while (offspringIndividuals.size() < tournamentWinners.size()) {
-            int index1 = generator.nextInt(tournamentWinners.size());
-            int index2 = generator.nextInt(tournamentWinners.size());
+            int index1 = rng.nextInt(tournamentWinners.size());
+            int index2 = rng.nextInt(tournamentWinners.size());
             Trajectory[] children = tournamentWinners.get(index1).onePointCrossover(tournamentWinners.get(index2));
             offspringIndividuals.add(children[0]);
             offspringIndividuals.add(children[1]);

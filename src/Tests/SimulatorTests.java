@@ -32,7 +32,7 @@ public class SimulatorTests {
       obstacles.add(circle);
       DeliveryMap deliveryMap = new DeliveryMap(obstacles);
       Simulator simulator = new Simulator(new SimulatorCLI());
-      assertTrue(simulator.validInputCheck(deliveryMap,new Point(500,500)));
+      assertTrue(simulator.validInputCheck(deliveryMap,new Request(new Point(500,500),new Point(580,570))));
   }
     @Test
     public void testValidInputCheck2(){
@@ -42,7 +42,7 @@ public class SimulatorTests {
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
         Simulator simulator = new Simulator(new SimulatorCLI());
-        assertFalse(simulator.validInputCheck(deliveryMap,new Point(60,64)));
+        assertFalse(simulator.validInputCheck(deliveryMap,new Request(new Point(60,64),new Point(580,570))));
     }
     @Test
     public void testValidInputCheck3(){
@@ -52,6 +52,6 @@ public class SimulatorTests {
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
         Simulator simulator = new Simulator(new SimulatorCLI());
-        assertThrows(IllegalArgumentException.class,()-> simulator.validInputCheck(deliveryMap,new Point(-60,64)));
+        assertThrows(IllegalArgumentException.class,()-> simulator.validInputCheck(deliveryMap,new Request(new Point(-60,64),new Point(580,570))));
     }
 }

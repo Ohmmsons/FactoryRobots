@@ -9,22 +9,34 @@ import java.util.ArrayList;
  *
  * @author Jude Adam
  * @version 1.0.0 20/04/2023
+ * @inv obstacles != null
  */
 public record DeliveryMap(ArrayList<Shape> obstacles) {
+
     /**
      * Constructs a new DeliveryMap with the given list of obstacles.
      *
      * @param obstacles The initial list of obstacles on the map.
+     * @pre obstacles != null
+     * @post A new DeliveryMap instance is created with the specified obstacles list.
      */
     public DeliveryMap {
+        if (obstacles == null) {
+            throw new IllegalArgumentException("Obstacles list cannot be null");
+        }
     }
 
     /**
      * Adds a new obstacle to the map.
      *
      * @param obstacle The obstacle to add to the map.
+     * @pre obstacle != null
+     * @post The obstacle is added to the list of obstacles.
      */
     public void addObstacle(Shape obstacle) {
+        if (obstacle == null) {
+            throw new IllegalArgumentException("Obstacle cannot be null");
+        }
         this.obstacles.add(obstacle);
     }
 
@@ -32,33 +44,48 @@ public record DeliveryMap(ArrayList<Shape> obstacles) {
      * Removes an obstacle from the map that contains the given point.
      *
      * @param p The point to check for containing obstacles.
+     * @pre p != null
+     * @post The obstacle containing the point is removed from the list of obstacles, if any.
      */
     public void removeObstacle(Point p) {
-        for (Shape obstacle : obstacles)
+        if (p == null) {
+            throw new IllegalArgumentException("Point cannot be null");
+        }
+        for (Shape obstacle : obstacles) {
             if (obstacle.surrounds(p)) {
                 obstacles.remove(obstacle);
                 break;
             }
+        }
     }
 
     /**
-     * Checks whether a delivery point is valid, meaning it is not within an obstacle or outside the delivery area.
+     * Checks whether a delivery request is valid, meaning it is not within an obstacle or outside the delivery area.
      *
-     * @param p The delivery point to check for validity.
-     * @return True if the delivery point is valid, false otherwise.
+     * @param request The delivery request to check for validity.
+     * @return True if the delivery request is valid, false otherwise.
+     * @pre request != null
      */
-    public boolean isDeliveryPointValid(Point p) {
-        //In any of corners
-        if ((p.x() > 950 && p.y() > 950) || (p.x() < 50 && p.y() < 50) || (p.x() > 950 && p.y() < 50) || (p.x() < 50 && p.y() > 950))
+    public boolean isDeliveryRequestValid(Request request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
+        // In any of the corners
+        if (pointOutOfBounds(request.start()) || pointOutOfBounds(request.end()))
             return false;
         for (Shape obstacle : obstacles)
-            if (obstacle.surrounds(p))
+            if (obstacle.surrounds(request.start()) || obstacle.surrounds(request.end()))
                 return false;
         return true;
     }
 
+    private boolean pointOutOfBounds(Point p) {
+        return ((p.x() > 950 && p.y() > 950) || (p.x() < 50 && p.y() < 50) || (p.x() > 950 && p.y() < 50) || (p.x() < 50 && p.y() > 950));
+    }
+
     /**
      * @return The list of obstacles on the map.
+     * @post The returned list of obstacles is not null.
      */
     @Override
     public ArrayList<Shape> obstacles() {

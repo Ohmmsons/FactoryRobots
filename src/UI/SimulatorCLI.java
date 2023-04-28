@@ -2,8 +2,10 @@ package UI;
 
 import Simulator.DeliveryMap;
 import Simulator.Point;
+import Simulator.Request;
 import Simulator.Robot;
 
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Scanner;
 
@@ -42,13 +44,30 @@ public class SimulatorCLI implements SimulatorUI {
      * @return The point input by the user.
      */
     @Override
-    public Point askForPoint() {
-        System.out.print("Input your request Coordinates separated by a space: ");
-        int x;
-        int y;
-        x = sc.nextInt();
-        y = sc.nextInt();
-        return new Point(x, y);
+    public Request askForRequest() {
+        System.out.println("Input your request Coordinates separated by a space: ");
+        System.out.println("Start: ");
+        int x1;
+        int y1;
+        x1 = sc.nextInt();
+        y1 = sc.nextInt();
+        System.out.println("End: ");
+        int x2;
+        int y2;
+        x2 = sc.nextInt();
+        y2 = sc.nextInt();
+        return new Request(new Point(x1,y1),new Point(x2,y2));
+    }
+
+    @Override
+    public double askForSpeed() {
+        double n;
+        do {
+            System.out.println("From 1 to 100 how fast fast do you want the simulation to be");
+            n = sc.nextDouble();
+        }while (n>100 || n<0);
+        System.out.println("Speed set to "+n+". Press enter to enter requests\n Simulation Starting...");
+        return n;
     }
 
     /**
@@ -58,8 +77,18 @@ public class SimulatorCLI implements SimulatorUI {
      */
     @Override
     public boolean isAskingForNewPoint() {
-        return sc.hasNext();
+        try {
+            int available = System.in.available();
+            if (available > 0) {
+                sc.nextLine(); // Consume the input
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
+
 
     /**
      * Displays the status of the robots at the current step.
@@ -91,7 +120,7 @@ public class SimulatorCLI implements SimulatorUI {
     }
 
     @Override
-    public void addRequest(Point request) {
+    public void addRequest(Request request) {
 
     }
 }

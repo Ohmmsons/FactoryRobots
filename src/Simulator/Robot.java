@@ -11,13 +11,16 @@ import java.util.*;
  *
  * @author Jude Adam
  * @version 1.0.0 20/04/2023
- * A robot's battery level must always be between 0 and 100.
- * If a robot's battery level drops to 0, it must return to its charging point
- * to recharge.
+ *
+ * @inv A robot's battery level must always be between 0 and 100.
+ * @inv If a robot's battery level drops to 0, it must return to its charging point to recharge.
+ * @inv currentPosition, deliveryMap, generator, chargingStation, trajectoryCache, and rng must not be null.
+ * @inv currentPosition and chargingStation must be within the deliveryMap.
  */
 public class Robot {
+    private final Random rng;
     private Point currentPosition;
-    private final Generator generator;
+    private final PointGenerator generator;
     private double energy;
     private RobotPowerState powerState;
     private final Point chargingStation;
@@ -34,8 +37,11 @@ public class Robot {
      * @param startingPoint the starting point of the robot
      * @param deliveryMap   the delivery map that the robot will navigate through
      * @param generator     the random number generator used to generate trajectory lengths
+     * @pre startingPoint, deliveryMap, and generator must be non-null
+     * @post A Robot object is created with the provided starting point, delivery map, and generator
+     * @throws IllegalArgumentException if any of the input parameters are null
      */
-    public Robot(Point startingPoint, DeliveryMap deliveryMap, Generator generator) {
+    public Robot(Point startingPoint, DeliveryMap deliveryMap, PointGenerator generator,Random rng) {
         if (startingPoint == null || deliveryMap == null || generator == null)
             throw new IllegalArgumentException("Can't be constructed with null arguments");
         this.currentPosition = startingPoint;
@@ -46,21 +52,26 @@ public class Robot {
         this.powerState = RobotPowerState.STANDBY;
         this.trajectoryPointIterator = null;
         this.trajectoryCache = new HashMap<>();
+        this.rng = rng;
     }
 
     /**
      * Returns the power state of the robot.
      *
      * @return the power state of the robot
+     * @post Returns the current power state of the robot
      */
     public RobotPowerState getPowerState() {
         return this.powerState;
     }
 
+
     /**
      * Subscribes the robot to a robot manager.
      *
      * @param manager the robot manager to subscribe to
+     * @pre manager must be non-null
+     * @post The robot is subscribed to the provided manager
      */
     public void subscribeToManager(RobotManager manager) {
         this.manager = manager;
@@ -68,49 +79,84 @@ public class Robot {
 
     /**
      * @return the current energy level of the robot
+     * @post Returns the current energy level of the robot
      */
     public double getEnergy() {
         return energy;
     }
 
+
     /**
      * Updates the state of the robot. Depending on the robot's power state, this may involve moving to a new position,
      * charging the battery, or updating the robot manager with its current state.
+     *
+     * @pre energy >= 0
+     * @post energy is updated based on the robot's power state
+     * @throws IllegalStateException if the energy level is below 0
      */
     public void update() {
-        if(energy<0) throw new IllegalStateException("ENERGY BELOW 0");
+        if(energy < 0) throw new IllegalStateException("Energy level cannot be below 0.");
+
         switch (powerState) {
-            case DELIVERING, RETURNING -> {
-                energy -= 0.1;
-                this.moveToNextPosition();
-            }
-            case STANDBY -> {
-                if (!this.currentPosition.equals(chargingStation)) {
-                    energy -= 0.01;
-                    if (energy / 0.1 <= distanceToChargingStation() + 1) {
-                        this.goToChargingStation();
-                    }
-                }
-            }
-            case CHARGING -> {
-                if (energy < 100.0)
-                    if (energy >= 99.0) energy = 100.0;
-                    else energy += 1.0;
-                else if (energy == 100.0) {
-                    powerState = RobotPowerState.STANDBY;
-                    manager.notify(this, powerState);
-                }
-            }
+            case DELIVERING, RETURNING -> handleMovingState();
+            case STANDBY -> handleStandbyState();
+            case CHARGING -> handleChargingState();
             default -> throw new IllegalStateException("Unexpected power state: " + powerState);
         }
     }
 
+    /**
+     * Handles the logic for when the robot is in the moving state (DELIVERING or RETURNING).
+     *
+     * @pre Robot must be in DELIVERING or RETURNING state
+     * @post Updates energy consumption and moves the robot to the next position in its trajectory
+     */
+    private void handleMovingState() {
+        energy -= 0.1;
+        this.moveToNextPosition();
+    }
+
+    /**
+     * Handles the logic for when the robot is in the STANDBY state.
+     *
+     * @pre Robot must be in STANDBY state
+     * @post Updates energy consumption and checks if the robot needs to go to the charging station
+     */
+    private void handleStandbyState() {
+        if (!this.currentPosition.equals(chargingStation)) {
+            energy -= 0.01;
+            if (energy / 0.1 <= distanceToChargingStation() + 1) {
+                this.goToChargingStation();
+            }
+        }
+    }
+
+    /**
+     * Handles the logic for when the robot is in the CHARGING state.
+     *
+     * @pre Robot must be in CHARGING state
+     * @post Updates energy levels and changes the robot state to STANDBY if fully charged
+     */
+    private void handleChargingState() {
+        if (energy < 100.0) {
+            if (energy >= 99.0) {
+                energy = 100.0;
+            } else {
+                energy += 1.0;
+            }
+        } else if (energy == 100.0) {
+            powerState = RobotPowerState.STANDBY;
+            manager.notify(this, powerState);
+        }
+    }
 
     /**
      * Determines whether the robot can reach its destination given a trajectory.
      *
      * @param trajectory the trajectory to check
      * @return true if the robot can reach its destination, false otherwise
+     * @pre trajectory must be non-null
+     * @post Returns true if the robot can reach its destination, false otherwise
      */
     public boolean canReachDestination(Trajectory trajectory) {
         if (trajectory == null)
@@ -125,18 +171,34 @@ public class Robot {
     /**
      * Determines whether the robot can reach the charging station from its current position without running out of energy.
      *
-     * @return true if the robot can reach the charging station without running out of energy, false otherwise
+     * @return the distance to the charging station from the robot's current position
+     * @pre start and destination points are non-null
+     * @post returns the distance to the charging station
+     * @throws IllegalArgumentException if either the start or destination points are null
      */
     public int distanceToDestination(Point start, Point destination) {
         if(start==null||destination==null) throw new IllegalArgumentException("Start and destination must be non null");
-        Trajectory trajectoryBackToChargingStation = findTrajectory(start,destination);
-        if (trajectoryBackToChargingStation == null)
-            return 100000000;
-        return trajectoryBackToChargingStation.calculatePointsAlongTrajectory().size();
+        Trajectory trajectoryToDestination = findTrajectory(start,destination);
+        if (trajectoryToDestination == null)
+            return Integer.MAX_VALUE;
+        return trajectoryToDestination.calculatePointsAlongTrajectory().size();
     }
+    /**
+     * Calculates the distance to the charging station from the robot's current position.
+     *
+     * @pre currentPosition and chargingStation must be non-null
+     * @return the distance to the charging station
+     * @post Returns a non-negative integer representing the distance to the charging station
+     */
     public int distanceToChargingStation() {
         return distanceToDestination(currentPosition, chargingStation);
     }
+    /**
+     * Returns the charging station point.
+     *
+     * @return the charging station point
+     * @post Returns the charging station point
+     */
     public Point getChargingStation(){
         return  chargingStation;
     }
@@ -159,6 +221,7 @@ public class Robot {
      * charging station into a string representation. The * symbol is used to denote that the robot is delivering.
      *
      * @return a string representation of the robot
+     * @post Returns a string representation of the robot's current state
      */
     public String toString() {
         DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
@@ -173,6 +236,9 @@ public class Robot {
     /**
      * Moves the robot to the next position in the trajectory. If the robot has reached its destination, it changes its
      * power state to CHARGING if it was RETURNING, or to STANDBY if it was DELIVERING, and notifies the manager.
+     *
+     * @pre trajectoryPointIterator must be non-null
+     * @post The robot's position is updated based on the trajectory, and its power state is updated if it reaches its destination
      */
     private void moveToNextPosition() {
         //Move to next point
@@ -196,6 +262,9 @@ public class Robot {
     /**
      * Moves the robot to the next position in the trajectory. If the robot has reached its destination, it changes its
      * power state to CHARGING if it was RETURNING, or to STANDBY if it was DELIVERING, and notifies the manager.
+     *
+     * @pre The robot's energy level must be sufficient to reach the charging station
+     * @post The robot's trajectory is set to reach the charging station, and its power state is set to RETURNING
      */
     private void goToChargingStation() {
         setPath(findTrajectory(currentPosition, chargingStation));
@@ -208,6 +277,9 @@ public class Robot {
      * @param start the starting point of the trajectory
      * @param destination the destination point of the trajectory
      * @return the trajectory between the start and destination points
+     * @pre start and destination points must be non-null
+     * @post Returns a trajectory between the start and destination points, or null if no trajectory is found
+     * @throws IllegalArgumentException if either start or destination points are null
      */
     public Trajectory findTrajectory(Point start, Point destination) {
         if (start == null || destination == null)
@@ -219,21 +291,66 @@ public class Robot {
             return cachedTrajectory;
         }
 
-        int[] lengths = generator.ints(200, 0, 2).toArray();
-        Planner planner = new Planner(0.045, 0.15, 0.15, start, destination, lengths, generator, deliveryMap.obstacles());
+        int[] lengths = rng.ints(200, 0, 2).toArray();
+        Planner planner = new Planner(0.045, 0.15, 0.15, start, destination, lengths, generator, deliveryMap.obstacles(),rng);
         Trajectory trajectory = planner.findTrajectory();
 
         trajectoryCache.put(cacheKey, trajectory);
         return trajectory;
     }
 
+    /**
+     * Gets the distance to the next request.
+     *
+     * @return the distance to the next request
+     * @post Returns the distance to the next request or Double.MAX_VALUE if there is no next request
+     */
     public double getDistanceToNextRequest() {
         if (manager.getNextRequest() == null) {
             return Double.MAX_VALUE;
         }
-        return currentPosition.dist(manager.getNextRequest());
+        return currentPosition.dist(manager.getNextRequest().start());
+    }
+    /**
+     * Determines if the robot can perform the given request.
+     *
+     * @param request the request to check if the robot can perform
+     * @return true if the robot can perform the request, false otherwise
+     * @pre request must be non-null
+     * @post Returns true if the robot can perform the request, false otherwise
+     */
+    public boolean canPerformRequest(Request request) {
+        if (request == null) {
+            return false;
+        }
+
+        Point startPoint = request.start();
+        Point endPoint = request.end();
+
+        //Check if a trajectory disregarding collisions (straight lines) would be possible given the current energy
+        double euclideanDistanceToStart = getCurrentPosition().dist(startPoint);
+        double euclideanDistanceStartToEnd =  startPoint.dist(endPoint);
+        double euclideanDistanceEndToChargingStation = endPoint.dist(getChargingStation());
+
+        if (euclideanDistanceToStart+euclideanDistanceStartToEnd+euclideanDistanceEndToChargingStation > getEnergy() / 0.1)
+            return false;
+
+        //Check if a trajectory now with collisions in mind (planned trajectories) would be possible given the current energy
+        int distanceToStart = distanceToDestination(currentPosition, startPoint);
+        int distanceToEnd = distanceToDestination(startPoint, endPoint);
+        int distanceToChargingStation = distanceToDestination(endPoint, chargingStation);
+
+        int totalDistance = distanceToStart + distanceToEnd + distanceToChargingStation;
+        return energy / 0.1 > totalDistance;
     }
 
+
+/**
+ * Gets the current position of the robot.
+ *
+ * @return the current position of the robot
+ * @post Returns the current position  of the robot
+ */
     public Point getCurrentPosition() {
         return currentPosition;
     }

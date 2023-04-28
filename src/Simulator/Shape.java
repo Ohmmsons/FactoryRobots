@@ -1,7 +1,5 @@
 package Simulator;
 
-import java.util.Random;
-
 /**
  * Class Shape
  *
@@ -17,7 +15,7 @@ public abstract class Shape {
      * @param points Points that make up shape
      */
     Shape(Point[] points) {
-        if (points.length == 0) throw new IllegalArgumentException("No points");
+        if (points == null || points.length == 0) throw new IllegalArgumentException("No points");
         this.points = points;
     }
 

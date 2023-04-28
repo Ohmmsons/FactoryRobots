@@ -12,8 +12,9 @@ Points in the path must be sequential and in the 1st quadrant
  */
 public class Trajectory {
     private final ArrayList<Point> points;
+    private final Random rng;
     private double length;
-    public Generator generator;
+    public PointGenerator generator;
     private int collisionCount;
     private final ArrayList<Shape> obstacles;
     /**
@@ -22,10 +23,11 @@ public class Trajectory {
      * @param generator - the random number generator used for mutation and crossover operations.
      * @param obstacles - the list of obstacles that the trajectory must avoid.
      */
-    public Trajectory(ArrayList<Point> pontos, Generator generator, ArrayList<Shape> obstacles) {
+    public Trajectory(ArrayList<Point> pontos, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
         this.obstacles = obstacles;
         this.generator = generator;
         ArrayList<Point> points = new ArrayList<>();
+        this.rng = rng;
         length = 0;
         int n = pontos.size();
         int j = 0;
@@ -96,44 +98,25 @@ public class Trajectory {
        */
     public Trajectory[] onePointCrossover(Trajectory other) {
         ArrayList<Point> otherPoints = other.getPoints();
-        int point1 = generator.nextInt(points.size() - 1) + 1;
-        int point2 = generator.nextInt(otherPoints.size() - 1) + 1;
+        int point1 = rng.nextInt(points.size() - 1) + 1;
+        int point2 = rng.nextInt(otherPoints.size() - 1) + 1;
         ArrayList<Point> child1 = new ArrayList<>();
         ArrayList<Point> child2 = new ArrayList<>();
         for (int i = 0; i < point1; i++) child1.add(points.get(i));
         for (int i = point2; i < otherPoints.size(); i++) child1.add(otherPoints.get(i));
         for (int i = 0; i < point2; i++) child2.add(otherPoints.get(i));
         for (int i = point1; i < points.size(); i++) child2.add(points.get(i));
-        return new Trajectory[]{new Trajectory(child1,generator,obstacles), new Trajectory(child2,generator,obstacles)};
+        return new Trajectory[]{new Trajectory(child1,generator,obstacles,rng), new Trajectory(child2,generator,obstacles,rng)};
     }
-    /**
-     uniform method to perform uniform crossover between two trajectories and generate 2 offspring
-     @param other other trajectory
-     @return offspring
-     */
-    public Trajectory[] uniformCrossover(Trajectory other) {
-        ArrayList<Point> otherPoints = other.getPoints();
-        ArrayList<Point> child1 = new ArrayList<>();
-        ArrayList<Point> child2 = new ArrayList<>();
-        for (int i = 0; i < points.size(); i++) {
-            if (generator.nextBoolean()) {
-                child1.add(points.get(i));
-                child2.add(otherPoints.get(i));
-            } else {
-                child1.add(otherPoints.get(i));
-                child2.add(points.get(i));
-            }
-        }
-        return new Trajectory[]{new Trajectory(child1, generator, obstacles), new Trajectory(child2, generator, obstacles)};
-    }
+
     /**
           mutate method to perform one point mutation with probability pm
           @param pm mutation probability
     */
     public void mutate(double pm) {
         if (points.size() > 2) {
-        if (generator.nextDouble() < pm) {
-                int i = generator.nextInt(points.size() - 2) + 1;
+        if (rng.nextDouble() < pm) {
+                int i = rng.nextInt(points.size() - 2) + 1;
                 Point p = generator.generateGaussianPoint(50, points.get(0),points.get(points.size()-1));
                 if (!points.contains(p)) {
                     //Mutate point and update length
@@ -165,9 +148,9 @@ public class Trajectory {
           @param pa addition probability
     */
     public void addPoint(double pa) {
-        if(generator.nextDouble() < pa) {
+        if(rng.nextDouble() < pa) {
             int i = 0;
-            if (points.size() > 2) i = generator.nextInt(points.size() - 2) + 1;
+            if (points.size() > 2) i = rng.nextInt(points.size() - 2) + 1;
             Point p = generator.generateGaussianPoint(50, points.get(0),points.get(points.size()-1));
             if (!points.contains(p)){
                 //Add point and update length
@@ -184,9 +167,9 @@ public class Trajectory {
    */
     public void removePoint(double pr) {
         if (points.size() > 2){
-            if(generator.nextDouble()<pr) {
+            if(rng.nextDouble()<pr) {
             int i;
-                i = generator.nextInt(points.size() - 2) + 1;
+                i = rng.nextInt(points.size() - 2) + 1;
                 length-=(points.get(i-1).dist(points.get(i)) + points.get(i).dist(points.get(i+1)));
                 points.remove(i);
                 length+=points.get(i-1).dist(points.get(i));
@@ -217,4 +200,12 @@ public class Trajectory {
     public double getLength() {
         return length;
     }
+
+    public Trajectory concatenate(Trajectory trajectory){
+        ArrayList<Point> points1 = new ArrayList<>(this.points);
+        ArrayList<Point> points2 = new ArrayList<>(trajectory.getPoints());
+        points1.addAll(points2.subList(1,points2.size()));
+        return  new Trajectory(points1,generator,obstacles,rng);
+    }
+
 }

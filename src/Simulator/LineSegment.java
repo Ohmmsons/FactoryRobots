@@ -3,10 +3,11 @@ package Simulator;
 import java.util.ArrayList;
 
 /**
-*Class LineSegment used to form Shapes
-*@author Jude Adam
-*@version 1.0.0 16/02/2023
- *The two points must have different coordinates
+ * Class LineSegment used to form Shapes
+ * @author Jude Adam
+ * @version 1.0.0 16/02/2023
+ * @inv p1 != null && p2 != null
+ * @inv p1.x() != p2.x() || p1.y() != p2.y()
  */
 public record LineSegment(Point p1, Point p2) {
     /**
@@ -25,6 +26,8 @@ public record LineSegment(Point p1, Point p2) {
      @param a Point a
      @param b Point b
      @param c Point c
+     @pre a != null && b != null && c != null
+     @post returns true if points a, b, and c are in counterclockwise order, false otherwise
      @return True if a,b and c are in counterclockwise order
      @see <a href="https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/">...</a>
      */
@@ -36,6 +39,8 @@ public record LineSegment(Point p1, Point p2) {
      Intercepts, method to see if a segment intersects another
      @param other Other Line Segment
      @return True if the caller intersects the other segment
+     @pre other != null
+     @post returns true if the caller intersects the other segment, false otherwise
      @see <a href="https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/">...</a>
      */
     public boolean intercepts(LineSegment other) {
@@ -46,6 +51,7 @@ public record LineSegment(Point p1, Point p2) {
     /**
      Length method
      @return Distance from p1 to p2
+     @post returns the distance from point p1 to point p2
      */
     public double length() {
         return p1.dist(p2);
@@ -53,10 +59,10 @@ public record LineSegment(Point p1, Point p2) {
 
     /**
      * drawLine method, calculates the points that go along the line segment, this being done using the Bresenham Line Drawing Algorithm
+     * @post returns an ArrayList of Points containing the points that go along the line segment
      * @return array list containing the points that go along the line segment
      * @see <a href="https://www.sanfoundry.com/java-program-bresenham-line-algorithm/">...</a>
      */
-
     public ArrayList<Point> drawLine() {
         ArrayList<Point> result = new ArrayList<>();
         int x0 = p1.x();
@@ -93,6 +99,8 @@ public record LineSegment(Point p1, Point p2) {
      Method to see Segment  to point P
      @param p Point
      @return double value of the shortest distance from s to point p
+     @pre p != null
+     @post returns the shortest distance from the line segment to the point p
      */
     public double shortestDistance(Point p) {
         double x1 = p1().x();

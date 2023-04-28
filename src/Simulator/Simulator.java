@@ -9,6 +9,7 @@ import java.util.*;
  */
 public class Simulator {
 
+    private final Random rng;
     private SimulatorUI ui;
     /**
      * Creates a new Simulator object.
@@ -17,15 +18,23 @@ public class Simulator {
     public Simulator(SimulatorUI ui) {
         if(ui == null) throw new IllegalArgumentException("UI must exist");
         this.ui = ui;
+        this.rng = new Random();
     }
+
+    public Simulator(SimulatorUI ui,Random rng) {
+        if(ui == null) throw new IllegalArgumentException("UI must exist");
+        this.ui = ui;
+        this.rng = rng;
+    }
+    
     /**
      * Checks if the input delivery point is valid.
      * @param deliveryMap The map of the delivery area.
      * @param request The delivery point to check.
      * @return True if the delivery point is valid, false otherwise.
      */
-    public boolean validInputCheck(DeliveryMap deliveryMap, Point request) {
-        if (deliveryMap.isDeliveryPointValid(request)) return true;
+    public boolean validInputCheck(DeliveryMap deliveryMap, Request request) {
+        if (deliveryMap.isDeliveryRequestValid(request)) return true;
         else ui.displayErrorMessage("Request invalid, please input a new one");
         return false;
     }
@@ -37,16 +46,16 @@ public class Simulator {
      * @param deliveryMap The delivery map.
      * @return List of 4 robots, one in each corner, all fully charged and in standby.
      */
-    private LinkedHashSet<Robot> initializeRobots(Generator generator, DeliveryMap deliveryMap){
+    private LinkedHashSet<Robot> initializeRobots(PointGenerator generator, DeliveryMap deliveryMap){
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         Point chargingPoint0 = new Point(15, 15);
         Point chargingPoint1 = new Point(15, 975);
         Point chargingPoint2 = new Point(975, 975);
         Point chargingPoint3 = new Point(975, 15);
-        Robot robot0 = new Robot(chargingPoint0, deliveryMap, generator);
-        Robot robot1 = new Robot(chargingPoint1, deliveryMap, generator);
-        Robot robot2 = new Robot(chargingPoint2, deliveryMap, generator);
-        Robot robot3 = new Robot(chargingPoint3, deliveryMap, generator);
+        Robot robot0 = new Robot(chargingPoint0, deliveryMap, generator,rng);
+        Robot robot1 = new Robot(chargingPoint1, deliveryMap, generator,rng);
+        Robot robot2 = new Robot(chargingPoint2, deliveryMap, generator,rng);
+        Robot robot3 = new Robot(chargingPoint3, deliveryMap, generator,rng);
         robots.add(robot0);
         robots.add(robot1);
         robots.add(robot2);
@@ -59,12 +68,12 @@ public class Simulator {
      * @param generator The generator used.
      * @return List of random obstacles.
      */
-    private ArrayList<Shape> generateRandomObstacles(Generator generator){
+    private ArrayList<Shape> generateRandomObstacles(ShapeGenerator generator){
         // Generate random obstacles
         int nObstacles = ui.askForNumberOfObstacles();
         ArrayList<Shape> obstacles = new ArrayList<>();
         for (int i = 0; i < nObstacles; i++) {
-            int option = generator.nextInt(3);
+            int option = rng.nextInt(3);
             switch (option) {
                 case 0 -> obstacles.add(generator.generateShape("Circle"));
                 case 1 -> obstacles.add(generator.generateShape("Rectangle"));
@@ -89,17 +98,23 @@ public class Simulator {
         //Initialize Request Queue
         RequestQueue requestQueue = new RequestQueue();
 
-        //Initialize generator
-        Generator generator = new Generator();
+        Random generator = new Random();
+
+        //Initialize generators
+        ShapeGenerator shapeGenerator = new ShapeGenerator(generator);
+        PointGenerator pointGenerator = new PointGenerator(generator);
 
         // Create delivery map with obstacles
-        DeliveryMap deliveryMap = new DeliveryMap(generateRandomObstacles(generator));
+        DeliveryMap deliveryMap = new DeliveryMap(generateRandomObstacles(shapeGenerator));
+
+        //Ask for speed
+        double speed = ui.askForSpeed();
 
         //Inform the UI about the Map
         ui.sendMapInformation(deliveryMap);
 
         // Create and initialize robots
-        LinkedHashSet<Robot> robots = initializeRobots(generator,deliveryMap);
+        LinkedHashSet<Robot> robots = initializeRobots(pointGenerator,deliveryMap);
 
         // Create robot manager and subscribe robots to it
         RobotManager robotManager = new RobotManager(robots,requestQueue);
@@ -108,9 +123,9 @@ public class Simulator {
         // Run simulation
         while(true) {
             if (ui.isAskingForNewPoint()) {
-                Point request;
+                Request request;
                 do {
-                    request = ui.askForPoint();
+                    request = ui.askForRequest();
                 }
                 while (!validInputCheck(deliveryMap, request));
                 robotManager.addRequest(request);
@@ -126,7 +141,7 @@ public class Simulator {
             ui.displayRobotStatus(step, robots);
 
             // Wait for 5 milliseconds
-            Thread.sleep(5);
+            Thread.sleep((long) (500/speed));
             step++;
         }
     }

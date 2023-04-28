@@ -2,6 +2,7 @@ package UI;
 
 import Simulator.DeliveryMap;
 import Simulator.Point;
+import Simulator.Request;
 import Simulator.Robot;
 
 import java.util.LinkedHashSet;
@@ -25,7 +26,9 @@ public interface SimulatorUI {
      *
      * @return a Simulator.Point object representing the location of the point to add
      */
-    Point askForPoint();
+    Request askForRequest();
+
+    double askForSpeed();
 
     /**
      * Checks if the UI is currently asking the user for a new point.
@@ -56,5 +59,6 @@ public interface SimulatorUI {
      */
     void sendMapInformation(DeliveryMap map);
 
-    void addRequest(Point request);
+
+    void addRequest(Request request);
 }

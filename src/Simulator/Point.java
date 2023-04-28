@@ -48,4 +48,8 @@ public record Point(int x, int y) {
         double dy = y - p.y;
         return Math.sqrt(dx * dx + dy * dy);
     }
+    @Override
+    public Point clone(){
+        return new Point(x,y);
+    }
 }

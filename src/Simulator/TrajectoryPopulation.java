@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
+
 /**
  Class Trajectory Population, used to perform selection of trajectories based on fitness
  @author Jude Adam
@@ -12,10 +14,11 @@ import java.util.Collections;
  */
 public class TrajectoryPopulation {
 
+    private final Random rng;
     private ArrayList<Trajectory> individuals;
     private final ArrayList<Shape> obstacles;
 
-    private Generator generator;
+    private PointGenerator generator;
 
     /**
     Constructor for TrajectoryPopulation Class
@@ -26,9 +29,10 @@ public class TrajectoryPopulation {
      @param generator RNG
      @param obstacles Obstacles
    */
-    public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, Generator generator, ArrayList<Shape> obstacles) {
+    public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
         this.individuals = new ArrayList<>();
         this.generator = generator;
+        this.rng = rng;
         this.obstacles = obstacles;
         for (int i = 0; i < n; i++) {
             ArrayList<Point> points = new ArrayList<>();
@@ -38,14 +42,15 @@ public class TrajectoryPopulation {
                 points.add(p);
             }
             points.add(end);
-            this.individuals.add(new Trajectory(points, generator, obstacles));
+            this.individuals.add(new Trajectory(points, generator, obstacles,rng));
         }
     }
 
-    public TrajectoryPopulation(ArrayList<Trajectory> individuals, Generator generator, ArrayList<Shape> obstacles) {
+    public TrajectoryPopulation(ArrayList<Trajectory> individuals, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
         this.individuals = individuals;
         this.generator = generator;
         this.obstacles = obstacles;
+        this.rng = rng;
     }
 
     /**
@@ -73,22 +78,6 @@ public class TrajectoryPopulation {
         return (df.format(maxFitness.fitness()) + " " + df.format(average) + " " + df.format(minFitness.fitness()) + " " + df.format(minCollision.getLength()) + " " + minCollision.nCollisions());
     }
 
-    /**
-     * tournament method to perform tournament selection on population
-     *
-     * @return winners of selection
-     */
-    public TrajectoryPopulation tournament() {
-        ArrayList<Trajectory> winners = new ArrayList<>();
-        for (int i = 0; i < individuals.size(); i++) {
-            int p1 = (generator.nextInt(individuals.size()));
-            int p2 = (generator.nextInt(individuals.size()));
-            double f1 = individuals.get(p1).fitness();
-            double f2 = individuals.get(p2).fitness();
-            winners.add(f1 >= f2 ? individuals.get(p1) : individuals.get(p2));
-        }
-        return new TrajectoryPopulation(winners, generator, obstacles);
-    }
 
     /**
      * roulette method to perform roulette selection on population
@@ -98,7 +87,7 @@ public class TrajectoryPopulation {
         ArrayList<Trajectory> winners = new ArrayList<>();
         double totalFitness = individuals.stream().mapToDouble(Trajectory::fitness).sum();
         for (int i = 0; i < individuals.size(); i++) {
-            double randomValue = generator.nextDouble() * totalFitness;
+            double randomValue = rng.nextDouble() * totalFitness;
             for (Trajectory individual : individuals) {
                 randomValue -= individual.fitness();
                 if (randomValue <= 0) {
@@ -107,6 +96,6 @@ public class TrajectoryPopulation {
                 }
             }
         }
-        return new TrajectoryPopulation(winners, generator, obstacles);
+        return new TrajectoryPopulation(winners, generator, obstacles,rng);
     }
 }

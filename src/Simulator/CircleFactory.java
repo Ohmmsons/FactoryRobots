@@ -1,18 +1,28 @@
 package Simulator;
 
+import java.util.Random;
+
 /**
  * The CircleFactory class implements the ShapeFactory interface to create Circle objects.
+ *
  * @author Jude Adam
  * @version 1.0.0 24/04/2023
+ * @inv generator != null
  */
 public class CircleFactory implements ShapeFactory {
-    private Generator generator;
+    private final Random generator;
 
     /**
      * Constructs a new CircleFactory object with the specified Generator object.
+     *
      * @param generator the Generator object to use for generating random values
+     * @pre generator != null
+     * @post A CircleFactory instance is created with the specified generator.
      */
-    public CircleFactory(Generator generator) {
+    public CircleFactory(Random generator) {
+        if (generator == null) {
+            throw new IllegalArgumentException("Generator cannot be null");
+        }
         this.generator = generator;
     }
 
@@ -22,6 +32,7 @@ public class CircleFactory implements ShapeFactory {
      * The radius is between 5 (inclusive) and 30 (exclusive).
      *
      * @return a new Circle object with a random center point and radius
+     * @post The returned Circle has a valid center point and radius.
      */
     @Override
     public Shape createShape() {

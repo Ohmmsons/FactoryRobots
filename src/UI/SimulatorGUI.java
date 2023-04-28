@@ -35,7 +35,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private Point point;
     private LinkedHashSet<Robot> robots;
     private boolean isKeyPressed;
-    private ArrayList<Point> requests;
+    private ArrayList<Request> requests;
     private JLabel messageLabel;
     private int currentFrame;
     private boolean hasError;
@@ -179,7 +179,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         g2d.setStroke(robotStroke);
         int i = 0;
         for (Robot robot: robots) {
-            requests.removeIf(request -> robot.getCurrentPosition().equals(request));
+            requests.removeIf(request -> robot.getCurrentPosition().equals(request.end()));
             switch(i){
                 case 0 -> g.setColor(new Color(21, 21, 21));
                 case 1 ->  g.setColor(new Color(223, 81, 81));
@@ -278,11 +278,16 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private void drawRequests(Graphics g) {
         g.setColor(Color.BLACK);
         for (int i = 0; i < requests.size(); i++) {
-            Point request = requests.get(i);
-            g.fillOval(request.x() - 5, request.y() - 5, 10, 10);
+            Point requestp1 = requests.get(i).start();
+            g.fillOval(requestp1.x() - 5, requestp1.y() - 5, 10, 10);
             String index = String.valueOf(i);
-            int labelWidth = g.getFontMetrics().stringWidth(index);
-            g.drawString(index, request.x() - labelWidth / 2, request.y() + 15);
+            int labelWidth = g.getFontMetrics().stringWidth(index + " Start");
+            g.drawString(index + " Start", requestp1.x() - labelWidth / 2, requestp1.y() + 15);
+            labelWidth = g.getFontMetrics().stringWidth(index + " End");
+            Point requestp2 = requests.get(i).end();
+            g.fillOval(requestp2.x() - 5, requestp2.y() - 5, 10, 10);
+            g.drawString(index + " End", requestp2.x() - labelWidth / 2, requestp2.y() + 15);
+            g.drawLine(requestp1.x(),requestp1.y(),requestp2.x(),requestp2.y());
         }
     }
     /**
@@ -329,19 +334,57 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * @return the Simulator.Point (x, y) input by the user
      */
     @Override
-    public Point askForPoint() {
+    public Request askForRequest() {
+        Point p1 = null;
+        Point p2 = null;
         // Block the method until the mouse is clicked
         try {
             if (!hasError)
-                messageLabel.setText("Click where you want your next delivery");
+                messageLabel.setText("Click where you want your next delivery to start");
             pointSemaphore.acquire();
+             p1 = point.clone();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        try {
+            if (!hasError)
+                messageLabel.setText("Click where you want your next delivery to end");
+            pointSemaphore.acquire();
+             p2 = point.clone();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         messageLabel.setText("Press Space Bar to make new request");
         // Return the point that was clicked
         hasError = false;
-        return point;
+        return new Request(p1,p2) ;
+    }
+
+    @Override
+    public double askForSpeed() {
+        JLabel label = new JLabel("From 1 to 100, how fast do you want the simulation to be:");
+        JTextField textField = new JTextField(10);
+        JPanel panel = new JPanel();
+        panel.add(label);
+        panel.add(textField);
+        int result = JOptionPane.showConfirmDialog(null, panel, "Enter simulation speed", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            try {
+                double speed = Double.parseDouble(textField.getText());
+                if (speed >= 1 && speed <= 100) {
+                    return speed;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid double between 1 and 100", "Error", JOptionPane.ERROR_MESSAGE);
+                    return askForSpeed();
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid double", "Error", JOptionPane.ERROR_MESSAGE);
+                return askForSpeed();
+            }
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -388,7 +431,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
 
 
     @Override
-    public void addRequest(Point request) {
+    public void addRequest(Request request) {
         this.requests.add(request);
     }
 
