@@ -42,14 +42,6 @@ public class SimulatorCLI implements SimulatorUI {
     }
 
 
-    private boolean pointOutOfBounds(int x, int y) {
-        if ((x > 950 && y > 950) || (x < 50 && y < 50) || (x > 950 && y < 50) || (x < 50 && y > 950)) {
-            System.out.println(x + "," + y + " Is out of bounds please input a point inside the 1000x1000 area and outside the charging stations");
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Asks the user for a request.
      *

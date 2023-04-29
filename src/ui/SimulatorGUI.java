@@ -12,8 +12,14 @@ import java.util.LinkedHashSet;
 import java.util.concurrent.Semaphore;
 
 /**
- * A graphical user interface implementation of the UI.SimulatorUI interface.
+ * A class representing the graphical user interface for the delivery robot simulator.
  *
+ * @inv numberOfObstacles >= 0
+ * @inv blackColor != null
+ * @inv pointSemaphore != null
+ * @inv robots != null
+ * @inv requests != null
+ * @inv shapes != null
  * @author Jude Adam
  * @version 1.0.0 20/04/2023
  */
@@ -64,10 +70,11 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         add(messageLabel);
     }
     /**
-     * Overrides the paintComponent method of JPanel to draw the entire simulation,
-     * including tiles, shapes, robots, and requests.
+     * Paints the components of the simulator on the screen, including tiles, robots, requests, and obstacles.
      *
      * @param g Graphics object used for drawing the components.
+     * @pre g != null
+     * @post Draws the simulator components on the screen.
      */
     @Override
     protected void paintComponent(Graphics g) {
@@ -90,6 +97,8 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * lines and corner tiles.
      *
      * @param g Graphics object used for drawing the components.
+     * @pre g != null
+     * @post Draws the grid on the screen.
      */
     private void drawTiles(Graphics g) {
         g.setColor(backgroundColor);
@@ -133,10 +142,11 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         g.fillRect(950, 0, 50, 50);
     }
     /**
-     * Iterates through a list of shapes (circles, triangles, and quadrilaterals) and
-     * draws them using Graphics methods such as fillPolygon, fillOval, and drawOval.
+     * Draws the map with obstacles.
      *
      * @param g Graphics object used for drawing the components.
+     * @pre g != null
+     * @post Draws obstacles on the map.
      */
     private void drawShapes(Graphics g) {
         for (Shape shape : shapes) {
@@ -236,6 +246,10 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      *
      * @param g     Graphics object used for drawing the components.
      * @param robot Robot object in the returning state.
+     * @pre g != null
+     * @pre robot != null
+     * @pre robot.getCurrentState() == RobotState.RETURNING
+     * @post Draws a battery and a red line on the robot's current position.
      */
     private void drawReturningRobot(Graphics g, Robot robot) {
         Point pos = robot.getCurrentPosition();
@@ -248,12 +262,17 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         g.setColor(new Color(220, 19, 19));
         g.drawLine(pos.x()+6,pos.y()-9,pos.x()-5,pos.y()-1);
     }
+
     /**
      * Draws a robot in the standby state, including a connection line, red dot,
      * and blue arcs.
      *
      * @param g     Graphics object used for drawing the components.
      * @param robot Robot object in the standby state.
+     * @pre g != null
+     * @pre robot != null
+     * @pre robot.getCurrentState() == RobotState.STANDBY
+     * @post Draws an antenna with a red dot, and radio waves on the robot's current position.
      */
     private void drawStandbyRobot(Graphics g, Robot robot) {
         Point pos = robot.getCurrentPosition();
@@ -271,10 +290,13 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         }
     }
     /**
-     * Iterates through a list of requests, drawing black circles and indices for
+     * Iterates through a list of requests,
+     * drawing black circles and indices for
      * each request.
      *
      * @param g Graphics object used for drawing the components.
+     * @pre g != null
+     * @post Draws black circles and indices for each request in the list.
      */
     private void drawRequests(Graphics g) {
         g.setColor(Color.BLACK);
@@ -295,6 +317,8 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * Displays the current frame number at the bottom of the panel.
      *
      * @param g Graphics object used for drawing the components.
+     * @pre g != null
+     * @post Draws the current frame number at the bottom of the panel.
      */
     private void drawCurrentFrame(Graphics g) {
         g.setColor(blackColor);
@@ -306,6 +330,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * Returns the number of obstacles on the map, obtained through the GUI.
      *
      * @return the number of obstacles on the map
+     * @post Returns a non-negative integer representing the number of obstacles.
      */
     @Override
     public int askForNumberOfObstacles() {
@@ -334,6 +359,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * Asks the user to input a Simulator.Point (x, y) through the GUI, and returns it.
      *
      * @return the Simulator.Point (x, y) input by the user
+     * @post Returns a valid Point object representing the user's input.
      */
     @Override
     public Request askForRequest() {
@@ -382,7 +408,12 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         return new Request(p1, p2);
     }
 
-
+    /**
+     * Asks the user to input a speed value through the GUI, and returns it.
+     *
+     * @return the speed value input by the user
+     * @post Returns a valid double between 1 and 100 representing the user's input speed.
+     */
     @Override
     public double askForSpeed() {
         JLabel label = new JLabel("From 1 to 100, how fast do you want the simulation to be:");
@@ -413,6 +444,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * Returns true if the GUI is asking for a new Simulator.Point, false otherwise.
      *
      * @return true if the GUI is asking for a new Simulator.Point, false otherwise
+     * @post Returns a boolean indicating if the GUI is asking for a new point.
      */
     @Override
     public boolean isAskingForNewPoint() {
@@ -424,6 +456,9 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      *
      * @param step   the current step of the simulation
      * @param robots the list of robots to display
+     * @pre step >= 0
+     * @pre robots != null
+     * @post Updates the GUI to display the robot status at the current step of the simulation.
      */
     @Override
     public void displayRobotStatus(int step, LinkedHashSet<Robot> robots) {
@@ -436,13 +471,21 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * Displays an error message on the GUI.
      *
      * @param message the error message to display
+     * @pre message != null
+     * @post Displays the given error message on the GUI.
      */
     @Override
     public void displayErrorMessage(String message) {
         messageLabel.setText(message);
         this.hasError = true;
     }
-
+    /**
+     * Sends map information to the GUI.
+     *
+     * @param map The DeliveryMap object containing obstacle information.
+     * @pre map != null
+     * @post The GUI is updated with the map information.
+     */
     @Override
     public void sendMapInformation(DeliveryMap map) {
         shapes = map.obstacles();
@@ -461,7 +504,13 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
 // Inner class to handle mouse clicks
 private static class MouseChecker implements MouseListener {
     private final SimulatorGUI parent;
-
+    /**
+     * Constructor for MouseChecker class.
+     *
+     * @param parent The parent SimulatorGUI object.
+     * @pre parent != null
+     * @post A new MouseChecker object is created.
+     */
     public MouseChecker(SimulatorGUI parent) {
         this.parent = parent;
     }
@@ -499,7 +548,13 @@ private static class MouseChecker implements MouseListener {
 
 private static class KeyChecker implements KeyListener {
     private final SimulatorGUI parent;
-
+    /**
+     * Constructor for KeyChecker class.
+     *
+     * @param parent The parent SimulatorGUI object.
+     * @pre parent != null
+     * @post A new KeyChecker object is created.
+     */
     public KeyChecker(SimulatorGUI parent) {
         this.parent = parent;
     }

@@ -26,7 +26,6 @@ public class Robot {
     private final Point chargingStation;
     private Iterator<Point> trajectoryPointIterator;
     private RobotManager manager;
-    private final int CACHE_SIZE = 15;
 
     private final Map<String, Trajectory> trajectoryCache;
     private final DeliveryMap deliveryMap;
@@ -98,7 +97,7 @@ public class Robot {
         if((int)energy < 0) throw new IllegalStateException("Energy level cannot be below 0.");
 
         switch (powerState) {
-            case DELIVERING, RETURNING -> handleMovingState();
+            case DELIVERING, RETURNING, ENROUTE -> handleMovingState();
             case STANDBY -> handleStandbyState();
             case CHARGING -> handleChargingState();
             default -> throw new IllegalStateException("Unexpected power state: " + powerState);
@@ -253,6 +252,15 @@ public class Robot {
                     this.powerState = RobotPowerState.STANDBY;
                     manager.notify(this, this.powerState);
                 }
+                case ENROUTE -> {
+                    Request currentRequest = manager.getCurrentRequest(this);
+                    if (currentRequest != null) {
+                        Trajectory trajectoryFromStartToEnd = findTrajectory(currentPosition, currentRequest.end());
+                        setPath(trajectoryFromStartToEnd);
+                        this.powerState = RobotPowerState.DELIVERING;
+                        manager.notify(this, this.powerState);
+                    }
+                }
             }
         }
     }
@@ -290,7 +298,6 @@ public class Robot {
         int[] lengths = rng.ints(200, 0, 2).toArray();
         Planner planner = new Planner(0.045, 0.15, 0.15, start, destination, lengths, generator, deliveryMap.obstacles(),rng);
         Trajectory trajectory = planner.findTrajectory();
-
         trajectoryCache.put(cacheKey, trajectory);
         return trajectory;
     }
@@ -311,26 +318,48 @@ public class Robot {
         Point startPoint = request.start();
         Point endPoint = request.end();
 
-        //Check if a trajectory disregarding collisions (straight lines) would be possible given the current energy
+        // Check if a trajectory disregarding collisions (straight lines) would be possible given the current energy
         double euclideanDistanceToStart = getCurrentPosition().dist(startPoint);
-        double euclideanDistanceStartToEnd =  startPoint.dist(endPoint);
+        double euclideanDistanceStartToEnd = startPoint.dist(endPoint);
         double euclideanDistanceEndToChargingStation = endPoint.dist(getChargingStation());
-        double totalDistance = euclideanDistanceToStart+euclideanDistanceStartToEnd+euclideanDistanceEndToChargingStation;
+        double totalDistance = euclideanDistanceToStart + euclideanDistanceStartToEnd + euclideanDistanceEndToChargingStation;
 
         if ((energy / 0.1) <= totalDistance)
             return false;
 
-        //Check if a trajectory now with collisions in mind (planned trajectories) would be possible given the current energy
-        double  distanceToStart = distanceToDestination(currentPosition, startPoint);
+        // Check if a trajectory now with collisions in mind (planned trajectories) would be possible given the current energy
+        double distanceToStart = distanceToDestination(currentPosition, startPoint);
         double distanceToEnd = distanceToDestination(startPoint, endPoint);
-        double  distanceToChargingStation = distanceToDestination(endPoint, chargingStation);
+        double distanceToChargingStation = distanceToDestination(endPoint, chargingStation);
 
         totalDistance = (distanceToStart + distanceToEnd + distanceToChargingStation);
-        return ((energy / 0.1) > totalDistance);
+        return (energy / 0.1) > totalDistance;
+    }
+
+    /**
+     * Assigns a delivery request to the robot and sets its path to the start point of the request.
+     * The robot's power state is set to ENROUTE, and the manager is notified of the change in power state.
+     *
+     * @param request The delivery request to be assigned to the robot.
+     * @pre request must not be null.
+     * @post The robot's path is set to the start point of the request.
+     *       The robot's power state is set to ENROUTE.
+     *       The manager is notified of the change in power state.
+     */
+    public void assignRequest(Request request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
+        Point startPoint = request.start();
+        Trajectory trajectoryToStart = findTrajectory(currentPosition, startPoint);
+        setPath(trajectoryToStart);
+        this.powerState = RobotPowerState.ENROUTE;
+        manager.notify(this, this.powerState);
     }
 
 
-/**
+
+    /**
  * Gets the current position of the robot.
  *
  * @return the current position of the robot

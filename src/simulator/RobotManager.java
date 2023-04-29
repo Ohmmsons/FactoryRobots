@@ -17,6 +17,7 @@ import java.util.*;
 public class RobotManager {
     private final Set<Robot> subscribers;
     private final RequestQueue requests;
+    private final Map<Robot, Request> currentRequests;
 
     /**
      * Constructor for RobotManager.
@@ -32,28 +33,23 @@ public class RobotManager {
         this.subscribers = new LinkedHashSet<>(robots);
         for (Robot robot : robots)
             robot.subscribeToManager(this);
+        this.currentRequests = new HashMap<>();
     }
 
-    /**
-     * Add a robot to the subscribers list.
-     *
-     * @param robot The robot to be added to the list.
-     * @pre robot must not be null.
-     * @post The robot is added to the subscribers list.
-     */
-    private void addSubscriber(Robot robot) {
-        subscribers.add(robot);
-    }
 
     /**
-     * Remove a robot from the subscribers list.
+     * Returns the current request assigned to the specified robot.
      *
-     * @param robot The robot to be removed from the list.
+     * @param robot The robot whose current request is to be fetched.
+     * @return The current request assigned to the robot, or null if there is no request assigned.
      * @pre robot must not be null.
-     * @post The robot is removed from the subscribers list.
+     * @post A request object is returned if there is a current request assigned to the robot, otherwise null is returned.
      */
-    private void removeSubscriber(Robot robot) {
-        subscribers.remove(robot);
+    public Request getCurrentRequest(Robot robot) {
+        if (robot == null) {
+            throw new IllegalArgumentException("Robot cannot be null");
+        }
+        return currentRequests.get(robot);
     }
 
 
@@ -89,6 +85,8 @@ public class RobotManager {
             // If there is a robot that can reach the request
             if (bestRobot != null) {
                 bestRobot.setPath(bestTrajectory);
+                currentRequests.put(bestRobot, nextRequest);
+                bestRobot.assignRequest(nextRequest);
                 requests.removeRequest();
             }
             // If no robot can reach the request's destination send request to end of queue
@@ -99,6 +97,23 @@ public class RobotManager {
         }
     }
 
+    /**
+     * Updates the subscribers list based on the robot's power state.
+     * If a robot is in standby mode, it will be added to the subscribers list.
+     * If a robot is delivering, returning, or enroute, it will be removed from the subscribers list.
+     *
+     * @param robot The robot whose power state has changed.
+     * @param event The power state event that occurred.
+     * @pre robot and event must not be null.
+     * @post The subscribers list is updated based on the robot's power state.
+     */
+    private void updateSubscriberList(Robot robot, RobotPowerState event) {
+        if (robot == null || event == null) throw new IllegalArgumentException("Robot and event cannot be null");
+        switch (event) {
+            case STANDBY -> subscribers.add(robot);
+            case DELIVERING, RETURNING, ENROUTE -> subscribers.remove(robot);
+        }
+    }
 
     /**
      * Notifies the RobotManager of a change in a robot's power state.
@@ -112,10 +127,7 @@ public class RobotManager {
      */
     public void notify(Robot sender, RobotPowerState event) {
         if (sender == null || event == null) throw new IllegalArgumentException("Sender and event cannot be null");
-        switch (event) {
-            case STANDBY -> addSubscriber(sender);
-            case DELIVERING, RETURNING -> removeSubscriber(sender);
-        }
+        updateSubscriberList(sender,event);
     }
 
     /**
@@ -153,14 +165,4 @@ public class RobotManager {
         return subscribers;
     }
 
-    /**
-     * Returns the next request in the queue.
-     *
-     * @return The next request in the queue.
-     * @pre None.
-     * @post The next request in the queue is returned.
-     */
-    public Request getNextRequest() {
-        return requests.getNextRequest();
-    }
 }
