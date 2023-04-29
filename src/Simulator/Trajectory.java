@@ -1,6 +1,7 @@
 package Simulator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Random;
 
@@ -123,6 +124,7 @@ public class Trajectory {
         return new Trajectory[]{new Trajectory(child1, generator, obstacles, rng), new Trajectory(child2, generator, obstacles, rng)};
     }
 
+
     /**
      * mutate method to perform one point mutation with probability pm
      *
@@ -178,8 +180,9 @@ public class Trajectory {
             do {
                 if (!points.contains(p)) {
                     // Add point and update length
-                    length += (points.get(i - 1).dist(p) + p.dist(points.get(i))) - points.get(i - 1).dist(points.get(i));
-                    points.add(i, p);
+                    length-=(points.get(i).dist(points.get(i+1)));
+                    points.add(i + 1, p);
+                    length+=(points.get(i).dist(p) + p.dist(points.get(i+2)));
                 }
                 else  p = generator.generateGaussianPoint(50, points.get(0), points.get(points.size() - 1));
             }while(points.contains(p));

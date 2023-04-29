@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 /**
@@ -95,25 +96,32 @@ public class TrajectoryPopulation {
         return (df.format(maxFitness.fitness()) + " " + df.format(average) + " " + df.format(minFitness.fitness()) + " " + df.format(minCollision.getLength()) + " " + minCollision.calculateCollisions());
     }
 
+
     /**
-     * roulette method to perform roulette selection on population.
+     * Rank-based selection.
      *
      * @return winners of selection
      * @pre The population must have a positive size and valid Trajectory objects.
-     * @post Returns a new TrajectoryPopulation object containing the winners of the roulette selection.
+     * @post Returns a new TrajectoryPopulation object containing the winners of the rank-based selection.
      */
-    public TrajectoryPopulation roulette() {
+    public TrajectoryPopulation rankBasedSelection() {
         ArrayList<Trajectory> winners = new ArrayList<>();
-        double totalFitness = individuals.stream().mapToDouble(Trajectory::fitness).sum();
+        ArrayList<Trajectory> sortedIndividuals = new ArrayList<>(individuals);
+        sortedIndividuals.sort(Comparator.comparingDouble(Trajectory::fitness));
+
+        double totalFitness = 0;
+        for (int i = 0; i < sortedIndividuals.size(); i++) {
+            totalFitness += (i + 1);
+        }
+
         for (int i = 0; i < individuals.size(); i++) {
             double randomValue = rng.nextDouble() * totalFitness;
-            for (Trajectory individual : individuals) {
-                randomValue -= individual.fitness();
-                if (randomValue <= 0) {
-                    winners.add(individual);
-                    break;
-                }
+            int index = 0;
+            while (randomValue > 0) {
+                randomValue -= (index + 1);
+                index++;
             }
+            winners.add(sortedIndividuals.get(index - 1));
         }
         return new TrajectoryPopulation(winners, generator, obstacles, rng);
     }

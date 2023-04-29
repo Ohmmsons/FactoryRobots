@@ -22,6 +22,7 @@ public class Planner {
     private final PointGenerator generator;
 
     private ArrayList<Shape> obstacles;
+    private double gridSize;
 
     /**
      * Constructor for SGA class
@@ -43,6 +44,7 @@ public class Planner {
         this.generator = generator;
         this.obstacles = obstacles;
         this.rng = rng;
+        this.gridSize = gridSize;
     }
 
     /**
@@ -54,19 +56,40 @@ public class Planner {
      */
     public Trajectory findTrajectory() {
         int maxGenerations = 100;
+        int numElites = (int) (0.1 * population.getIndividuals().size()); // 10% elites
+        int stagnationThreshold = 10; // Early stopping after 10 generations with no improvement
+        int stagnationCounter = 0;
         Trajectory bestTrajectory = getBestTrajectory(population);
+        double prevBestFitness = bestTrajectory.fitness();
 
         // Evolve the population to find the best trajectory
         for (int gen = 0; gen < maxGenerations && bestTrajectory.calculateCollisions() > 0; gen++) {
-            TrajectoryPopulation offspring = population.roulette();
+            TrajectoryPopulation offspring = population.rankBasedSelection();
             ArrayList<Trajectory> offspringIndividuals = generateOffspring(offspring);
-            applyMutations(offspringIndividuals);
 
+            // Apply elitism
+            offspringIndividuals.sort(Comparator.comparingDouble(Trajectory::fitness).reversed());
+            ArrayList<Trajectory> elites = new ArrayList<>(population.getIndividuals());
+            elites.sort(Comparator.comparingDouble(Trajectory::fitness).reversed());
+            for (int i = 0; i < numElites; i++) {
+                offspringIndividuals.set(i, elites.get(i));
+            }
+            applyMutations(offspringIndividuals);
             offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles, rng);
             bestTrajectory = getBestTrajectory(offspring);
+
+            // Early stopping
+            if (bestTrajectory.fitness() > prevBestFitness) {
+                prevBestFitness = bestTrajectory.fitness();
+                stagnationCounter = 0;
+            } else {
+                stagnationCounter++;
+                if (stagnationCounter >= stagnationThreshold) {
+                    break;
+                }
+            }
             population = offspring;
         }
-
         return bestTrajectory.calculateCollisions() > 0 ? null : bestTrajectory;
     }
 
@@ -100,6 +123,8 @@ public class Planner {
         }
         return offspringIndividuals;
     }
+
+
 
     /**
      * Applies mutations to the given list of offspring individuals.

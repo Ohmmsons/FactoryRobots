@@ -38,7 +38,7 @@ public class Simulator {
      */
     public boolean validInputCheck(DeliveryMap deliveryMap, Request request) {
         if (deliveryMap.isDeliveryRequestValid(request)) return true;
-        else ui.displayErrorMessage("Request invalid, please input a new one");
+        else ui.displayErrorMessage("Request invalid, it is inside an obstacle, please input a new one");
         return false;
     }
 
