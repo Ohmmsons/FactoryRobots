@@ -60,10 +60,84 @@ public class SimulatorTests {
     }
 
     @Test
-    public void testSimulation() {
+    public void testSimulation50Obstacles() {
         //RUN SIMULATION AT FULL SPEED FOR 5 SECS AND CHECK IF IT ENCOUNTERS ANY ERRORS DURING EXECUTION
         try {
-            Simulator simulator = new Simulator(new TestUI());
+            Simulator simulator = new Simulator(new TestUI(50));
+
+            // Create an ExecutorService to run the simulation
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future<?> future = executorService.submit(() -> {
+                try {
+                    simulator.startSimulation();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Stop the simulation
+            simulator.stopSimulation();
+
+            // Check for exceptions in the simulation thread
+            future.get();
+
+            // Shutdown the executor service
+            executorService.shutdown();
+        } catch (ExecutionException e) {
+            Assertions.fail("An exception was thrown during the test: " + e.getCause().getMessage());
+        } catch (InterruptedException e) {
+            Assertions.fail("The test was interrupted: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSimulation150Obstacles() {
+        //RUN SIMULATION AT FULL SPEED FOR 5 SECS AND CHECK IF IT ENCOUNTERS ANY ERRORS DURING EXECUTION
+        try {
+            Simulator simulator = new Simulator(new TestUI(150));
+
+            // Create an ExecutorService to run the simulation
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future<?> future = executorService.submit(() -> {
+                try {
+                    simulator.startSimulation();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Stop the simulation
+            simulator.stopSimulation();
+
+            // Check for exceptions in the simulation thread
+            future.get();
+
+            // Shutdown the executor service
+            executorService.shutdown();
+        } catch (ExecutionException e) {
+            Assertions.fail("An exception was thrown during the test: " + e.getCause().getMessage());
+        } catch (InterruptedException e) {
+            Assertions.fail("The test was interrupted: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSimulation500Obstacles() {
+        //RUN SIMULATION AT FULL SPEED FOR 5 SECS AND CHECK IF IT ENCOUNTERS ANY ERRORS DURING EXECUTION
+        try {
+            Simulator simulator = new Simulator(new TestUI(500));
 
             // Create an ExecutorService to run the simulation
             ExecutorService executorService = Executors.newSingleThreadExecutor();
