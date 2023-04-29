@@ -1,15 +1,19 @@
 package Simulator;
 
 /**
-Class Triangle
-@author Jude Adam
-@version 1.0.0 09/03/2023
-  The figure must have 3 points and have an angle sum of 180
+ * Class Triangle represents a triangle that is defined by a set of points.
+ *
+ * @author Jude Adam
+ * @version 1.0.0 09/03/2023
+ * @inv points.length == 3
+ * @inv sum of interior angles equals 180 degrees
  */
 public class Triangle extends Polygon {
     /**
-     Constructor method for Triangle class
-     @param points Points of triangle
+     * @param points Points of triangle
+     * @pre points != null && points.length == 3
+     * @post this.points == points
+     * @throws IllegalArgumentException if points.length != 3, or if the points do not form a valid triangle
      */
     public Triangle(Point[] points) {
         super(points);

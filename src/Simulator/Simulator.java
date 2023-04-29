@@ -5,7 +5,7 @@ import java.util.*;
  * The Simulator class is responsible for controlling the simulation.
  * @author Jude Adam
  * @version 1.0 20/04/2023
- * ui!= null
+ * @inv ui != null
  */
 public class Simulator {
 
@@ -14,6 +14,8 @@ public class Simulator {
     /**
      * Creates a new Simulator object.
      * @param ui The user interface for the simulator.
+     * @pre ui != null
+     * @post this.ui == ui
      */
     public Simulator(SimulatorUI ui) {
         if(ui == null) throw new IllegalArgumentException("UI must exist");
@@ -26,12 +28,13 @@ public class Simulator {
         this.ui = ui;
         this.rng = rng;
     }
-    
+
     /**
-     * Checks if the input delivery point is valid.
+     * Checks if the input delivery request is valid.
      * @param deliveryMap The map of the delivery area.
      * @param request The delivery point to check.
      * @return True if the delivery point is valid, false otherwise.
+     * @pre deliveryMap != null && request != null
      */
     public boolean validInputCheck(DeliveryMap deliveryMap, Request request) {
         if (deliveryMap.isDeliveryRequestValid(request)) return true;
@@ -45,6 +48,7 @@ public class Simulator {
      * @param generator   The generator used.
      * @param deliveryMap The delivery map.
      * @return List of 4 robots, one in each corner, all fully charged and in standby.
+     * @pre generator != null && deliveryMap != null
      */
     private LinkedHashSet<Robot> initializeRobots(PointGenerator generator, DeliveryMap deliveryMap){
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
@@ -67,6 +71,7 @@ public class Simulator {
      * Uses a ShapeGenerator to generate random obstacles using random numbers provided by the Generator variable.
      * @param generator The generator used.
      * @return List of random obstacles.
+     * @pre generator != null
      */
     private ArrayList<Shape> generateRandomObstacles(ShapeGenerator generator){
         // Generate random obstacles
@@ -93,16 +98,15 @@ public class Simulator {
      * of the loop.
      *
      * @throws InterruptedException if the thread is interrupted while sleeping
+     * @pre ui != null
      */
     public void startSimulation() throws InterruptedException{
         //Initialize Request Queue
         RequestQueue requestQueue = new RequestQueue();
 
-        Random generator = new Random();
-
         //Initialize generators
-        ShapeGenerator shapeGenerator = new ShapeGenerator(generator);
-        PointGenerator pointGenerator = new PointGenerator(generator);
+        ShapeGenerator shapeGenerator = new ShapeGenerator(rng);
+        PointGenerator pointGenerator = new PointGenerator(rng);
 
         // Create delivery map with obstacles
         DeliveryMap deliveryMap = new DeliveryMap(generateRandomObstacles(shapeGenerator));

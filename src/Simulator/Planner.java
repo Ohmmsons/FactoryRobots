@@ -6,10 +6,11 @@ import java.util.Comparator;
 import java.util.Random;
 
 /**
-Class Planner
-@author Jude Adam
-@version 1.0.0 14/04/2023
-@inv generator != null population != null
+ * Class Planner
+ *
+ * @author Jude Adam
+ * @version 1.0.0 14/04/2023
+ * @inv generator != null population != null
  */
 public class Planner {
 
@@ -21,18 +22,21 @@ public class Planner {
     private final PointGenerator generator;
 
     private ArrayList<Shape> obstacles;
+
     /**
-       Constructor for SGA class
-       @param pm  mutation probability
-       @param pa  addition probability
-       @param pr  removal probability
-       @param start starting point
-       @param lengths trajectory lengths
-       @param generator RNG
-       @param obstacles obstacles in map
-        */
+     * Constructor for SGA class
+     *
+     * @param pm        mutation probability
+     * @param pa        addition probability
+     * @param pr        removal probability
+     * @param start     starting point
+     * @param lengths   trajectory lengths
+     * @param generator Point generator
+     * @param obstacles obstacles in map
+     * @param rng RNG
+     */
     public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
-        this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles,rng);
+        this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles, rng);
         this.pm = pm;
         this.pa = pa;
         this.pr = pr;
@@ -40,28 +44,30 @@ public class Planner {
         this.obstacles = obstacles;
         this.rng = rng;
     }
+
     /**
-       Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
-        algorithm performs roulette selection, uniform crossover , mutation, gene addition and gene removal on the population
-        and replaces the old population with the new one.
-        @return best trajectory found
-    */
+     * Trajectory Finder method ,perfoms a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another, the
+     * algorithm performs roulette selection, uniform crossover , mutation, gene addition and gene removal on the population
+     * and replaces the old population with the new one.
+     *
+     * @return best trajectory found
+     */
     public Trajectory findTrajectory() {
         int maxGenerations = 100;
         Trajectory bestTrajectory = getBestTrajectory(population);
 
         // Evolve the population to find the best trajectory
-        for (int gen = 0; gen < maxGenerations && bestTrajectory.nCollisions() > 0; gen++) {
+        for (int gen = 0; gen < maxGenerations && bestTrajectory.calculateCollisions() > 0; gen++) {
             TrajectoryPopulation offspring = population.roulette();
             ArrayList<Trajectory> offspringIndividuals = generateOffspring(offspring);
             applyMutations(offspringIndividuals);
 
-            offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles,rng);
+            offspring = new TrajectoryPopulation(offspringIndividuals, generator, obstacles, rng);
             bestTrajectory = getBestTrajectory(offspring);
             population = offspring;
         }
 
-        return bestTrajectory.nCollisions() > 0 ? null : bestTrajectory;
+        return bestTrajectory.calculateCollisions() > 0 ? null : bestTrajectory;
     }
 
     /**
@@ -92,7 +98,6 @@ public class Planner {
             offspringIndividuals.add(children[0]);
             offspringIndividuals.add(children[1]);
         }
-
         return offspringIndividuals;
     }
 

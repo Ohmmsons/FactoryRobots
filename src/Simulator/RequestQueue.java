@@ -94,4 +94,13 @@ public class RequestQueue {
     public synchronized Queue<Request> getRequests() {
         return requests;
     }
+
+    @Override
+    public String toString() {
+        String str = "(";
+        for(Request request: this.requests)
+            str+=request;
+        str+=")";
+        return  str;
+    }
 }

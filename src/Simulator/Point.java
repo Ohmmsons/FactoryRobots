@@ -1,16 +1,18 @@
 package Simulator;
 
 /**
- * Class Point used for forming line segments.
  * @author Jude Adam
  * @version 1.0.0 16/02/2023
- * @inv Point must be in the 1000x1000 area.
+ * @inv x >= 0 && x <= 999
+ * @inv y >= 0 && y <= 999
  */
 public record Point(int x, int y) {
     /**
      * Constructs a new Point object with the specified x and y coordinates.
+     *
      * @param x the x coordinate of the point
      * @param y the y coordinate of the point
+     * @pre x >= 0 && x <= 999 && y >= 0 && y <= 999
      * @throws IllegalArgumentException if either coordinate is less than 0 or greater than 999
      */
     public Point {
@@ -19,6 +21,7 @@ public record Point(int x, int y) {
 
     /**
      * Returns a string representation of this point.
+     *
      * @return a string representation of this point in the format "(x;y)"
      */
     @Override
@@ -28,6 +31,7 @@ public record Point(int x, int y) {
 
     /**
      * Returns a hash code value for this point.
+     *
      * @return a hash code value for this point
      */
     @Override
@@ -39,17 +43,24 @@ public record Point(int x, int y) {
     }
 
     /**
-     * Method to see distance from this point to point p.
+     * Calculates the distance between this point and another point.
+     *
      * @param p other point
-     * @return double value of distance from this to point p
+     * @return double value of distance from this point to point p
+     * @pre p != null
      */
     public double dist(Point p) {
         double dx = x - p.x;
         double dy = y - p.y;
         return Math.sqrt(dx * dx + dy * dy);
     }
-    @Override
-    public Point clone(){
-        return new Point(x,y);
+
+    /**
+     * Creates a new point with the same x and y coordinates as this point.
+     *
+     * @return a new point with the same x and y coordinates as this point
+     */
+    public Point clone() {
+        return new Point(x, y);
     }
 }

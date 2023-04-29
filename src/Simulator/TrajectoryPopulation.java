@@ -7,10 +7,12 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
- Class Trajectory Population, used to perform selection of trajectories based on fitness
- @author Jude Adam
- @version 1.0.0 20/02/2023
- Points in the path must be sequential and in the 1st quadrant
+ * Class TrajectoryPopulation, used to perform selection of trajectories based on fitness.
+ *
+ * @author Jude Adam
+ * @version 1.0.0 20/02/2023
+ * @inv Individuals in the population must not be null and have a positive size.
+ * @inv Trajectories in the population must be in the 1st quadrant.
  */
 public class TrajectoryPopulation {
 
@@ -21,14 +23,20 @@ public class TrajectoryPopulation {
     private PointGenerator generator;
 
     /**
-    Constructor for TrajectoryPopulation Class
-     @param start starting point of trajectories
-     @param end ending point of trajectories
-     @param n size of population
-     @param lengths lengths of trajectories
-     @param generator RNG
-     @param obstacles Obstacles
-   */
+     * Constructor for TrajectoryPopulation Class.
+     *
+     * @param start     starting point of trajectories
+     * @param end       ending point of trajectories
+     * @param n         size of population
+     * @param lengths   lengths of trajectories
+     * @param generator Point generator
+     * @param obstacles Obstacles
+     * @param rng       Random number generator
+     * @pre start and end points must be valid Point objects.
+     * @pre n must be greater than 0.
+     * @pre lengths must be a valid array of integers with the same length as n.
+     * @post Creates a population of Trajectory objects with the specified properties.
+     */
     public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
         this.individuals = new ArrayList<>();
         this.generator = generator;
@@ -38,14 +46,24 @@ public class TrajectoryPopulation {
             ArrayList<Point> points = new ArrayList<>();
             points.add(start);
             for (int j = 0; j < lengths[i]; j++) {
-                Point p = generator.generateGaussianPoint(50, points.get(0),points.get(points.size()-1));
+                Point p = generator.generateGaussianPoint(50, points.get(0), points.get(points.size() - 1));
                 points.add(p);
             }
             points.add(end);
-            this.individuals.add(new Trajectory(points, generator, obstacles,rng));
+            this.individuals.add(new Trajectory(points, generator, obstacles, rng));
         }
     }
 
+    /**
+     * Constructor for TrajectoryPopulation Class with a given list of Trajectory objects.
+     *
+     * @param individuals List of Trajectory objects
+     * @param generator   RNG
+     * @param obstacles   Obstacles
+     * @param rng         Random number generator
+     * @pre individuals must be a valid list of Trajectory objects.
+     * @post Creates a population of Trajectory objects with the specified properties.
+     */
     public TrajectoryPopulation(ArrayList<Trajectory> individuals, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
         this.individuals = individuals;
         this.generator = generator;
@@ -60,10 +78,9 @@ public class TrajectoryPopulation {
         return individuals;
     }
 
-
     /**
-     *
-     * @return String representation of population
+     * @return String representation of the population
+     * @post Returns a string representation of the population with maximum fitness, average fitness, minimum fitness, minimum collision trajectory length, and number of collisions.
      */
     public String toString() {
         DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
@@ -71,17 +88,19 @@ public class TrajectoryPopulation {
         DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
         Trajectory maxFitness = Collections.max(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
         Trajectory minFitness = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        Trajectory minCollision = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.nCollisions() - s2.nCollisions()));
+        Trajectory minCollision = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.calculateCollisions() - s2.calculateCollisions()));
         double average = 0;
         for (Trajectory t : individuals) average += t.fitness();
         average /= individuals.size();
-        return (df.format(maxFitness.fitness()) + " " + df.format(average) + " " + df.format(minFitness.fitness()) + " " + df.format(minCollision.getLength()) + " " + minCollision.nCollisions());
+        return (df.format(maxFitness.fitness()) + " " + df.format(average) + " " + df.format(minFitness.fitness()) + " " + df.format(minCollision.getLength()) + " " + minCollision.calculateCollisions());
     }
 
-
     /**
-     * roulette method to perform roulette selection on population
+     * roulette method to perform roulette selection on population.
+     *
      * @return winners of selection
+     * @pre The population must have a positive size and valid Trajectory objects.
+     * @post Returns a new TrajectoryPopulation object containing the winners of the roulette selection.
      */
     public TrajectoryPopulation roulette() {
         ArrayList<Trajectory> winners = new ArrayList<>();
@@ -96,6 +115,6 @@ public class TrajectoryPopulation {
                 }
             }
         }
-        return new TrajectoryPopulation(winners, generator, obstacles,rng);
+        return new TrajectoryPopulation(winners, generator, obstacles, rng);
     }
 }

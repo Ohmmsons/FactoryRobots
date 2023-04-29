@@ -75,7 +75,7 @@ public class RobotTests {
         deliveryMap.addObstacle(new Circle(new Point[]{new Point(100, 100)},10));
         Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
         Trajectory trajectory = robot.findTrajectory(startingPoint, new Point(300, 300));
-        assertTrue(trajectory.nCollisions()==0);
+        assertTrue(trajectory.calculateCollisions()==0);
     }
 
     @Test

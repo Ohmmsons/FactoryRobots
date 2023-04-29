@@ -22,4 +22,9 @@ public record Request(Point start, Point end) {
             throw new IllegalArgumentException("Start and end points cannot be null");
         }
     }
+
+    @Override
+    public String toString(){
+        return "Start " + start + " End " + end;
+    }
 }

@@ -38,6 +38,8 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private ArrayList<Request> requests;
     private JLabel messageLabel;
     private int currentFrame;
+
+    private Graphics2D g;
     private boolean hasError;
     /**
      * Constructor for the SimulatorGUI class. Initializes instance variables,
@@ -76,6 +78,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        this.g =  (Graphics2D) g;
         Graphics2D g2d = (Graphics2D) g;
         drawTiles(g);
         drawShapes(g);
@@ -346,11 +349,13 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        g.drawOval(p1.x(),p1.y(),10,10);
         try {
             if (!hasError)
                 messageLabel.setText("Click where you want your next delivery to end");
+            g.drawLine(p1.x(),p1.y(),getMousePosition().x,getMousePosition().y);
             pointSemaphore.acquire();
-             p2 = point.clone();
+            p2 = point.clone();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

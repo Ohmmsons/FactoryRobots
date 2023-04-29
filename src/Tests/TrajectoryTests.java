@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import Simulator.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -23,7 +22,7 @@ public class TrajectoryTests {
         ArrayList<Shape> figuras = new ArrayList<>();
         figuras.add(new Circle(new Point[]{new Point(1,2)},1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
-        Assertions.assertEquals(trajectory.nCollisions(),1);
+        Assertions.assertEquals(trajectory.calculateCollisions(),1);
     }
     @Test
     public void testFitness(){
@@ -127,7 +126,7 @@ public class TrajectoryTests {
         Point[] points = new Point[]{new Point(2,1),new Point(6,2),new Point(9,3)};
         ArrayList<Point> pontosAL = new ArrayList<>();
         Collections.addAll(pontosAL, points);
-        Point[] points1 = new Point[]{new Point(2,1),new Point(6,2),new Point(21,3),new Point(9,3)};
+        Point[] points1 = new Point[]{new Point(2,1),new Point(21,3),new Point(6,2),new Point(9,3)};
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
