@@ -1,6 +1,6 @@
-import Simulator.Simulator;
-import UI.SimulatorCLI;
-import UI.SimulatorGUI;
+import simulator.Simulator;
+import ui.SimulatorCLI;
+import ui.SimulatorGUI;
 
 import javax.swing.*;
 import java.util.Scanner;
@@ -24,7 +24,7 @@ public class Client {
         else {
             SimulatorGUI gui = new SimulatorGUI();
             simulator = new Simulator(gui);
-            JFrame frame = new JFrame("Simulator");
+            JFrame frame = new JFrame("simulator");
             frame.add(gui);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();
