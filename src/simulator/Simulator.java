@@ -136,7 +136,7 @@ public class Simulator {
                     request = ui.askForRequest();
                 }
                 while (!validInputCheck(deliveryMap, request));
-                robotManager.addRequest(request);
+                requestQueue.addRequest(request);
                 ui.addRequest(request);
             }
 
@@ -148,8 +148,8 @@ public class Simulator {
             // Display robot status on UI
             ui.displayRobotStatus(step, robots);
 
-            // Wait for 5 milliseconds
-            Thread.sleep((long) (500/speed));
+            // Wait for 1/speed seconds
+            Thread.sleep((long) (1000/speed));
             step++;
         }
     }

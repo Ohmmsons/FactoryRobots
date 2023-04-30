@@ -88,7 +88,7 @@ public class SimulatorCLI implements SimulatorUI {
     public double askForSpeed() {
         double n;
         do {
-            System.out.println("From 1 to 100 how fast fast do you want the simulation to be");
+            System.out.println("From 1 to 100 how fast fast do you want the simulation to be (Steps per second)");
             n = sc.nextDouble();
         } while (n > 100 || n < 0);
         System.out.println("Speed set to " + n + ". Press enter to enter requests\n Simulation Starting...");

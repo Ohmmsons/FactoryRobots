@@ -325,13 +325,12 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         for (int i = 0; i < requests.size(); i++) {
             Point requestp1 = requests.get(i).start();
             g.fillOval(requestp1.x() - 5, requestp1.y() - 5, 10, 10);
-            String index = String.valueOf(i);
-            int labelWidth = g.getFontMetrics().stringWidth(index + " Start");
-            g.drawString(index + " Start", requestp1.x() - labelWidth / 2, requestp1.y() + robotWidth);
-            labelWidth = g.getFontMetrics().stringWidth(index + " End");
+            int labelWidth = g.getFontMetrics().stringWidth("Start");
+            g.drawString("Start", requestp1.x() - labelWidth / 2, requestp1.y() + robotWidth);
+            labelWidth = g.getFontMetrics().stringWidth("End");
             Point requestp2 = requests.get(i).end();
             g.fillOval(requestp2.x() - 5, requestp2.y() - 5, 10, 10);
-            g.drawString(index + " End", requestp2.x() - labelWidth / 2, requestp2.y() + robotWidth);
+            g.drawString("End", requestp2.x() - labelWidth / 2, requestp2.y() + robotWidth);
             drawArrow((Graphics2D) g,requestp1.x(),requestp1.y(),requestp2.x(),requestp2.y());
         }
     }

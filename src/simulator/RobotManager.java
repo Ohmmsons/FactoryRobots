@@ -28,7 +28,7 @@ public class RobotManager {
      * @post A new RobotManager is created with the given robots and requests.
      */
     public RobotManager(LinkedHashSet<Robot> robots, RequestQueue requests) {
-        if (robots == null) throw new IllegalArgumentException("Can't be constructed with null arguments");
+        if (robots == null || requests == null) throw new IllegalArgumentException("Can't be constructed with null arguments");
         this.requests = requests;
         this.subscribers = new LinkedHashSet<>(robots);
         for (Robot robot : robots)
@@ -128,19 +128,6 @@ public class RobotManager {
     public void notify(Robot sender, RobotPowerState event) {
         if (sender == null || event == null) throw new IllegalArgumentException("Sender and event cannot be null");
         updateSubscriberList(sender,event);
-    }
-
-    /**
-     * Adds a delivery request to the end of the queue.
-     *
-     * @param deliveryRequest The delivery point to be added to the queue.
-     * @pre deliveryRequest must not be null.
-     * @post The delivery request is added to the end of the queue
-     * and the RobotManager will attempt to assign the request to a robot.
-     */
-    public void addRequest(Request deliveryRequest) {
-        if (deliveryRequest == null) throw new IllegalArgumentException("Delivery Request cannot be null");
-        this.requests.addRequest(deliveryRequest);
     }
 
     /**

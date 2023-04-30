@@ -10,7 +10,7 @@ import java.util.Queue;
  * @version 1.0.0 20/04/2023
  * @inv requests != null
  */
-public class RequestQueue {
+public class RequestQueue{
     private final Queue<Request> requests;
 
     /**

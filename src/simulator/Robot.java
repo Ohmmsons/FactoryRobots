@@ -55,6 +55,7 @@ public class Robot {
         this.energy = 100.00;
         this.powerState = RobotPowerState.STANDBY;
         this.trajectoryPointIterator = null;
+        //Cache for robot to remember up to CACHE_SIZE trajectories, by defaut it is 100
         this.trajectoryCache = new LinkedHashMap<>(CACHE_SIZE, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, Trajectory> eldest) {
@@ -250,8 +251,9 @@ public class Robot {
         if (this.trajectoryPointIterator.hasNext()) {
             Point previousPosition = currentPosition.clone();
             this.currentPosition = trajectoryPointIterator.next();
+            //Check if robot move more than 1 pixel
             if (Math.abs(currentPosition.x() - previousPosition.x()) > 1 || Math.abs(currentPosition.y() - previousPosition.y()) > 1)
-                throw new IllegalStateException("Robot can't move 2 units at a time");
+                throw new IllegalStateException("Robot can't move more than one pixel at a time");
         }
         //Check if arrives at destination
         if (!this.trajectoryPointIterator.hasNext()) {
