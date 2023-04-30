@@ -1,9 +1,6 @@
 package simulator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Class Planner, used to find trajectories without collisions using a Genetic algorithm
@@ -24,31 +21,162 @@ public class Planner {
 
     private final ArrayList<Shape> obstacles;
 
+
     /**
-     * Constructor for Planner class
+     * Constructor for Planner class. This constructor is private and can only be accessed by the Builder.
      *
-     * @param pm        mutation probability
-     * @param pa        addition probability
-     * @param pr        removal probability
-     * @param start     starting point
-     * @param end       ending point
-     * @param lengths   trajectory lengths
-     * @param generator Point generator
-     * @param obstacles obstacles in map
-     * @param rng       RNG
-     * @pre start != null &amp;&amp; end != null
-     * @pre lengths != null &amp;&amp;lengths.length > 0
-     * @pre generator != null &amp;&amp; obstacles != null &amp;&amp; rng != null
-     * @post population != null &amp;&amp; this.generator != null &amp;&amp; this.obstacles != null &amp;&amp; this.rng != null
+     * @param builder The Builder object containing all required fields for Planner construction.
+     * @pre builder != null
+     * @post this.generator != null &amp;&amp; this.obstacles != null &amp;&amp; this.rng != null
      */
-    public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
-        this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles, rng);
-        this.pm = pm;
-        this.pa = pa;
-        this.pr = pr;
-        this.generator = generator;
-        this.obstacles = obstacles;
-        this.rng = rng;
+    // Make the Planner constructor private
+    private Planner(Builder builder) {
+        this.pm = builder.pm;
+        this.pa = builder.pa;
+        this.pr = builder.pr;
+        this.generator = builder.generator;
+        this.obstacles = builder.obstacles;
+        this.rng = builder.rng;
+        this.population = new TrajectoryPopulation(builder.start, builder.end, builder.lengths.length, builder.lengths, generator, obstacles, rng);
+    }
+
+    /**
+     *The Builder class is used to construct instances of the Planner class with customizable parameters.
+     *It contains methods to set the values of the parameters and a build() method to create a new Planner instance.
+     *@author Jude Adam
+     *@version 1.0.0 30/04/2023
+     */
+    public static class Builder {
+        // Declare Builder class fields, corresponding to Planner class fields
+        private double pm = 0.045; //default is 0.045
+        private double pa = 0.1; // default is 0.1
+        private double pr = 0.1;// default is 0.1
+        private Point start;
+        private Point end;
+        private int[] lengths;
+        private PointGenerator generator;
+        private ArrayList<Shape> obstacles;
+        private Random rng;
+
+        /**
+         Setter method for the mutation probability parameter.
+         @param pm The mutation probability value.
+         @return This Builder instance with the specified mutation probability value.
+         @pre pm &ge; 0
+         @post The mutation probability parameter is set to the specified value.
+         */
+        public Builder pm(double pm) {
+            this.pm = pm;
+            return this;
+        }
+
+        /**
+         Setter method for the point addition probability parameter.
+         @param pa The point addition probability value.
+         @return This Builder instance with the specified point addition probability value.
+         @pre pa &ge; 0
+         @post The point addition probability parameter is set to the specified value.
+         */
+        public Builder pa(double pa) {
+            this.pa = pa;
+            return this;
+        }
+
+        /**
+         Setter method for the point removal probability parameter.
+         @param pr The point removal probability value.
+         @return This Builder instance with the specified point removal probability value.
+         @pre pr &ge; 0
+         @post The point removal probability parameter is set to the specified value.
+         */
+        public Builder pr(double pr) {
+            this.pr = pr;
+            return this;
+        }
+
+        /**
+         Setter method for the starting point parameter.
+         @param start The starting point value.
+         @return This Builder instance with the specified starting point value.
+         @pre start != null
+         @post The starting point parameter is set to the specified value.
+         */
+        public Builder start(Point start) {
+            this.start = start;
+            return this;
+        }
+
+        /**
+         Setter method for the ending point parameter.
+         @param end The ending point value.
+         @return This Builder instance with the specified ending point value.
+         @pre end != null
+         @post The ending point parameter is set to the specified value.
+         */
+        public Builder end(Point end) {
+            this.end = end;
+            return this;
+        }
+
+        /**
+         Setter method for the trajectory lengths parameter.
+         @param lengths The trajectory lengths value.
+         @return This Builder instance with the specified trajectory lengths value.
+         @pre lengths != null
+         @post The trajectory lengths parameter is set to the specified value.
+         */
+        public Builder lengths(int[] lengths) {
+            this.lengths = lengths;
+            return this;
+        }
+
+        /**
+         Setter method for the point generator parameter.
+         @param generator The point generator value.
+         @return This Builder instance with the specified point generator value.
+         @pre generator != null
+         @post The point generator parameter is set to the specified value.
+         */
+        public Builder generator(PointGenerator generator) {
+            this.generator = generator;
+            return this;
+        }
+
+        /**
+         * Setter for the obstacles field.
+         *
+         * @param obstacles The obstacles to set.
+         * @return This Builder instance with the obstacles field set to the provided value.
+         * @pre obstacles != null
+         * @post This Builder instance has the obstacles field set to the provided value.
+         */
+        public Builder obstacles(ArrayList<Shape> obstacles) {
+            this.obstacles = obstacles;
+            return this;
+        }
+
+        /**
+         * Setter for the rng field.
+         *
+         * @param rng The random number generator to set.
+         * @return This Builder instance with the rng field set to the provided value.
+         * @pre rng != null
+         * @post This Builder instance has the rng field set to the provided value.
+         */
+        public Builder rng(Random rng) {
+            this.rng = rng;
+            return this;
+        }
+
+        /**
+         * Builds and returns a new Planner instance using the values stored in this Builder instance.
+         *
+         * @return A new Planner instance.
+         * @post A new Planner instance is returned using the values stored in this Builder instance.
+         */
+        public Planner build() {
+            return new Planner(this);
+        }
     }
 
     /**

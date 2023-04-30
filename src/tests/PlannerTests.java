@@ -25,7 +25,7 @@ class PlannerTests {
         obstacles.add(new Circle(new Point []{new Point(500, 500)}, 50));
 
         // Create a Planner instance
-        Planner planner = new Planner(pm, pa, pr, start, end, lengths, generator, obstacles, rng);
+         Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
 
         // Test if the findTrajectory() method returns a valid trajectory
         Trajectory trajectory = planner.findTrajectory();
@@ -46,7 +46,8 @@ class PlannerTests {
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>(); // No obstacles
 
-        Planner planner = new Planner(pm, pa, pr, start, end, lengths, generator, obstacles, rng);
+        Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
+
 
         Trajectory trajectory = planner.findTrajectory();
         assertNotNull(trajectory, "The trajectory found should not be null");
@@ -66,7 +67,8 @@ class PlannerTests {
         ArrayList<Shape> obstacles = new ArrayList<>();
         obstacles.add(new Circle(new Point []{new Point(500, 500)}, 495)); // Impossible trajectory
 
-        Planner planner = new Planner(pm, pa, pr, start, end, lengths, generator, obstacles, rng);
+        Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
+
 
         Trajectory trajectory = planner.findTrajectory();
         assertNull(trajectory, "The trajectory found should be null");
@@ -85,7 +87,8 @@ class PlannerTests {
         ArrayList<Shape> obstacles = new ArrayList<>();
         obstacles.add(new Circle(new Point []{new Point(500, 500)}, 50)); // Start inside obstacle
 
-        Planner planner = new Planner(pm, pa, pr, start, end, lengths, generator, obstacles, rng);
+        Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
+
 
         Trajectory trajectory = planner.findTrajectory();
         assertNull(trajectory, "The trajectory found should be null");
@@ -104,7 +107,8 @@ class PlannerTests {
         ArrayList<Shape> obstacles = new ArrayList<>();
         obstacles.add(new Circle(new Point []{new Point(500, 500)}, 50)); // End inside obstacle
 
-        Planner planner = new Planner(pm, pa, pr, start, end, lengths, generator, obstacles, rng);
+        Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
+
 
         Trajectory trajectory = planner.findTrajectory();
         assertNull(trajectory, "The trajectory found should be null");
@@ -122,7 +126,8 @@ class PlannerTests {
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
 
-        Planner planner = new Planner(pm, pa, pr, start, end, lengths, generator, obstacles, rng);
+        Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
+
 
         Trajectory trajectory = planner.findTrajectory();
         assertNotNull(trajectory, "The trajectory found should not be null");

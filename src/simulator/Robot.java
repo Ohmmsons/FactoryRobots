@@ -307,7 +307,7 @@ public class Robot {
             return cachedTrajectory;
         }
         int[] lengths = rng.ints(200, 0, 2).toArray();
-        Planner planner = new Planner(0.045, 0.15, 0.15, start, destination, lengths, generator, deliveryMap.obstacles(),rng);
+        Planner planner = new Planner.Builder().pm(0.5).pa(0.3).pr(0.2).start(start).end(destination).lengths(lengths).generator(generator).obstacles(deliveryMap.obstacles()).rng(rng).build();
         Trajectory trajectory = planner.findTrajectory();
         trajectoryCache.put(cacheKey, trajectory);
         return trajectory;
