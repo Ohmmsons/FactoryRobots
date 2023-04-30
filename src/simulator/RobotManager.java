@@ -70,8 +70,8 @@ public class RobotManager {
             double minDistance = Double.MAX_VALUE;
             for (Robot robot : subscribers) {
                 if (robot.canPerformRequest(nextRequest)) {
-                    Trajectory trajectoryToStart = robot.findTrajectory(robot.getCurrentPosition(), nextRequest.start());
-                    Trajectory trajectoryStartToEnd = robot.findTrajectory(nextRequest.start(), nextRequest.end());
+                    Trajectory trajectoryToStart = robot.getTrajectory(robot.getCurrentPosition(), nextRequest.start());
+                    Trajectory trajectoryStartToEnd = robot.getTrajectory(nextRequest.start(), nextRequest.end());
                     if (trajectoryToStart == null || trajectoryStartToEnd == null) continue;
                     Trajectory trajectory = trajectoryToStart.concatenate(trajectoryStartToEnd);
                     if (trajectory.getLength() < minDistance) {

@@ -6,7 +6,7 @@ package simulator;
  *
  * @author Jude Adam
  * @version 1.0.0 16/02/2023
- * @inv points != null && points.length > 2
+ * @inv points != null &amp;&amp; points.length > 2
  */
 public class Polygon extends Shape {
 
@@ -14,9 +14,9 @@ public class Polygon extends Shape {
      * Constructor Polygon Class
      *
      * @param points Points that make up a polygon
-     * @pre points != null && points.length > 2
+     * @pre points != null &amp;&amp; points.length > 2
      * @post this.points == points
-     * @throws IllegalArgumentException if points.length <= 2
+     * @throws IllegalArgumentException if points.length &le; 2
      */
     public Polygon(Point[] points) {
         super(points);
@@ -51,7 +51,7 @@ public class Polygon extends Shape {
      * @param a First point of the line segment
      * @param b Second point of the line segment
      * @return True if the point is on different sides of the line segment
-     * @pre p != null && a != null && b != null
+     * @pre p != null &amp;&amp; a != null &amp;&amp; b != null
      */
     private boolean isPointOnDifferentSides(Point p, Point a, Point b) {
         return ((a.y() > p.y()) != (b.y() > p.y())) &&

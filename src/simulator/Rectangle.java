@@ -14,7 +14,7 @@ public class Rectangle extends Polygon {
      * Constructor for Rectangle class
      *
      * @param points Array of points that make up a rectangle
-     * @pre points != null && points.length == 4
+     * @pre points != null &amp;&amp; points.length == 4
      * @post this.points == points
      * @throws IllegalArgumentException if points.length != 4, or if the points do not form a valid rectangle
      */
@@ -32,7 +32,7 @@ public class Rectangle extends Polygon {
      * @param b Point b
      * @param c Point c
      * @return True if a, b, and c form a right angle
-     * @pre a != null && b != null && c != null
+     * @pre a != null &amp;&amp; b != null &amp;&amp; c != null
      */
     private boolean isOrthogonal(Point a, Point b, Point c) {
         return (b.x() - a.x()) * (b.x() - c.x()) + (b.y() - a.y()) * (b.y() - c.y()) == 0;

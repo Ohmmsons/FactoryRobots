@@ -30,7 +30,7 @@ public class PointGenerator {
      * @param start starting point for calculating midpoint
      * @param end ending point for calculating midpoint
      * @pre stdDev > 0
-     * @pre start != null && end != null
+     * @pre start != null &amp;&amp; end != null
      * @return Point object with x and y coordinates following a Gaussian distribution with mean at midpoint between start and end points and standard deviation stdDev
      */
     public Point generateGaussianPoint(double stdDev, Point start, Point end) {

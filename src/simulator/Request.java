@@ -5,7 +5,9 @@ package simulator;
  *
  * @author Jude Adam
  * @version 1.0.0 20/04/2023
- * @inv start != null && end != null
+ * @param start The start point of the delivery request.
+ * @param end   The end point of the delivery request.
+ * @inv start != null &amp;&amp; end != null
  */
 public record Request(Point start, Point end) {
     /**
@@ -14,7 +16,7 @@ public record Request(Point start, Point end) {
      * @param start The start point of the delivery request.
      * @param end   The end point of the delivery request.
      *
-     * @pre start != null && end != null
+     * @pre start != null &amp;&amp; end != null
      * @post A Request instance is created with the given start and end points.
      */
     public Request {

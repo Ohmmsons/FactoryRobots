@@ -32,7 +32,7 @@ public class RobotTests {
         Point startingPoint = new Point(0, 0);
         DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.findTrajectory(startingPoint, new Point(2, 2));
+        Trajectory trajectory = robot.getTrajectory(startingPoint, new Point(2, 2));
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         robots.add(robot);
         RobotManager rm = new RobotManager(robots,new RequestQueue());
@@ -47,7 +47,7 @@ public class RobotTests {
         Point startingPoint = new Point(0, 0);
         DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.findTrajectory(startingPoint, new Point(1, 1));
+        Trajectory trajectory = robot.getTrajectory(startingPoint, new Point(1, 1));
         assertTrue(robot.canReachDestination(trajectory));
     }
 
@@ -56,7 +56,7 @@ public class RobotTests {
         Point startingPoint = new Point(0, 0);
         DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.findTrajectory(startingPoint, new Point(100, 100));
+        Trajectory trajectory = robot.getTrajectory(startingPoint, new Point(100, 100));
         assertTrue(robot.canReachDestination(trajectory));
     }
 
@@ -64,7 +64,7 @@ public class RobotTests {
     public void testCanReachDestination3() {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(0, 0), map,  new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.findTrajectory(new Point(0, 0), new Point(300, 300));
+        Trajectory trajectory = robot.getTrajectory(new Point(0, 0), new Point(300, 300));
         assertTrue(robot.canReachDestination(trajectory));
     }
 
@@ -74,7 +74,7 @@ public class RobotTests {
         DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
         deliveryMap.addObstacle(new Circle(new Point[]{new Point(100, 100)},10));
         Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.findTrajectory(startingPoint, new Point(300, 300));
+        Trajectory trajectory = robot.getTrajectory(startingPoint, new Point(300, 300));
         assertEquals(0, trajectory.calculateCollisions());
     }
 
@@ -97,7 +97,7 @@ public class RobotTests {
     public void testSetPathUpdatesRobotStateToMoving() {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(0, 0), map,  new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.findTrajectory(new Point(0, 0), new Point(500, 500));
+        Trajectory trajectory = robot.getTrajectory(new Point(0, 0), new Point(500, 500));
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         robots.add(robot);
         RobotManager rm = new RobotManager(robots,new RequestQueue());
@@ -110,7 +110,7 @@ public class RobotTests {
     public void testGoesBackToStandbyAfterDelivery() {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(0, 0), map, new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), new Point(1,1));
+        Trajectory trajectory = robot.getTrajectory(robot.getCurrentPosition(), new Point(1,1));
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         robots.add(robot);
         RobotManager rm = new RobotManager(robots, new RequestQueue());
@@ -126,7 +126,7 @@ public class RobotTests {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(0, 0), map,  new PointGenerator(new Random()),new Random());
         //Get out of Spawn
-        Trajectory trajectory = robot.findTrajectory(robot.getCurrentPosition(), new Point(1,1));
+        Trajectory trajectory = robot.getTrajectory(robot.getCurrentPosition(), new Point(1,1));
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
         robots.add(robot);
         RobotManager rm = new RobotManager(robots, new RequestQueue());

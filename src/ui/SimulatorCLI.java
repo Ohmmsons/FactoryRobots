@@ -20,7 +20,7 @@ public class SimulatorCLI implements SimulatorUI {
     /**
      * Constructor that initializes the `Scanner` and `Console` objects.
      *
-     * @post sc != null && requests != null
+     * @post sc != null &amp;&amp; requests != null
      */
     public SimulatorCLI() {
         sc = new Scanner(System.in);
@@ -82,7 +82,7 @@ public class SimulatorCLI implements SimulatorUI {
      * Asks the user for the speed of the simulation.
      *
      * @return The speed of the simulation.
-     * @post return > 0 && return <= 100
+     * @post return > 0 &amp;&amp; return &le; 100
      */
     @Override
     public double askForSpeed() {
@@ -120,7 +120,7 @@ public class SimulatorCLI implements SimulatorUI {
      *
      * @param step   The current step.
      * @param robots A list of robots.
-     * @pre step >= 0 && robots != null
+     * @pre step >= 0 &amp;&amp; robots != null
      */
     @Override
     public void displayRobotStatus(int step, LinkedHashSet<Robot> robots) {

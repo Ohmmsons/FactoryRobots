@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Random;
 
 /**
- * Class Planner
+ * Class Planner, used to find trajectories without collisions using a Genetic algorithm
  *
  * @author Jude Adam
  * @version 1.0.0 14/04/2023
@@ -36,10 +36,10 @@ public class Planner {
      * @param generator Point generator
      * @param obstacles obstacles in map
      * @param rng       RNG
-     * @pre start != null && end != null
-     * @pre lengths != null && lengths.length > 0
-     * @pre generator != null && obstacles != null && rng != null
-     * @post population != null && this.generator != null && this.obstacles != null && this.rng != null
+     * @pre start != null &amp;&amp; end != null
+     * @pre lengths != null &amp;&amp;lengths.length > 0
+     * @pre generator != null &amp;&amp; obstacles != null &amp;&amp; rng != null
+     * @post population != null &amp;&amp; this.generator != null &amp;&amp; this.obstacles != null &amp;&amp; this.rng != null
      */
     public Planner(double pm, double pa, double pr, Point start, Point end, int[] lengths, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
         this.population = new TrajectoryPopulation(start, end, lengths.length, lengths, generator, obstacles, rng);
@@ -53,7 +53,7 @@ public class Planner {
 
     /**
      * Trajectory Finder method, performs a kind of standard genetic algorithm to find a trajectory with no collisions from one point to another. The
-     * algorithm performs roulette selection, uniform crossover, mutation, gene addition, and gene removal on the population
+     * algorithm performs rank based selection, elitism, one point crossover, mutation, point addition, and point removal on the population
      * and replaces the old population with the new one.
      *
      * @return best trajectory found
@@ -61,7 +61,7 @@ public class Planner {
      * @post result == null || result.calculateCollisions() == 0
      */
     public Trajectory findTrajectory() {
-        int maxGenerations = 100;
+        int maxGenerations = 150;
         int numElites = (int) (0.1 * population.getIndividuals().size()); // 10% elites
         Trajectory bestTrajectory = getBestTrajectory(population);
 
@@ -90,7 +90,7 @@ public class Planner {
      *
      * @param population the population of trajectories
      * @return the trajectory with the highest fitness value
-     * @pre population != null && population.getIndividuals().size() > 0
+     * @pre population != null &amp;&amp; population.getIndividuals().size() > 0
      * @post result != null
      */
     private Trajectory getBestTrajectory(TrajectoryPopulation population) {
@@ -102,8 +102,8 @@ public class Planner {
      *
      * @param offspring the offspring population containing tournament winners
      * @return a list of offspring individuals created by crossover
-     * @pre offspring != null && offspring.getIndividuals().size() > 0
-     * @post result != null && result.size() == offspring.getIndividuals().size()
+     * @pre offspring != null &amp;&amp; offspring.getIndividuals().size() > 0
+     * @post result != null &amp;&amp; result.size() == offspring.getIndividuals().size()
      */
     private ArrayList<Trajectory> generateOffspring(TrajectoryPopulation offspring) {
         ArrayList<Trajectory> tournamentWinners = offspring.getIndividuals();
@@ -124,7 +124,7 @@ public class Planner {
      * Applies mutations to the given list of offspring individuals.
      *
      * @param offspringIndividuals the list of offspring individuals to mutate
-     * @pre offspringIndividuals != null && offspringIndividuals.size() > 0
+     * @pre offspringIndividuals != null &amp;&amp; offspringIndividuals.size() > 0
      * @post All offspring individuals have had mutation, addition, and removal operations applied
      */
     private void applyMutations(ArrayList<Trajectory> offspringIndividuals) {

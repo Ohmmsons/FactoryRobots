@@ -3,8 +3,8 @@ package simulator;
 /**
  * @author Jude Adam
  * @version 1.0.0 16/02/2023
- * @inv x >= 0 && x <= 999
- * @inv y >= 0 && y <= 999
+ * @inv x &ge; 0 &amp;&amp; x &le; 999
+ * @inv y &ge; 0 &amp;&amp; y &le; 999
  */
 public record Point(int x, int y) {
     /**
@@ -12,7 +12,7 @@ public record Point(int x, int y) {
      *
      * @param x the x coordinate of the point
      * @param y the y coordinate of the point
-     * @pre x >= 0 && x <= 999 && y >= 0 && y <= 999
+     * @pre x &ge; 0 &amp;&amp; x &le; 999 &amp;&amp; y &ge; 0 &amp;&amp; y &le; 999
      * @throws IllegalArgumentException if either coordinate is less than 0 or greater than 999
      */
     public Point {

@@ -1,8 +1,6 @@
 package simulator;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Class Trajectory
@@ -26,7 +24,7 @@ public class Trajectory {
      * @param generator - the random number generator used for mutation and crossover operations.
      * @param obstacles - the list of obstacles that the trajectory must avoid.
      * @param rng       - the random number generator
-     * @pre pontos != null && generator != null && obstacles != null && rng != null
+     * @pre pontos != null &amp;&amp; generator != null &amp;&amp; obstacles != null &amp;&amp; rng != null
      */
     public Trajectory(ArrayList<Point> pontos, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
         this.obstacles = obstacles;
@@ -67,14 +65,14 @@ public class Trajectory {
      * @return an ArrayList of all the points along the trajectory.
      * @post The returned list is non-empty.
      */
-    public ArrayList<Point> calculatePointsAlongTrajectory() {
-        LinkedHashSet<Point> set = new LinkedHashSet<>();
+    public List<Point> calculatePointsAlongTrajectory() {
+        LinkedList<Point> list = new LinkedList<>();
         int n = points.size();
         for (int i = 0; i < n - 1; i++) {
             LineSegment lineSegment = new LineSegment(points.get(i), points.get(i + 1));
-            set.addAll(lineSegment.drawLine());
+            list.addAll(lineSegment.drawLine());
         }
-        return new ArrayList<>(set.stream().toList());
+        return list;
     }
 
     /**
@@ -128,7 +126,7 @@ public class Trajectory {
      * mutate method to perform one point mutation with probability pm
      *
      * @param pm mutation probability
-     * @pre 0 <= pm <= 1
+     * @pre 0 &le; pm &le; 1
      */
     public void mutate(double pm) {
         if (points.size() > 2) {
@@ -169,7 +167,7 @@ public class Trajectory {
      * addPoint method to add a random point in a random spot in the trajectory with probability pa
      *
      * @param pa addition probability
-     * @pre 0 <= pa <= 1
+     * @pre 0 &le; pa &le; 1
      */
     public void addPoint(double pa) {
         if (rng.nextDouble() < pa) {
@@ -193,14 +191,15 @@ public class Trajectory {
      * removePoint method to remove a random point from the trajectory with probability pr
      *
      * @param pr removal probability
-     * @pre 0 <= pr <= 1
+     * @pre 0 &le; pr &le; 1
      */
     public void removePoint(double pr) {
         if (points.size() > 2 && rng.nextDouble() < pr) {
             int i = rng.nextInt(points.size() - 2) + 1;
-            Point p = points.remove(i);
-            // Update length
-            length -= (points.get(i - 1).dist(p) + p.dist(points.get(i))) - points.get(i - 1).dist(points.get(i));
+            Point p = points.get(i);
+            length -= (points.get(i - 1).dist(p) + p.dist(points.get(i))) - points.get(i - 1).dist(p);
+            p = points.remove(i);
+            length+=points.get(i-1).dist(p);
             this.collisionCount = calculateCollisions();
         }
     }

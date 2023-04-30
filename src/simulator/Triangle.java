@@ -11,7 +11,7 @@ package simulator;
 public class Triangle extends Polygon {
     /**
      * @param points Points of triangle
-     * @pre points != null && points.length == 3
+     * @pre points != null &amp;&amp; points.length == 3
      * @post this.points == points
      * @throws IllegalArgumentException if points.length != 3, or if the points do not form a valid triangle
      */

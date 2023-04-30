@@ -89,7 +89,7 @@ public class TrajectoryPopulation {
         DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
         Trajectory maxFitness = Collections.max(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
         Trajectory minFitness = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.fitness() - s2.fitness()));
-        Trajectory minCollision = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.calculateCollisions() - s2.calculateCollisions()));
+        Trajectory minCollision = Collections.min(individuals, (s1, s2) -> (int) Math.signum(s1.getCollisionCount()) - s2.getCollisionCount());
         double average = 0;
         for (Trajectory t : individuals) average += t.fitness();
         average /= individuals.size();

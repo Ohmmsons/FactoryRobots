@@ -39,6 +39,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private final ArrayList<Request> requests;
     private final JLabel messageLabel;
     private int currentFrame;
+    private int robotWidth;
 
     private boolean hasError;
     /**
@@ -47,6 +48,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * of the panel.
      */
     public SimulatorGUI() {
+        robotWidth = 15;
         this.hasError = false;
         currentFrame = 0;
         isKeyPressed = false;
@@ -84,12 +86,32 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         drawShapes(g);
         drawRobots(g);
         drawRequests(g);
-        drawCurrentFrame(g);
+        drawCurrentStep(g);
         if (cursorPoint != null && point != null) {
             g.setColor(Color.BLACK);
-            g.drawLine(point.x(), point.y(), (int) cursorPoint.getX(), (int)cursorPoint.getY());
-            g.drawOval(point.x() - 5, point.y() - 5, 10, 10); //
+            drawArrow(g1, point.x(), point.y(), (int) cursorPoint.getX(), (int) cursorPoint.getY());
+            g.drawOval(point.x() - 5, point.y() - 5, 10, 10);
         }
+    }
+
+    private void drawArrow(Graphics2D g, int x1, int y1, int x2, int y2) {
+        g.setStroke(new BasicStroke(3));
+        double angle = Math.atan2(y2 - y1, x2 - x1);
+        int arrowLength = 10;
+        double arrowAngle = Math.toRadians(30);
+
+        int midX = (x1 + x2) / 2;
+        int midY = (y1 + y2) / 2;
+        int x3 = (int) (midX - arrowLength * Math.cos(angle - arrowAngle));
+        int y3 = (int) (midY - arrowLength * Math.sin(angle - arrowAngle));
+
+        int x4 = (int) (midX - arrowLength * Math.cos(angle + arrowAngle));
+        int y4 = (int) (midY- arrowLength * Math.sin(angle + arrowAngle));
+
+        g.drawLine(x1, y1, x2, y2);
+        g.drawLine(midX, midY, x3, y3);
+        g.drawLine(midX, midY, x4, y4);
+        g.setStroke(new BasicStroke(1));
     }
 
     /**
@@ -198,14 +220,14 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
                 case 3 ->  g.setColor(new Color(29, 50, 190));
             }
             Point posRobot = robot.getCurrentPosition();
-            int[] xPoints = {posRobot.x()-7, posRobot.x()-7 + 15, posRobot.x()-7 + 15, posRobot.x()-7};
-            int[] yPoints = {posRobot.y(), posRobot.y(), posRobot.y() + 15, posRobot.y() + 15};
+            int[] xPoints = {posRobot.x()-7, posRobot.x()-7 + robotWidth, posRobot.x()-7 + robotWidth, posRobot.x()-7};
+            int[] yPoints = {posRobot.y(), posRobot.y(), posRobot.y() + robotWidth, posRobot.y() + robotWidth};
             g.fillPolygon(xPoints, yPoints, 4);
             g.setColor(new Color(21, 21, 21));
             g.drawPolygon(xPoints, yPoints, 4);
             double energy = robot.getEnergy() / 100;
             g.setColor(Color.green);
-            int[] energyxPoints = {posRobot.x()-7, (int) (posRobot.x()-7 + energy * 15), (int) (posRobot.x()-7 + energy * 15), posRobot.x()-7};
+            int[] energyxPoints = {posRobot.x()-7, (int) (posRobot.x()-7 + energy * robotWidth), (int) (posRobot.x()-7 + energy * robotWidth), posRobot.x()-7};
             int[] energyyPoints = {posRobot.y() + 7, posRobot.y() + 7, posRobot.y() + 5, posRobot.y() + 5};
             g.fillPolygon(energyxPoints, energyyPoints, 4);
             switch(robot.getPowerState()){
@@ -305,12 +327,12 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
             g.fillOval(requestp1.x() - 5, requestp1.y() - 5, 10, 10);
             String index = String.valueOf(i);
             int labelWidth = g.getFontMetrics().stringWidth(index + " Start");
-            g.drawString(index + " Start", requestp1.x() - labelWidth / 2, requestp1.y() + 15);
+            g.drawString(index + " Start", requestp1.x() - labelWidth / 2, requestp1.y() + robotWidth);
             labelWidth = g.getFontMetrics().stringWidth(index + " End");
             Point requestp2 = requests.get(i).end();
             g.fillOval(requestp2.x() - 5, requestp2.y() - 5, 10, 10);
-            g.drawString(index + " End", requestp2.x() - labelWidth / 2, requestp2.y() + 15);
-            g.drawLine(requestp1.x(),requestp1.y(),requestp2.x(),requestp2.y());
+            g.drawString(index + " End", requestp2.x() - labelWidth / 2, requestp2.y() + robotWidth);
+            drawArrow((Graphics2D) g,requestp1.x(),requestp1.y(),requestp2.x(),requestp2.y());
         }
     }
     /**
@@ -320,9 +342,9 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * @pre g != null
      * @post Draws the current frame number at the bottom of the panel.
      */
-    private void drawCurrentFrame(Graphics g) {
+    private void drawCurrentStep(Graphics g) {
         g.setColor(blackColor);
-        g.drawString("Frame: " + currentFrame, 450, getHeight() - 20);
+        g.drawString("Step: " + currentFrame, 450, getHeight() - 20);
     }
 
 

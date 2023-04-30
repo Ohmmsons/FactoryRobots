@@ -1,12 +1,14 @@
 package simulator;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Class LineSegment used to form Shapes
  * @author Jude Adam
  * @version 1.0.0 16/02/2023
- * @inv p1 != null && p2 != null
+ * @inv p1 != null &amp;&amp; p2 != null
  * @inv p1.x() != p2.x() || p1.y() != p2.y()
  */
 public record LineSegment(Point p1, Point p2) {
@@ -26,7 +28,7 @@ public record LineSegment(Point p1, Point p2) {
      @param a Point a
      @param b Point b
      @param c Point c
-     @pre a != null && b != null && c != null
+     @pre a != null &amp;&amp; b != null &amp;&amp; c != null
      @post returns true if points a, b, and c are in counterclockwise order, false otherwise
      @return True if a,b and c are in counterclockwise order
      @see <a href="https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/">...</a>
@@ -63,8 +65,8 @@ public record LineSegment(Point p1, Point p2) {
      * @return array list containing the points that go along the line segment
      * @see <a href="https://www.sanfoundry.com/java-program-bresenham-line-algorithm/">...</a>
      */
-    public ArrayList<Point> drawLine() {
-        ArrayList<Point> result = new ArrayList<>();
+    public List<Point> drawLine() {
+        LinkedList<Point> result = new LinkedList<>();
         int x0 = p1.x();
         int y0 = p1.y();
         int x1 = p2.x();

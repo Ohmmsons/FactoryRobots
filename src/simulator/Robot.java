@@ -18,6 +18,9 @@ import java.util.*;
  * @inv currentPosition and chargingStation must be within the deliveryMap.
  */
 public class Robot {
+    private static final double ENERGY_CONSUMPTION_MOVING = 0.1;
+    private static final double ENERGY_CONSUMPTION_STANDBY = 0.01;
+    private static final double ENERGY_CHARGE_RATE = 1.0;
     private final Random rng;
     private Point currentPosition;
     private final PointGenerator generator;
@@ -29,6 +32,8 @@ public class Robot {
 
     private final Map<String, Trajectory> trajectoryCache;
     private final DeliveryMap deliveryMap;
+
+    private final int CACHE_SIZE = 100;
 
     /**
      * Robot Constructor
@@ -50,7 +55,12 @@ public class Robot {
         this.energy = 100.00;
         this.powerState = RobotPowerState.STANDBY;
         this.trajectoryPointIterator = null;
-        this.trajectoryCache = new HashMap<>();
+        this.trajectoryCache = new LinkedHashMap<>(CACHE_SIZE, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, Trajectory> eldest) {
+                return size() > CACHE_SIZE;
+            }
+        };
         this.rng = rng;
     }
 
@@ -105,13 +115,13 @@ public class Robot {
     }
 
     /**
-     * Handles the logic for when the robot is in the moving state (DELIVERING or RETURNING).
+     * Handles the logic for when the robot is in the moving state (ENROUTE, DELIVERING or RETURNING).
      *
-     * @pre Robot must be in DELIVERING or RETURNING state
+     * @pre Robot must be in ENROUTE, DELIVERING or RETURNING state
      * @post Updates energy consumption and moves the robot to the next position in its trajectory
      */
     private void handleMovingState() {
-        energy -= 0.1;
+        energy -= ENERGY_CONSUMPTION_MOVING;
         this.moveToNextPosition();
     }
 
@@ -123,7 +133,7 @@ public class Robot {
      */
     private void handleStandbyState() {
         if (!this.currentPosition.equals(chargingStation)) {
-            energy -= 0.01;
+            energy -= ENERGY_CONSUMPTION_STANDBY;
             if (energy / 0.1 <= distanceToChargingStation()) {
                 this.goToChargingStation();
             }
@@ -138,12 +148,8 @@ public class Robot {
      */
     private void handleChargingState() {
         if (energy < 100.0) {
-            if (energy >= 99.0) {
-                energy = 100.0;
-            } else {
-                energy += 1.0;
-            }
-        } else if (energy == 100.0) {
+            energy = Math.min(100.0, energy + ENERGY_CHARGE_RATE);
+        } else {
             powerState = RobotPowerState.STANDBY;
             manager.notify(this, powerState);
         }
@@ -177,7 +183,7 @@ public class Robot {
      */
     public double distanceToDestination(Point start, Point destination) {
         if(start==null||destination==null) throw new IllegalArgumentException("Start and destination must be non null");
-        Trajectory trajectoryToDestination = findTrajectory(start,destination);
+        Trajectory trajectoryToDestination = getTrajectory(start,destination);
         if (trajectoryToDestination == null)
             return Double.MAX_VALUE;
         return trajectoryToDestination.getLength();
@@ -242,7 +248,10 @@ public class Robot {
     private void moveToNextPosition() {
         //Move to next point
         if (this.trajectoryPointIterator.hasNext()) {
+            Point previousPosition = currentPosition.clone();
             this.currentPosition = trajectoryPointIterator.next();
+            if (Math.abs(currentPosition.x() - previousPosition.x()) > 1 || Math.abs(currentPosition.y() - previousPosition.y()) > 1)
+                throw new IllegalStateException("Robot can't move 2 units at a time");
         }
         //Check if arrives at destination
         if (!this.trajectoryPointIterator.hasNext()) {
@@ -255,7 +264,7 @@ public class Robot {
                 case ENROUTE -> {
                     Request currentRequest = manager.getCurrentRequest(this);
                     if (currentRequest != null) {
-                        Trajectory trajectoryFromStartToEnd = findTrajectory(currentPosition, currentRequest.end());
+                        Trajectory trajectoryFromStartToEnd = getTrajectory(currentPosition, currentRequest.end());
                         setPath(trajectoryFromStartToEnd);
                         this.powerState = RobotPowerState.DELIVERING;
                         manager.notify(this, this.powerState);
@@ -273,7 +282,7 @@ public class Robot {
      * @post The robot's trajectory is set to reach the charging station, and its power state is set to RETURNING
      */
     private void goToChargingStation() {
-        setPath(findTrajectory(currentPosition, chargingStation));
+        setPath(getTrajectory(currentPosition, chargingStation));
         this.powerState = RobotPowerState.RETURNING;
         manager.notify(this, this.powerState);
     }
@@ -287,7 +296,7 @@ public class Robot {
      * @post Returns a trajectory between the start and destination points, or null if no trajectory is found
      * @throws IllegalArgumentException if either start or destination points are null
      */
-    public Trajectory findTrajectory(Point start, Point destination) {
+    public Trajectory getTrajectory(Point start, Point destination) {
         if (start == null || destination == null)
             throw new IllegalArgumentException("Start and destination points cannot be null");
         String cacheKey = start + "-" + destination;
@@ -351,7 +360,7 @@ public class Robot {
             throw new IllegalArgumentException("Request cannot be null");
         }
         Point startPoint = request.start();
-        Trajectory trajectoryToStart = findTrajectory(currentPosition, startPoint);
+        Trajectory trajectoryToStart = getTrajectory(currentPosition, startPoint);
         setPath(trajectoryToStart);
         this.powerState = RobotPowerState.ENROUTE;
         manager.notify(this, this.powerState);

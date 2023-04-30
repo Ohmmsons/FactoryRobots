@@ -49,7 +49,7 @@ public interface SimulatorUI {
      *
      * @param step   the current step of the simulation
      * @param robots a List of Robot objects representing the robots in the simulation
-     * @pre step >= 0 && robots != null
+     * @pre step >= 0 &amp;&amp; robots != null
      */
     void displayRobotStatus(int step, LinkedHashSet<Robot> robots);
 

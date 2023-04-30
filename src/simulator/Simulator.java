@@ -35,7 +35,7 @@ public class Simulator {
      * @param deliveryMap The map of the delivery area.
      * @param request The delivery point to check.
      * @return True if the delivery point is valid, false otherwise.
-     * @pre deliveryMap != null && request != null
+     * @pre deliveryMap != null &amp;&amp; request != null
      */
     public boolean validInputCheck(DeliveryMap deliveryMap, Request request) {
         if (deliveryMap.isDeliveryRequestValid(request)) return true;
@@ -49,7 +49,7 @@ public class Simulator {
      * @param generator   The generator used.
      * @param deliveryMap The delivery map.
      * @return Set of 4 robots, one in each corner, all fully charged and in standby.
-     * @pre generator != null && deliveryMap != null
+     * @pre generator != null &amp;&amp; deliveryMap != null
      */
     private LinkedHashSet<Robot> initializeRobots(PointGenerator generator, DeliveryMap deliveryMap){
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);

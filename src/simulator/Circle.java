@@ -15,8 +15,8 @@ public class Circle extends Shape {
      *
      * @param points Center point of the circle
      * @param r      Radius of the circle
-     * @pre points != null && points.length == 1 && r > 0
-     * @post this.points == points && this.r == r
+     * @pre points != null &amp;&amp; points.length == 1 &amp;&amp; r > 0
+     * @post this.points == points &amp;&amp; this.r == r
      * @throws IllegalArgumentException if radius is less than or equal to 0
      */
     public Circle(Point[] points, double r) {

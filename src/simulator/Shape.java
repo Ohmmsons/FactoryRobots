@@ -5,7 +5,7 @@ package simulator;
  *
  * @author Jude Adam
  * @version 1.0.0 16/02/2023
- * @inv points != null && points.length > 0
+ * @inv points != null &amp; points.length > 0
  */
 public abstract class Shape {
     protected Point[] points;
@@ -14,7 +14,7 @@ public abstract class Shape {
      * Constructor method for Shape class
      *
      * @param points Points that make up shape
-     * @pre points != null && points.length > 0
+     * @pre points != null &amp;&amp; points.length > 0
      * @post this.points == points
      * @throws IllegalArgumentException if points is null or points.length is 0
      */
@@ -45,7 +45,7 @@ public abstract class Shape {
      * Gets the points that make up the shape.
      *
      * @return points of shape
-     * @post return != null && return.length > 0
+     * @post return != null &amp;&amp; return.length > 0
      */
     public Point[] getPoints() {
         return points;
