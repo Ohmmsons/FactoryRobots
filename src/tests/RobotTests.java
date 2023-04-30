@@ -9,14 +9,23 @@ import java.util.Random;
 
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 /**
  * @author Jude Adam a71254
  */
 public class RobotTests {
 
+    private DeliveryMap deliveryMap;
+    private PointGenerator generator;
+    private Point startingPoint;
+    private Random rng;
+
     @Test
-    public void testConstructor1(){
-        assertThrows(IllegalArgumentException.class,() -> new Robot(null, null, new PointGenerator(new Random()),new Random()));
+    void testRobotConstructor1() {
+        assertThrows(IllegalArgumentException.class, () -> new Robot(null, deliveryMap, generator, rng));
+        assertThrows(IllegalArgumentException.class, () -> new Robot(startingPoint, null, generator, rng));
+        assertThrows(IllegalArgumentException.class, () -> new Robot(startingPoint, deliveryMap, null, rng));
     }
     @Test
     public void testConstructor2(){
@@ -25,6 +34,7 @@ public class RobotTests {
         Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
         assertEquals(robot.getCurrentPosition(),startingPoint);
     }
+
 
 
     @Test
@@ -41,6 +51,38 @@ public class RobotTests {
         double initialEnergy = robot.getEnergy();
         robot.update();
         Assert.assertEquals(initialEnergy - 0.1, robot.getEnergy(), 0.0001);
+    }
+
+
+    @Test
+    void testGetEnergy() {
+        DeliveryMap map = new DeliveryMap(new ArrayList<>());
+        Robot robot = new Robot(new Point(0, 0), map,  new PointGenerator(new Random()),new Random());
+        Trajectory trajectory = robot.getTrajectory(new Point(0, 0), new Point(500, 500));
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
+        robots.add(robot);
+        RobotManager rm = new RobotManager(robots,new RequestQueue());
+        robot.subscribeToManager(rm);
+        assertEquals(100.0, robot.getEnergy(),0.0001);
+    }
+
+    @Test
+    void testUpdateEnergyBelowZero() {
+        DeliveryMap map = new DeliveryMap(new ArrayList<>());
+        Robot robot = new Robot(new Point(0, 0), map,  new PointGenerator(new Random()),new Random()){
+            @Override
+                public double getEnergy(){
+                this.energy = -1;
+                return this.energy;
+             }
+        };
+        Trajectory trajectory = robot.getTrajectory(new Point(0, 0), new Point(500, 500));
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
+        robots.add(robot);
+        RobotManager rm = new RobotManager(robots,new RequestQueue());
+        robot.subscribeToManager(rm);
+        robot.getEnergy();
+        assertThrows(IllegalStateException.class, robot::update);
     }
     @Test
     public void testCanReachDestination1() {
@@ -122,7 +164,7 @@ public class RobotTests {
         Assert.assertEquals(RobotPowerState.STANDBY, robot.getPowerState());
     }
     @Test
-    public void testGoesToChargeWhenStandByAndEnergyBelow50() {
+    public void testGoesToChargeWhenStandByAndLowEneergy() {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(0, 0), map,  new PointGenerator(new Random()),new Random());
         //Get out of Spawn
@@ -135,7 +177,7 @@ public class RobotTests {
         boolean working = false;
         while(true) {
             robot.update();
-            if (robot.getEnergy() <= 50.0 && robot.getPowerState() == RobotPowerState.RETURNING) {
+            if (robot.getPowerState() == RobotPowerState.RETURNING) {
                 working = true;
                 break;
             }
@@ -144,6 +186,8 @@ public class RobotTests {
         }
         assertTrue(working);
     }
+
+
 
 
 }

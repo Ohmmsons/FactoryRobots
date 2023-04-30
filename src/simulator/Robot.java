@@ -24,7 +24,7 @@ public class Robot {
     private final Random rng;
     private Point currentPosition;
     private final PointGenerator generator;
-    private double energy;
+    protected double energy;
     private RobotPowerState powerState;
     private final Point chargingStation;
     private Iterator<Point> trajectoryPointIterator;
