@@ -36,7 +36,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private Point point;
     private LinkedHashSet<Robot> robots;
     private boolean isKeyPressed;
-    private final ArrayList<Request> requests;
+    private final java.util.List<Request> requests;
     private final JLabel messageLabel;
     private int currentFrame;
     private int robotWidth;
@@ -152,16 +152,20 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         for (int col = 0; col <= numCols; col++) {
             g.drawLine(col * tileSize, 0, col * tileSize, getHeight());
         }
-        g.setColor(Color.yellow);
-        g.fillRect(0, 0, 55, 55);
-        g.fillRect(0, 945, 55, 55);
-        g.fillRect(945, 945, 55, 55);
-        g.fillRect(945, 0, 55, 55);
-        g.setColor(Color.darkGray);
-        g.fillRect(0, 0, 50, 50);
-        g.fillRect(0, 950, 50, 50);
-        g.fillRect(950, 950, 50, 50);
-        g.fillRect(950, 0, 50, 50);
+
+        int stationSize = 30;
+        int borderSize = 3;
+
+        for (Robot robot : robots) {
+            Point station = robot.getChargingStation();
+            int stationX = station.x() - stationSize/2;
+            int stationY = station.y() - stationSize/3;
+            g.setColor(Color.yellow);
+            g.fillRect(stationX -  borderSize, stationY - borderSize, stationSize + 2 * borderSize,  stationSize + 2 * borderSize);
+            g.setColor(Color.darkGray);
+            g.fillRect(stationX, stationY, stationSize, stationSize);
+        }
+        g.drawRect(50,50,900,900);
     }
     /**
      * Draws the map with obstacles.
@@ -200,6 +204,12 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
             }
         }
     }
+
+    private Color getColorForIndex(int index) {
+        float hue = (float) index / (float) robots.size();
+        return Color.getHSBColor(hue, 0.8f, 0.8f);
+    }
+
     /**
      * Iterates through a list of robots, drawing each robot based on their state
      * (delivering, returning, or standby) and updating their energy levels. It also
@@ -213,12 +223,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         int i = 0;
         for (Robot robot: robots) {
             requests.removeIf(request -> robot.getCurrentPosition().equals(request.end()));
-            switch(i){
-                case 0 -> g.setColor(new Color(21, 21, 21));
-                case 1 ->  g.setColor(new Color(223, 81, 81));
-                case 2 ->  g.setColor(new Color(98, 109, 85));
-                case 3 ->  g.setColor(new Color(29, 50, 190));
-            }
+            g.setColor(getColorForIndex(i));
             Point posRobot = robot.getCurrentPosition();
             int[] xPoints = {posRobot.x()-7, posRobot.x()-7 + robotWidth, posRobot.x()-7 + robotWidth, posRobot.x()-7};
             int[] yPoints = {posRobot.y(), posRobot.y(), posRobot.y() + robotWidth, posRobot.y() + robotWidth};
@@ -343,7 +348,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      */
     private void drawCurrentStep(Graphics g) {
         g.setColor(blackColor);
-        g.drawString("Step: " + currentFrame, 450, getHeight() - 20);
+        g.drawString("Step: " + currentFrame, 450, getHeight() - 50);
     }
 
 
@@ -509,7 +514,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      */
     @Override
     public void sendMapInformation(DeliveryMap map) {
-        shapes = map.obstacles();
+        shapes = (ArrayList<Shape>) map.obstacles();
         messageLabel.setText("Press Space Bar to make new request");
         repaint();
     }
@@ -521,8 +526,29 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         this.requests.add(request);
     }
 
+    @Override
+    public int askForNRobots() {
+        JLabel label = new JLabel("Choose how many robots are on the map, between 1 and 99q");
+        JTextField textField = new JTextField(10);
+        JPanel panel = new JPanel();
+        panel.add(label);
+        panel.add(textField);
 
-// Inner class to handle mouse clicks
+        int result = JOptionPane.showConfirmDialog(null, panel, "Enter number of robots", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            try {
+                return Integer.parseInt(textField.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid integer", "Error", JOptionPane.ERROR_MESSAGE);
+                return askForNumberOfObstacles();
+            }
+        } else {
+            return 0;
+        }
+    }
+
+
+    // Inner class to handle mouse clicks
 private static class MouseChecker implements MouseListener {
     private final SimulatorGUI parent;
     /**

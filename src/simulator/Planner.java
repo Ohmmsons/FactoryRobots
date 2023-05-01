@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * Class Planner, used to find trajectories without collisions using a Genetic algorithm
- *
+ * The Planner class has a nested Builder class for creating instances with customizable parameters.
  * @author Jude Adam
  * @version 1.0.0 14/04/2023
  * @inv generator != null
@@ -19,7 +19,7 @@ public class Planner {
     private final double pr;
     private final PointGenerator generator;
 
-    private final ArrayList<Shape> obstacles;
+    private final List<Shape> obstacles;
 
 
     /**
@@ -29,7 +29,6 @@ public class Planner {
      * @pre builder != null
      * @post this.generator != null &amp;&amp; this.obstacles != null &amp;&amp; this.rng != null
      */
-    // Make the Planner constructor private
     private Planner(Builder builder) {
         this.pm = builder.pm;
         this.pa = builder.pa;
@@ -55,7 +54,7 @@ public class Planner {
         private Point end;
         private int[] lengths;
         private PointGenerator generator;
-        private ArrayList<Shape> obstacles;
+        private List<Shape> obstacles;
         private Random rng;
 
         /**
@@ -150,7 +149,7 @@ public class Planner {
          * @pre obstacles != null
          * @post This Builder instance has the obstacles field set to the provided value.
          */
-        public Builder obstacles(ArrayList<Shape> obstacles) {
+        public Builder obstacles(List<Shape> obstacles) {
             this.obstacles = obstacles;
             return this;
         }
@@ -196,7 +195,7 @@ public class Planner {
         // Evolve the population to find the best trajectory
         for (int gen = 0; gen < maxGenerations && bestTrajectory.calculateCollisions() > 0; gen++) {
             TrajectoryPopulation offspring = population.rankBasedSelection();
-            ArrayList<Trajectory> offspringIndividuals = generateOffspring(offspring);
+            ArrayList<Trajectory> offspringIndividuals = (ArrayList<Trajectory>) generateOffspring(offspring);
 
             // Apply elitism
             offspringIndividuals.sort(Comparator.comparingDouble(Trajectory::fitness).reversed());
@@ -233,8 +232,8 @@ public class Planner {
      * @pre offspring != null &amp;&amp; offspring.getIndividuals().size() > 0
      * @post result != null &amp;&amp; result.size() == offspring.getIndividuals().size()
      */
-    private ArrayList<Trajectory> generateOffspring(TrajectoryPopulation offspring) {
-        ArrayList<Trajectory> tournamentWinners = offspring.getIndividuals();
+    private List<Trajectory> generateOffspring(TrajectoryPopulation offspring) {
+        ArrayList<Trajectory> tournamentWinners = (ArrayList<Trajectory>) offspring.getIndividuals();
         ArrayList<Trajectory> offspringIndividuals = new ArrayList<>();
 
         // Perform crossover on tournament winners to generate offspring

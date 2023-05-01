@@ -22,7 +22,7 @@ class PlannerTests {
         int[] lengths = {5, 10, 15, 20};
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        obstacles.add(new Circle(new Point []{new Point(500, 500)}, 50));
+        obstacles.add(new Circle(new Point(500, 500), 50));
 
         // Create a Planner instance
          Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
@@ -65,7 +65,7 @@ class PlannerTests {
         int[] lengths = {5, 10, 15, 20};
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        obstacles.add(new Circle(new Point []{new Point(500, 500)}, 495)); // Impossible trajectory
+        obstacles.add(new Circle(new Point(500, 500), 495)); // Impossible trajectory
 
         Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
 
@@ -85,7 +85,7 @@ class PlannerTests {
         int[] lengths = {5, 10, 15, 20};
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        obstacles.add(new Circle(new Point []{new Point(500, 500)}, 50)); // Start inside obstacle
+        obstacles.add(new Circle(new Point(500, 500), 50)); // Start inside obstacle
 
         Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
 
@@ -105,7 +105,7 @@ class PlannerTests {
         int[] lengths = {5, 10, 15, 20};
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        obstacles.add(new Circle(new Point []{new Point(500, 500)}, 50)); // End inside obstacle
+        obstacles.add(new Circle(new Point(500, 500), 50)); // End inside obstacle
 
         Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
 

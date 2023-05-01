@@ -102,4 +102,9 @@ public class TestUI implements SimulatorUI {
     public void addRequest(Request request) {
         // Do nothing.
     }
+
+    @Override
+    public int askForNRobots() {
+        return 8;
+    }
 }

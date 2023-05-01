@@ -44,29 +44,45 @@ public class Simulator {
     }
 
     /**
-     * Initializes the simulation's robots, one in each corner, all fully charged and in standby.
+     * Initializes the simulation's robots, all distributed along the perimeter of the map, all fully charged and in standby.
      *
      * @param generator   The generator used.
      * @param deliveryMap The delivery map.
-     * @return Set of 4 robots, one in each corner, all fully charged and in standby.
+     * @return Set of n robots, one in each corner, all fully charged and in standby.
      * @pre generator != null &amp;&amp; deliveryMap != null
      */
-    private LinkedHashSet<Robot> initializeRobots(PointGenerator generator, DeliveryMap deliveryMap){
-        LinkedHashSet<Robot> robots = new LinkedHashSet<>(4);
-        Point chargingPoint0 = new Point(15, 15);
-        Point chargingPoint1 = new Point(15, 975);
-        Point chargingPoint2 = new Point(975, 975);
-        Point chargingPoint3 = new Point(975, 15);
-        Robot robot0 = new Robot(chargingPoint0, deliveryMap, generator,rng);
-        Robot robot1 = new Robot(chargingPoint1, deliveryMap, generator,rng);
-        Robot robot2 = new Robot(chargingPoint2, deliveryMap, generator,rng);
-        Robot robot3 = new Robot(chargingPoint3, deliveryMap, generator,rng);
-        robots.add(robot0);
-        robots.add(robot1);
-        robots.add(robot2);
-        robots.add(robot3);
+    private LinkedHashSet<Robot> initializeRobots(int n, PointGenerator generator, DeliveryMap deliveryMap) {
+        // Create robots at evenly distributed points along the perimeter of the map
+        LinkedHashSet<Robot> robots = new LinkedHashSet<>(n);
+        int mapSize = 1000;
+        int perimeter = (mapSize - 30) * 4;
+        int gap = perimeter / n;
+        int offset = 15;
+
+        for (int i = 0; i < n; i++) {
+            int perimeterPosition = i * gap;
+            int x, y;
+            if (perimeterPosition < (mapSize - 2 * offset)) {
+                x = offset + perimeterPosition;
+                y = offset;
+            } else if (perimeterPosition < 2 * (mapSize - offset)) {
+                x = mapSize - offset;
+                y = offset + (perimeterPosition - (mapSize - 2 * offset));
+            } else if (perimeterPosition < 3 * (mapSize - offset)) {
+                x = mapSize - offset - (perimeterPosition - 2 * (mapSize - offset));
+                y = mapSize - offset;
+            } else {
+                x = offset;
+                y = mapSize - offset - (perimeterPosition - 3 * (mapSize - offset));
+            }
+            Point chargingPoint = new Point(x, y);
+            Robot robot = new Robot(chargingPoint, deliveryMap, generator, rng);
+            robots.add(robot);
+        }
+
         return robots;
     }
+
 
     /**
      * Uses a ShapeGenerator to generate random obstacles using random numbers provided by the Generator variable.
@@ -81,9 +97,9 @@ public class Simulator {
         for (int i = 0; i < nObstacles; i++) {
             int option = rng.nextInt(3);
             switch (option) {
-                case 0 -> obstacles.add(generator.generateShape("Circle"));
-                case 1 -> obstacles.add(generator.generateShape("Rectangle"));
-                case 2 -> obstacles.add(generator.generateShape("Triangle"));
+                case 0 -> obstacles.add(generator.generateShape(ShapeType.CIRCLE));
+                case 1 -> obstacles.add(generator.generateShape(ShapeType.RECTANGLE));
+                case 2 -> obstacles.add(generator.generateShape(ShapeType.TRIANGLE));
             }
         }
         return obstacles;
@@ -120,15 +136,20 @@ public class Simulator {
         //Inform the UI about the Map
         ui.sendMapInformation(deliveryMap);
 
+        int nRobots;
+        do {
+            nRobots = ui.askForNRobots();
+        }while(nRobots>=100 || nRobots<0);
+
         // Create and initialize robots
-        LinkedHashSet<Robot> robots = initializeRobots(pointGenerator,deliveryMap);
+        LinkedHashSet<Robot> robots = initializeRobots(nRobots,pointGenerator,deliveryMap);
 
         // Create robot manager and subscribe robots to it
         RobotManager robotManager = new RobotManager(robots,requestQueue);
 
         int step = 0;
         isRunning = true;
-        // Run simulation
+        // Continue running the simulation until the user stops it
         while(isRunning) {
             if (ui.isAskingForNewPoint()) {
                 Request request;
@@ -153,6 +174,11 @@ public class Simulator {
             step++;
         }
     }
+
+    /**
+     * Stops simulation
+     * @post Simulation is stopped
+     */
     public void stopSimulation() {
         isRunning = false;
     }

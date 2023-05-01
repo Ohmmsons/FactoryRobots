@@ -97,7 +97,7 @@ public record LineSegment(Point p1, Point p2) {
     }
 
     /**
-     Method to see Segment  to point P
+     Method to calculate shortest distance from this segment  to point P
      @param p Point
      @return double value of the shortest distance from s to point p
      @pre p != null

@@ -88,14 +88,14 @@ public class ShapeTests {
 
     @Test
     public void testInterceptCircle1(){
-        Point[] points = new Point[]{new Point(1,2)};
+        Point points = new Point(1, 2);
         Circle circle = new Circle(points,2);
         LineSegment segmento = new LineSegment(new Point(1,1),new Point(2,4));
         Assertions.assertTrue(circle.isIntercepted(segmento));
     }
     @Test
     public void testInterceptCircle2(){
-        Point[] points = new Point[]{new Point(1,2)};
+        Point points = new Point(1, 2);
         Circle circle = new Circle(points,2);
         LineSegment segmento = new LineSegment(new Point(5,1),new Point(5,4));
         Assertions.assertFalse(circle.isIntercepted(segmento));
@@ -103,7 +103,7 @@ public class ShapeTests {
 
     @Test
     public void testInterceptCircle3() {
-        Point[] points = new Point[]{new Point(3, 3)};
+        Point points = new Point(3, 3);
         Circle circle = new Circle(points, 3);
         LineSegment segment = new LineSegment(new Point(1, 1), new Point(5, 5));
         Assertions.assertTrue(circle.isIntercepted(segment));
@@ -111,7 +111,7 @@ public class ShapeTests {
 
     @Test
     public void testInterceptCircle4() {
-        Point[] points = new Point[]{new Point(3, 3)};
+        Point points = new Point(3, 3);
         Circle circle = new Circle(points, 3);
         LineSegment segment = new LineSegment(new Point(7, 1), new Point(9, 3));
         Assertions.assertFalse(circle.isIntercepted(segment));
@@ -119,7 +119,7 @@ public class ShapeTests {
 
     @Test
     public void testInterceptCircle5() {
-        Point[] points = new Point[]{new Point(4, 4)};
+        Point points = new Point(4, 4);
         Circle circle = new Circle(points, 3);
         LineSegment segment = new LineSegment(new Point(1, 5), new Point(7, 5));
         Assertions.assertTrue(circle.isIntercepted(segment));
@@ -127,7 +127,7 @@ public class ShapeTests {
 
     @Test
     public void testInterceptCircle6() {
-        Point[] points = new Point[]{new Point(4, 4)};
+        Point points = new Point(4, 4);
         Circle circle = new Circle(points, 3);
         LineSegment segment = new LineSegment(new Point(1, 8), new Point(7, 8));
         Assertions.assertFalse(circle.isIntercepted(segment));
@@ -135,14 +135,14 @@ public class ShapeTests {
 
     @Test
     public void testSurroundsCircle1(){
-        Point[] points = new Point[]{new Point(1,2)};
+        Point points = new Point(1, 2);
         Circle circle = new Circle(points,2);
         Point p = new Point(2,3);
         Assertions.assertTrue(circle.surrounds(p));
     }
     @Test
     public void testSurroundsCircle2(){
-        Point[] points = new Point[]{new Point(1,2)};
+        Point points = new Point(1, 2);
         Circle circle = new Circle(points,2);
         Point p = new Point(4,3);
         Assertions.assertFalse(circle.surrounds(p));
@@ -150,7 +150,7 @@ public class ShapeTests {
 
     @Test
     public void testSurroundsCircle3() {
-        Point[] points = new Point[]{new Point(4, 4)};
+        Point points = new Point(4, 4);
         Circle circle = new Circle(points, 3);
         Point p = new Point(6, 4);
         Assertions.assertTrue(circle.surrounds(p));
@@ -158,7 +158,7 @@ public class ShapeTests {
 
     @Test
     public void testSurroundsCircle4() {
-        Point[] points = new Point[]{new Point(4, 4)};
+        Point points = new Point(4, 4);
         Circle circle = new Circle(points, 3);
         Point p = new Point(1, 1);
         Assertions.assertFalse(circle.surrounds(p));

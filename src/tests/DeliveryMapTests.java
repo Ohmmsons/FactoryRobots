@@ -50,7 +50,7 @@ public class DeliveryMapTests {
     @Test
     void  testisDeliveryPointValid5(){
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60,60)};
+        Point points = new Point(60,60);
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -60,7 +60,7 @@ public class DeliveryMapTests {
     @Test
     void  testisDeliveryPointValid6(){
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60,60)};
+        Point points = new Point(60,60);
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);

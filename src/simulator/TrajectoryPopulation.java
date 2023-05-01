@@ -2,10 +2,8 @@ package simulator;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Class TrajectoryPopulation, used to perform selection of trajectories based on fitness.
@@ -18,8 +16,8 @@ import java.util.Random;
 public class TrajectoryPopulation {
 
     private final Random rng;
-    private final ArrayList<Trajectory> individuals;
-    private final ArrayList<Shape> obstacles;
+    private final List<Trajectory> individuals;
+    private final List<Shape> obstacles;
 
     private final PointGenerator generator;
 
@@ -38,7 +36,7 @@ public class TrajectoryPopulation {
      * @pre lengths must be a valid array of integers with the same length as n.
      * @post Creates a population of Trajectory objects with the specified properties.
      */
-    public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
+    public TrajectoryPopulation(Point start, Point end, int n, int[] lengths, PointGenerator generator, List<Shape> obstacles, Random rng) {
         this.individuals = new ArrayList<>();
         this.generator = generator;
         this.rng = rng;
@@ -65,7 +63,7 @@ public class TrajectoryPopulation {
      * @pre individuals must be a valid list of Trajectory objects.
      * @post Creates a population of Trajectory objects with the specified properties.
      */
-    public TrajectoryPopulation(ArrayList<Trajectory> individuals, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
+    public TrajectoryPopulation(List<Trajectory> individuals, PointGenerator generator, List<Shape> obstacles, Random rng) {
         this.individuals = individuals;
         this.generator = generator;
         this.obstacles = obstacles;
@@ -75,7 +73,7 @@ public class TrajectoryPopulation {
     /**
      * @return individuals of the population
      */
-    public ArrayList<Trajectory> getIndividuals() {
+    public List<Trajectory> getIndividuals() {
         return individuals;
     }
 
@@ -109,10 +107,7 @@ public class TrajectoryPopulation {
         ArrayList<Trajectory> sortedIndividuals = new ArrayList<>(individuals);
         sortedIndividuals.sort(Comparator.comparingDouble(Trajectory::fitness));
 
-        double totalFitness = 0;
-        for (int i = 0; i < sortedIndividuals.size(); i++) {
-            totalFitness += (i + 1);
-        }
+        double totalFitness = IntStream.range(0, sortedIndividuals.size()).mapToDouble(i -> (i + 1)).sum();
 
         for (int i = 0; i < individuals.size(); i++) {
             double randomValue = rng.nextDouble() * totalFitness;

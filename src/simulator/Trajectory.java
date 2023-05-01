@@ -10,7 +10,7 @@ import java.util.*;
  * @inv Points in the path must be sequential and in the 1st quadrant
  */
 public class Trajectory {
-    private final ArrayList<Point> points;
+    private final List<Point> points;
     private final Random rng;
     private double length;
     public final PointGenerator generator;
@@ -26,8 +26,8 @@ public class Trajectory {
      * @param rng       - the random number generator
      * @pre pontos != null &amp;&amp; generator != null &amp;&amp; obstacles != null &amp;&amp; rng != null
      */
-    public Trajectory(ArrayList<Point> pontos, PointGenerator generator, ArrayList<Shape> obstacles, Random rng) {
-        this.obstacles = obstacles;
+    public Trajectory(ArrayList<Point> pontos, PointGenerator generator, List<Shape> obstacles, Random rng) {
+        this.obstacles = (ArrayList<Shape>) obstacles;
         this.generator = generator;
         ArrayList<Point> points = new ArrayList<>();
         this.rng = rng;
@@ -112,14 +112,19 @@ public class Trajectory {
         ArrayList<Point> otherPoints = other.getPoints();
         int point1 = rng.nextInt(points.size() - 1) + 1;
         int point2 = rng.nextInt(otherPoints.size() - 1) + 1;
-        ArrayList<Point> child1 = new ArrayList<>();
-        ArrayList<Point> child2 = new ArrayList<>();
-        for (int i = 0; i < point1; i++) child1.add(points.get(i));
-        for (int i = point2; i < otherPoints.size(); i++) child1.add(otherPoints.get(i));
-        for (int i = 0; i < point2; i++) child2.add(otherPoints.get(i));
-        for (int i = point1; i < points.size(); i++) child2.add(points.get(i));
-        return new Trajectory[]{new Trajectory(child1, generator, obstacles, rng), new Trajectory(child2, generator, obstacles, rng)};
+
+        ArrayList<Point> child1 = new ArrayList<>(points.subList(0, point1));
+        child1.addAll(otherPoints.subList(point2, otherPoints.size()));
+
+        ArrayList<Point> child2 = new ArrayList<>(otherPoints.subList(0, point2));
+        child2.addAll(points.subList(point1, points.size()));
+
+        return new Trajectory[]{
+                new Trajectory(child1, generator, obstacles, rng),
+                new Trajectory(child2, generator, obstacles, rng)
+        };
     }
+
 
 
     /**

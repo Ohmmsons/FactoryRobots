@@ -1,6 +1,6 @@
 package simulator;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The DeliveryMap class represents a map that contains obstacles that robots must navigate around in order to deliver packages.
@@ -11,7 +11,10 @@ import java.util.ArrayList;
  * @version 1.0.0 20/04/2023
  * @inv obstacles != null
  */
-public record DeliveryMap(ArrayList<Shape> obstacles) {
+public record DeliveryMap(List<Shape> obstacles) {
+
+    private static final int MIN_BOUND = 50;
+    private static final int MAX_BOUND = 950;
 
     /**
      * Constructs a new DeliveryMap with the given list of obstacles.
@@ -63,7 +66,7 @@ public record DeliveryMap(ArrayList<Shape> obstacles) {
     }
 
     private boolean pointOutOfBounds(Point p) {
-        return ((p.x() > 950 && p.y() > 950) || (p.x() < 50 && p.y() < 50) || (p.x() > 950 && p.y() < 50) || (p.x() < 50 && p.y() > 950));
+        return (p.x() <= MIN_BOUND || p.x() >= MAX_BOUND || p.y()<= MIN_BOUND || p.y() >=  MAX_BOUND);
     }
 
     /**
@@ -71,7 +74,7 @@ public record DeliveryMap(ArrayList<Shape> obstacles) {
      * @post The returned list of obstacles is not null.
      */
     @Override
-    public ArrayList<Shape> obstacles() {
+    public List<Shape> obstacles() {
         return obstacles;
     }
 }

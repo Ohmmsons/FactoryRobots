@@ -13,14 +13,14 @@ public class Circle extends Shape {
     /**
      * Constructor for Circle Class
      *
-     * @param points Center point of the circle
+     * @param center Center point of the circle
      * @param r      Radius of the circle
      * @pre points != null &amp;&amp; points.length == 1 &amp;&amp; r > 0
      * @post this.points == points &amp;&amp; this.r == r
      * @throws IllegalArgumentException if radius is less than or equal to 0
      */
-    public Circle(Point[] points, double r) {
-        super(points);
+    public Circle(Point center, double r) {
+        super(new Point[]{center});
         if (r <= 0) {
             throw new IllegalArgumentException("Not a valid circle");
         }

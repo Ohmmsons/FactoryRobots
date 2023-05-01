@@ -68,6 +68,7 @@ public class RobotManager {
             Robot bestRobot = null;
             Trajectory bestTrajectory = null;
             double minDistance = Double.MAX_VALUE;
+            // Find the robot with the shortest trajectory to the next request
             for (Robot robot : subscribers) {
                 if (robot.canPerformRequest(nextRequest)) {
                     Trajectory trajectoryToStart = robot.getTrajectory(robot.getCurrentPosition(), nextRequest.start());
@@ -109,6 +110,7 @@ public class RobotManager {
      */
     private void updateSubscriberList(Robot robot, RobotPowerState event) {
         if (robot == null || event == null) throw new IllegalArgumentException("Robot and event cannot be null");
+        // Update subscribers list based on the robot's power state, if standby, the robot starts listening, otherwise it stops receiving
         switch (event) {
             case STANDBY -> subscribers.add(robot);
             case DELIVERING, RETURNING, ENROUTE -> subscribers.remove(robot);

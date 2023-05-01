@@ -22,7 +22,7 @@ public class RobotManagerTests {
         Random rng = new Random(0);
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60,60)};
+        Point points = new Point(60 ,60);
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -49,7 +49,7 @@ public class RobotManagerTests {
         Random rng = new Random(0);
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60,60)};
+        Point points = new Point(60, 60);
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -81,7 +81,7 @@ public class RobotManagerTests {
         Random rng = new Random(0);
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60,60)};
+        Point points = new Point(60,60);
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -117,7 +117,7 @@ public class RobotManagerTests {
         Random rng = new Random(0);
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60, 60)};
+        Point points = new Point(60,60);
         Circle circle = new Circle(points, 5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -164,7 +164,7 @@ public class RobotManagerTests {
         Random rng = new Random(0);
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60, 60)};
+        Point points = new Point(60,60);
         Circle circle = new Circle(points, 5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -197,7 +197,7 @@ public class RobotManagerTests {
         Random rng = new Random(0);
         PointGenerator generator = new PointGenerator(rng);
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60, 60)};
+        Point points = new Point(60,60);
         Circle circle = new Circle(points, 5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);

@@ -20,7 +20,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL = new ArrayList<>();
         Collections.addAll(pontosAL, points);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         Assertions.assertEquals(trajectory.calculateCollisions(),1);
     }
@@ -32,7 +32,8 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL = new ArrayList<>();
         Collections.addAll(pontosAL, points);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
+
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         Assertions.assertEquals(trajectory.fitness(),0);
     }
@@ -47,7 +48,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         Trajectory trajectory1 = new Trajectory(pontosAL1,generator,figuras,rng);
         Trajectory[] children = trajectory.onePointCrossover(trajectory1);
@@ -73,7 +74,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         Trajectory trajectory1 = new Trajectory(pontosAL1,generator,figuras,rng);
         Trajectory[] children = trajectory.onePointCrossover(trajectory1);
@@ -99,7 +100,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         trajectory.mutate(1);
         Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras,rng));
@@ -114,7 +115,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         trajectory.mutate(0);
         Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras,rng));
@@ -130,7 +131,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         trajectory.addPoint(1);
         Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras,rng));
@@ -146,7 +147,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         trajectory.addPoint(0);
         Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras,rng));
@@ -162,7 +163,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         trajectory.removePoint(1);
         Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras,rng));
@@ -178,7 +179,7 @@ public class TrajectoryTests {
         ArrayList<Point> pontosAL1 = new ArrayList<>();
         Collections.addAll(pontosAL1, points1);
         ArrayList<Shape> figuras = new ArrayList<>();
-        figuras.add(new Circle(new Point[]{new Point(1,2)},1));
+        figuras.add(new Circle(new Point(1,2),1));
         Trajectory trajectory = new Trajectory(pontosAL,generator,figuras,rng);
         trajectory.removePoint(0);
         Assertions.assertEquals(trajectory,new Trajectory(pontosAL1,generator,figuras,rng));

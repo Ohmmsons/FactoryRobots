@@ -31,7 +31,7 @@ public class SimulatorTests {
   @Test
     public void testValidInputCheck1(){
       ArrayList<Shape> obstacles = new ArrayList<>();
-      Point[] points = new Point[]{new Point(60,60)};
+      Point points = new Point(60,60);
       Circle circle = new Circle(points,5);
       obstacles.add(circle);
       DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -41,7 +41,7 @@ public class SimulatorTests {
     @Test
     public void testValidInputCheck2(){
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60,60)};
+        Point points = new Point(60,60);
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -51,7 +51,7 @@ public class SimulatorTests {
     @Test
     public void testValidInputCheck3(){
         ArrayList<Shape> obstacles = new ArrayList<>();
-        Point[] points = new Point[]{new Point(60,60)};
+        Point points = new Point(60,60);
         Circle circle = new Circle(points,5);
         obstacles.add(circle);
         DeliveryMap deliveryMap = new DeliveryMap(obstacles);
@@ -170,4 +170,40 @@ public class SimulatorTests {
         }
     }
 
+    @Test
+    public void testSimulation1500Obstacles() {
+        //RUN SIMULATION AT FULL SPEED FOR 5 SECS AND CHECK IF IT ENCOUNTERS ANY ERRORS DURING EXECUTION
+        try {
+            Simulator simulator = new Simulator(new TestUI(1500));
+
+            // Create an ExecutorService to run the simulation
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future<?> future = executorService.submit(() -> {
+                try {
+                    simulator.startSimulation();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Stop the simulation
+            simulator.stopSimulation();
+
+            // Check for exceptions in the simulation thread
+            future.get();
+
+            // Shutdown the executor service
+            executorService.shutdown();
+        } catch (ExecutionException e) {
+            Assertions.fail("An exception was thrown during the test: " + e.getCause().getMessage());
+        } catch (InterruptedException e) {
+            Assertions.fail("The test was interrupted: " + e.getMessage());
+        }
+    }
 }

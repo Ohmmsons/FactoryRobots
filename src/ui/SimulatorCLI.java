@@ -15,7 +15,7 @@ import java.util.*;
 public class SimulatorCLI implements SimulatorUI {
     private final Scanner sc;
     private final ArrayList<Request> requests;
-    private ArrayList<Shape> shapes;
+    private List<Shape> shapes;
 
     /**
      * Constructor that initializes the `Scanner` and `Console` objects.
@@ -169,5 +169,28 @@ public class SimulatorCLI implements SimulatorUI {
     @Override
     public void addRequest(Request request) {
         this.requests.add(request);
+    }
+
+    @Override
+    public int askForNRobots() {
+        System.out.println("Choose how many robots are on the map, between 1 and 99");
+        int n = -1;
+        boolean validInput;
+        do {
+            try {
+                n = sc.nextInt();
+                if (n <= 0) {
+                    System.out.println("The number of robots must be greater than 0. Please try again.");
+                    validInput = false;
+                } else {
+                    validInput = true;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                sc.next(); // Clear the invalid input
+                validInput = false;
+            }
+        } while (!validInput);
+        return n;
     }
 }

@@ -76,4 +76,6 @@ public interface SimulatorUI {
      * @pre request != null
      */
     void addRequest(Request request);
+
+    int askForNRobots();
 }

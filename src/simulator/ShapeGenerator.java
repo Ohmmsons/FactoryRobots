@@ -30,11 +30,11 @@ public class ShapeGenerator{
      * @return a Shape object of the specified type
      * @throws IllegalArgumentException if shapeType is not a valid shape type
      */
-    public Shape generateShape(String shapeType) {
-        return switch (shapeType.toLowerCase()) {
-            case "circle" -> new CircleFactory(rng).createShape();
-            case "rectangle" -> new RectangleFactory(rng).createShape();
-            case "triangle" -> new TriangleFactory(rng).createShape();
+    public Shape generateShape(ShapeType shapeType) {
+        return switch (shapeType) {
+            case CIRCLE -> new CircleFactory(rng).createShape();
+            case RECTANGLE -> new RectangleFactory(rng).createShape();
+            case TRIANGLE -> new TriangleFactory(rng).createShape();
             default -> throw new IllegalArgumentException("Invalid shape type: " + shapeType);
         };
     }

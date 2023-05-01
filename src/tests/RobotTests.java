@@ -114,7 +114,7 @@ public class RobotTests {
     public void testFindTrajectory_findsTrajectoryAroundShape() {
         Point startingPoint = new Point(0, 0);
         DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
-        deliveryMap.addObstacle(new Circle(new Point[]{new Point(100, 100)},10));
+        deliveryMap.addObstacle(new Circle(new Point(100, 100),10));
         Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
         Trajectory trajectory = robot.getTrajectory(startingPoint, new Point(300, 300));
         assertEquals(0, trajectory.calculateCollisions());
@@ -125,13 +125,13 @@ public class RobotTests {
         Point startingPoint = new Point(0, 0);
         DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(startingPoint, deliveryMap,  new PointGenerator(new Random()),new Random());
-        Assert.assertEquals("(000,000,100.00,-,STANDBY)", robot.toString());
+        Assert.assertEquals("(000,000,100.00,-)", robot.toString());
     }
     @Test
     public void testToString2() {
         DeliveryMap map = new DeliveryMap(new ArrayList<>());
         Robot robot = new Robot(new Point(100, 200), map,  new PointGenerator(new Random()),new Random());
-        String expected = "(100,200,100.00,-,STANDBY)";
+        String expected = "(100,200,100.00,-)";
         Assert.assertEquals(expected, robot.toString());
     }
 

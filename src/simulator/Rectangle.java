@@ -1,6 +1,8 @@
 package simulator;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class Rectangle used to form Rectangles
@@ -20,9 +22,30 @@ public class Rectangle extends Polygon {
      */
     public Rectangle(Point[] points) {
         super(points);
-        if (points.length != 4 || Arrays.stream(points).distinct().count() != points.length || !(isOrthogonal(points[0], points[1], points[2]) && isOrthogonal(points[1], points[2], points[3]) && isOrthogonal(points[2], points[3], points[0]))) {
+        if (!isValidRectangle(points)) {
             throw new IllegalArgumentException("Not a valid rectangle");
         }
+    }
+
+    /**
+     * Checks if the given points form a valid rectangle.
+     *
+     * @param points Array of points that make up a rectangle
+     * @return True if the points form a valid rectangle, false otherwise
+     * @pre points != null && points.length == 4
+     * @post Returns true if the points form a valid rectangle with 4 distinct points and 4 right angles, false otherwise
+     */
+    private boolean isValidRectangle(Point[] points) {
+        if (points.length != 4) {
+            return false;
+        }
+
+        Set<Point> distinctPoints = new HashSet<>(Arrays.asList(points));
+        if (distinctPoints.size() != points.length) {
+            return false;
+        }
+
+        return isOrthogonal(points[0], points[1], points[2]) && isOrthogonal(points[1], points[2], points[3]) && isOrthogonal(points[2], points[3], points[0]);
     }
 
     /**

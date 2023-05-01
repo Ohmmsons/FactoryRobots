@@ -236,7 +236,7 @@ public class Robot {
         String formattedX = String.format("%03d", currentPosition.x());
         String formattedY = String.format("%03d", currentPosition.y());
         String symbol = (this.powerState == RobotPowerState.DELIVERING) ? "*" : "-";
-        return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol + "," + powerState + ")";
+        return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol +")";
     }
 
     /**
@@ -379,4 +379,5 @@ public class Robot {
     public Point getCurrentPosition() {
         return currentPosition;
     }
+
 }
