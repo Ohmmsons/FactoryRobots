@@ -4,7 +4,7 @@ import simulator.DeliveryMap;
 import simulator.Request;
 import simulator.Robot;
 
-import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * An interface for a Simulator.Simulator UI which defines methods for communicating with the user
@@ -51,7 +51,7 @@ public interface SimulatorUI {
      * @param robots a List of Robot objects representing the robots in the simulation
      * @pre step >= 0 &amp;&amp; robots != null
      */
-    void displayRobotStatus(int step, LinkedHashSet<Robot> robots);
+    void displayRobotStatus(int step, Set<Robot> robots);
 
     /**
      * Displays an error message to the user.

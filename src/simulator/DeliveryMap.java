@@ -66,15 +66,7 @@ public record DeliveryMap(List<Shape> obstacles) {
     }
 
     private boolean pointOutOfBounds(Point p) {
-        return (p.x() <= MIN_BOUND || p.x() >= MAX_BOUND || p.y()<= MIN_BOUND || p.y() >=  MAX_BOUND);
+        return (p.x() < MIN_BOUND || p.x() > MAX_BOUND || p.y()< MIN_BOUND || p.y() > MAX_BOUND);
     }
 
-    /**
-     * @return The list of obstacles on the map.
-     * @post The returned list of obstacles is not null.
-     */
-    @Override
-    public List<Shape> obstacles() {
-        return obstacles;
-    }
 }

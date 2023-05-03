@@ -33,7 +33,7 @@ public class Robot {
     private final Map<String, Trajectory> trajectoryCache;
     private final DeliveryMap deliveryMap;
 
-    private final int CACHE_SIZE = 100;
+    private static final int CACHE_SIZE = 100;
 
     /**
      * Robot Constructor
@@ -135,7 +135,7 @@ public class Robot {
     private void handleStandbyState() {
         if (!this.currentPosition.equals(chargingStation)) {
             energy -= ENERGY_CONSUMPTION_STANDBY;
-            if (energy / 0.1 <= distanceToChargingStation()) {
+            if (energy / ENERGY_CONSUMPTION_MOVING <= distanceToChargingStation()) {
                 this.goToChargingStation();
             }
         }
@@ -170,7 +170,7 @@ public class Robot {
         ArrayList<Point> points = trajectory.getPoints();
         Point destination = points.get(points.size() - 1);
         double totalDistance = distanceToDestination(currentPosition, destination) + distanceToDestination(destination, chargingStation);
-        return energy / 0.1 >= totalDistance;
+        return energy / ENERGY_CONSUMPTION_MOVING >= totalDistance;
     }
 
 
@@ -272,6 +272,7 @@ public class Robot {
                         manager.notify(this, this.powerState);
                     }
                 }
+                default -> throw new IllegalStateException("How is this possible");
             }
         }
     }
@@ -335,7 +336,7 @@ public class Robot {
         double euclideanDistanceEndToChargingStation = endPoint.dist(getChargingStation());
         double totalDistance = euclideanDistanceToStart + euclideanDistanceStartToEnd + euclideanDistanceEndToChargingStation;
 
-        if ((energy / 0.1) <= totalDistance)
+        if ((energy / ENERGY_CONSUMPTION_MOVING) <= totalDistance)
             return false;
 
         // Check if a trajectory now with collisions in mind (planned trajectories) would be possible given the current energy
@@ -344,7 +345,7 @@ public class Robot {
         double distanceToChargingStation = distanceToDestination(endPoint, chargingStation);
 
         totalDistance = (distanceToStart + distanceToEnd + distanceToChargingStation);
-        return (energy / 0.1) > totalDistance;
+        return (energy / ENERGY_CONSUMPTION_MOVING) > totalDistance;
     }
 
     /**

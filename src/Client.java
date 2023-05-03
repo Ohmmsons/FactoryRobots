@@ -33,7 +33,7 @@ public class Client {
         }
 
         try {
-            simulator.startSimulation();
+            simulator.  startSimulation();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

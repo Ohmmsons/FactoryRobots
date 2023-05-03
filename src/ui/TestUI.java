@@ -7,6 +7,7 @@ import simulator.Robot;
 
 import java.util.LinkedHashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * TestUI is a simple implementation of the SimulatorUI interface used for testing.
@@ -72,7 +73,7 @@ public class TestUI implements SimulatorUI {
      * @post this.step == step
      */
     @Override
-    public void displayRobotStatus(int step, LinkedHashSet<Robot> robots) {
+    public void displayRobotStatus(int step, Set<Robot> robots) {
         this.step = step;
     }
 

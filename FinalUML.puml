@@ -1,0 +1,337 @@
+@startuml
+
+
+enum simulator.ShapeType {
++  CIRCLE
++  TRIANGLE
++  RECTANGLE
+}
+class simulator.Triangle {
+}
+class simulator.RequestQueue {
+- Queue<Request> requests
++ void addRequest(Request)
++ Request getNextRequest()
++ void removeRequest()
++ boolean isEmpty()
++ int size()
++ Queue<Request> getRequests()
++ String toString()
+}
+
+
+class simulator.Polygon {
++ boolean surrounds(Point)
+- boolean isPointOnDifferentSides(Point,Point,Point)
++ boolean isIntercepted(LineSegment)
+}
+class simulator.TriangleFactory {
+- Random generator
++ Shape createShape()
+}
+class simulator.Planner {
+- Random rng
+- TrajectoryPopulation population
+- double pm
+- double pa
+- double pr
+- PointGenerator generator
+- List<Shape> obstacles
++ Trajectory findTrajectory()
+- Trajectory getBestTrajectory(TrajectoryPopulation)
+- List<Trajectory> generateOffspring(TrajectoryPopulation)
+- void applyMutations(ArrayList<Trajectory>)
+}
+class simulator.Builder {
+- double pm
+- double pa
+- double pr
+- Point start
+- Point end
+- int[] lengths
+- PointGenerator generator
+- List<Shape> obstacles
+- Random rng
++ Builder pm(double)
++ Builder pa(double)
++ Builder pr(double)
++ Builder start(Point)
++ Builder end(Point)
++ Builder lengths(int[])
++ Builder generator(PointGenerator)
++ Builder obstacles(List<Shape>)
++ Builder rng(Random)
++ Planner build()
+}
+class simulator.Robot {
+- {static} double ENERGY_CONSUMPTION_MOVING
+- {static} double ENERGY_CONSUMPTION_STANDBY
+- {static} double ENERGY_CHARGE_RATE
+- Random rng
+- Point currentPosition
+- PointGenerator generator
+# double energy
+- RobotPowerState powerState
+- Point chargingStation
+- Iterator<Point> trajectoryPointIterator
+- RobotManager manager
+- Map<String,Trajectory> trajectoryCache
+- DeliveryMap deliveryMap
+- {static} int CACHE_SIZE
++ RobotPowerState getPowerState()
++ void subscribeToManager(RobotManager)
++ double getEnergy()
++ void update()
+- void handleMovingState()
+- void handleStandbyState()
+- void handleChargingState()
++ boolean canReachDestination(Trajectory)
++ double distanceToDestination(Point,Point)
++ double distanceToChargingStation()
++ Point getChargingStation()
++ void setPath(Trajectory)
++ String toString()
+- void moveToNextPosition()
+- void goToChargingStation()
++ Trajectory getTrajectory(Point,Point)
++ boolean canPerformRequest(Request)
++ void assignRequest(Request)
++ Point getCurrentPosition()
+}
+
+class simulator.Rectangle {
+- boolean isValidRectangle(Point[])
+- boolean isOrthogonal(Point,Point,Point)
+}
+class simulator.DeliveryMap {
+- {static} int MIN_BOUND
+- {static} int MAX_BOUND
+- List<Shape> obstacles
++ void addObstacle(Shape)
++ boolean isDeliveryRequestValid(Request)
+- boolean pointOutOfBounds(Point)
++ List<Shape> obstacles()
++ boolean equals(Object)
++ int hashCode()
++ String toString()
+}
+class simulator.Point {
+- int x
+- int y
++ String toString()
++ int hashCode()
++ double dist(Point)
++ Point clone()
++ int x()
++ int y()
++ boolean equals(Object)
+}
+
+class simulator.Simulator {
+- boolean isRunning
+- Random rng
+- SimulatorUI ui
++ boolean validInputCheck(DeliveryMap,Request)
+- Set<Robot> initializeRobots(int,PointGenerator,DeliveryMap)
+- ArrayList<Shape> generateRandomObstacles(ShapeGenerator)
++ void startSimulation()
++ void stopSimulation()
+}
+class simulator.LineSegment {
+- Point p1
+- Point p2
+- boolean ccw(Point,Point,Point)
++ boolean intercepts(LineSegment)
++ double length()
++ List<Point> drawLine()
++ double shortestDistance(Point)
++ Point p1()
++ Point p2()
++ boolean equals(Object)
++ int hashCode()
++ String toString()
+}
+class simulator.Request {
+- Point start
+- Point end
++ Point start()
++ Point end()
++ String toString()
+}
+class simulator.ShapeGenerator {
+- Random rng
++ Shape generateShape(ShapeType)
+}
+abstract class simulator.Shape {
+# Point[] points
++ {abstract}boolean surrounds(Point)
++ {abstract}boolean isIntercepted(LineSegment)
++ Point[] getPoints()
+}
+class simulator.TrajectoryPopulation {
+- Random rng
+- List<Trajectory> individuals
+- List<Shape> obstacles
+- PointGenerator generator
++ List<Trajectory> getIndividuals()
++ String toString()
++ TrajectoryPopulation rankBasedSelection()
+}
+class simulator.PointGenerator {
+- Random rng
++ Point generateGaussianPoint(double,Point,Point)
+}
+
+interface ui.SimulatorUI {
+~ int askForNumberOfObstacles()
+~ Request askForRequest()
+~ double askForSpeed()
+~ boolean isAskingForNewPoint()
+~ void displayRobotStatus(int,Set<Robot>)
+~ void displayErrorMessage(String)
+~ void sendMapInformation(DeliveryMap)
+~ void addRequest(Request)
+~ int askForNRobots()
+}
+class simulator.RectangleFactory {
+- Random generator
++ Shape createShape()
+}
+class ui.SimulatorCLI {
+- Scanner sc
+- ArrayList<Request> requests
+- List<Shape> shapes
++ int askForNumberOfObstacles()
++ Request askForRequest()
++ double askForSpeed()
++ boolean isAskingForNewPoint()
++ void displayRobotStatus(int,Set<Robot>)
++ void displayErrorMessage(String)
++ void sendMapInformation(DeliveryMap)
++ void addRequest(Request)
++ int askForNRobots()
+}
+class simulator.Circle {
+- double r
++ double getRadius()
++ boolean surrounds(Point)
++ boolean isIntercepted(LineSegment)
+}
+class simulator.Trajectory {
+- List<Point> points
+- Random rng
+- double length
++ PointGenerator generator
+- int collisionCount
+- ArrayList<Shape> obstacles
++ String toString()
++ List<Point> calculatePointsAlongTrajectory()
++ int calculateCollisions()
++ double fitness()
++ Trajectory[] onePointCrossover(Trajectory)
++ void mutate(double)
++ boolean equals(Object)
++ void addPoint(double)
++ void removePoint(double)
++ ArrayList<Point> getPoints()
++ double getLength()
++ int getCollisionCount()
++ Trajectory concatenate(Trajectory)
+}
+
+
+enum simulator.RobotPowerState {
++  ENROUTE
++  DELIVERING
++  CHARGING
++  STANDBY
++  RETURNING
+}
+
+class ui.TestUI {
+- int nObstacles
+- int step
++ int askForNumberOfObstacles()
++ Request askForRequest()
++ double askForSpeed()
++ boolean isAskingForNewPoint()
++ void displayRobotStatus(int,Set<Robot>)
++ void displayErrorMessage(String)
++ void sendMapInformation(DeliveryMap)
++ void addRequest(Request)
++ int askForNRobots()
+}
+
+class simulator.CircleFactory {
+- Random generator
++ Shape createShape()
+}
+interface simulator.ShapeFactory {
+~ Shape createShape()
+}
+class simulator.RobotManager {
+- Set<Robot> subscribers
+- RequestQueue requests
+- Map<Robot,Request> currentRequests
++ Request getCurrentRequest(Robot)
++ void update()
+- RobotBestTrajectory findBestRobotAndTrajectory(Request)
+- Trajectory getCandidateTrajectory(Robot,Request)
+- void assignRequestToRobot(Robot,Request)
+- void moveToQueueEnd(Request)
+- void updateSubscriberList(Robot,RobotPowerState)
++ void notify(Robot,RobotPowerState)
++ Queue<Request> getRequests()
++ Set<Robot> getSubscribers()
+}
+
+
+
+simulator.Polygon <|-- simulator.Triangle
+simulator.Planner +.. simulator.Builder
+ui.SimulatorUI <|.. ui.SimulatorCLI
+simulator.Shape <|-- simulator.Circle
+ui.SimulatorUI <|.. ui.TestUI
+simulator.ShapeFactory <|.. simulator.CircleFactory
+
+simulator.Polygon <|-- simulator.Rectangle
+simulator.ShapeFactory <|.. simulator.TriangleFactory
+
+
+
+simulator.Shape <|-- simulator.Polygon
+
+simulator.ShapeGenerator *-- simulator.ShapeType
+simulator.ShapeFactory <|.. simulator.RectangleFactory
+ui.SimulatorUI - simulator.Simulator
+simulator.Robot *-- simulator.RobotPowerState
+simulator.TrajectoryPopulation *-- simulator.Trajectory
+simulator.Planner *-- simulator.TrajectoryPopulation
+simulator.Robot *-- simulator.Planner
+simulator.Simulator *-- simulator.DeliveryMap
+simulator.Simulator *-- simulator.RobotManager
+simulator.Simulator *-- simulator.PointGenerator
+simulator.Simulator *-- simulator.ShapeGenerator
+simulator.RobotManager o-- simulator.Robot
+simulator.DeliveryMap o-- simulator.Shape
+simulator.ShapeFactory *-- simulator.Shape
+simulator.LineSegment o-- simulator.Point
+simulator.Request o-- simulator.Point
+simulator.Polygon o-- simulator.LineSegment
+simulator.Robot o-- simulator.PointGenerator
+simulator.Trajectory o-- simulator.PointGenerator
+simulator.TrajectoryPopulation o-- simulator.PointGenerator
+simulator.Shape o-- simulator.Point
+simulator.Simulator *-- simulator.RequestQueue
+simulator.RobotManager o-- simulator.RequestQueue
+simulator.RequestQueue o-- simulator.Request
+simulator.Simulator *-- simulator.Request
+simulator.Trajectory *-- simulator.Point
+simulator.Planner - simulator.DeliveryMap
+
+simulator.CircleFactory *-- simulator.Circle
+simulator.RectangleFactory *-- simulator.Rectangle
+simulator.TriangleFactory *-- simulator.Triangle
+simulator.ShapeGenerator *-- simulator.ShapeFactory
+simulator.PointGenerator *-- simulator.Point
+@enduml

@@ -91,7 +91,7 @@ public class SimulatorCLI implements SimulatorUI {
             System.out.println("From 1 to 100 how fast fast do you want the simulation to be (Steps per second)");
             n = sc.nextDouble();
         } while (n > 100 || n < 0);
-        System.out.println("Speed set to " + n + ". Press enter to enter requests\n Simulation Starting...");
+        System.out.println("Speed set to " + n + ".");
         return n;
     }
 
@@ -123,7 +123,7 @@ public class SimulatorCLI implements SimulatorUI {
      * @pre step >= 0 &amp;&amp; robots != null
      */
     @Override
-    public void displayRobotStatus(int step, LinkedHashSet<Robot> robots) {
+    public void displayRobotStatus(int step, Set<Robot> robots) {
         StringBuilder info = new StringBuilder("Step " + step);
         for (Robot robot : robots) {
             info.append(robot);
@@ -191,6 +191,7 @@ public class SimulatorCLI implements SimulatorUI {
                 validInput = false;
             }
         } while (!validInput);
+        System.out.println("Number of robots set to "+n+". Press enter to enter requests\n Simulation Starting...");
         return n;
     }
 }

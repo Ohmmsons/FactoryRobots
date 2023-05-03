@@ -24,14 +24,11 @@ class PlannerTests {
         ArrayList<Shape> obstacles = new ArrayList<>();
         obstacles.add(new Circle(new Point(500, 500), 50));
 
-        // Create a Planner instance
          Planner planner = new Planner.Builder().pm(pm).pa(pa).pr(pr).start(start).end(end).lengths(lengths).generator(generator).obstacles(obstacles).rng(rng).build();
 
-        // Test if the findTrajectory() method returns a valid trajectory
         Trajectory trajectory = planner.findTrajectory();
         assertNotNull(trajectory, "The trajectory found should not be null");
 
-        // Check if the trajectory found has no collisions
         assertEquals(0, trajectory.calculateCollisions(), "The trajectory found should have no collisions");
     }
     @Test

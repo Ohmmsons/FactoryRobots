@@ -29,7 +29,7 @@ public class Trajectory {
     public Trajectory(ArrayList<Point> pontos, PointGenerator generator, List<Shape> obstacles, Random rng) {
         this.obstacles = (ArrayList<Shape>) obstacles;
         this.generator = generator;
-        ArrayList<Point> points = new ArrayList<>();
+        points = new ArrayList<>();
         this.rng = rng;
         length = 0;
         int n = pontos.size();
@@ -40,7 +40,6 @@ public class Trajectory {
                 if (i > 0) length += points.get(++j).dist(points.get(j - 1));
             }
         }
-        this.points = points;
         this.collisionCount = calculateCollisions();
     }
 
@@ -126,7 +125,6 @@ public class Trajectory {
     }
 
 
-
     /**
      * mutate method to perform one point mutation with probability pm
      *
@@ -134,21 +132,18 @@ public class Trajectory {
      * @pre 0 &le; pm &le; 1
      */
     public void mutate(double pm) {
-        if (points.size() > 2) {
-            if (rng.nextDouble() < pm) {
-                int i = rng.nextInt(points.size() - 2) + 1;
-                Point p = generator.generateGaussianPoint(50, points.get(0), points.get(points.size() - 1));
-                do {
-                    if (!points.contains(p)) {
-                        //Mutate point and update length
-                        length -= (points.get(i - 1).dist(points.get(i)) + points.get(i).dist(points.get(i + 1)));
-                        points.set(i, p);
-                        length += (points.get(i - 1).dist(p) + p.dist(points.get(i + 1)));
-                    }
-                    else p = generator.generateGaussianPoint(50, points.get(0), points.get(points.size() - 1));
-                }while(points.contains(p));
-                this.collisionCount = calculateCollisions();
-            }
+        if (points.size() > 2 && rng.nextDouble() < pm) {
+            int i = rng.nextInt(points.size() - 2) + 1;
+            Point p = generator.generateGaussianPoint(50, points.get(0), points.get(points.size() - 1));
+            do {
+                if (!points.contains(p)) {
+                    //Mutate point and update length
+                    length -= (points.get(i - 1).dist(points.get(i)) + points.get(i).dist(points.get(i + 1)));
+                    points.set(i, p);
+                    length += (points.get(i - 1).dist(p) + p.dist(points.get(i + 1)));
+                } else p = generator.generateGaussianPoint(50, points.get(0), points.get(points.size() - 1));
+            } while (points.contains(p));
+            this.collisionCount = calculateCollisions();
         }
     }
 
@@ -159,6 +154,7 @@ public class Trajectory {
      * @return true if trajectories are equal
      */
     public boolean equals(Object other) {
+        if (other == null) throw new IllegalArgumentException("OTHER CAN'T BE NULL");
         if (other.getClass() != this.getClass()) return false;
         Trajectory otherTrajectory = (Trajectory) other;
         ArrayList<Point> otherTrajectoryPoints = otherTrajectory.getPoints();
@@ -182,12 +178,11 @@ public class Trajectory {
             do {
                 if (!points.contains(p)) {
                     // Add point and update length
-                    length-=(points.get(i).dist(points.get(i+1)));
+                    length -= (points.get(i).dist(points.get(i + 1)));
                     points.add(i + 1, p);
-                    length+=(points.get(i).dist(p) + p.dist(points.get(i+2)));
-                }
-                else  p = generator.generateGaussianPoint(50, points.get(0), points.get(points.size() - 1));
-            }while(points.contains(p));
+                    length += (points.get(i).dist(p) + p.dist(points.get(i + 2)));
+                } else p = generator.generateGaussianPoint(50, points.get(0), points.get(points.size() - 1));
+            } while (points.contains(p));
             this.collisionCount = calculateCollisions();
         }
     }
@@ -204,7 +199,7 @@ public class Trajectory {
             Point p = points.get(i);
             length -= (points.get(i - 1).dist(p) + p.dist(points.get(i))) - points.get(i - 1).dist(p);
             p = points.remove(i);
-            length+=points.get(i-1).dist(p);
+            length += points.get(i - 1).dist(p);
             this.collisionCount = calculateCollisions();
         }
     }
@@ -240,12 +235,12 @@ public class Trajectory {
      * Concatenates two trajectories by adding the points from the second trajectory to the first trajectory.
      *
      * @param other the second trajectory to be concatenated
+     * @return concatenated trajectory
      * @pre other != null
      * @post newtrajectory.size() == this.size() + other.size() - 1
-     * @return concatenated trajectory
      */
     public Trajectory concatenate(Trajectory other) {
-        if(other == null) throw new IllegalArgumentException("other trajectory can't be null");
+        if (other == null) throw new IllegalArgumentException("other trajectory can't be null");
         ArrayList<Point> points1 = new ArrayList<>(this.points);
         ArrayList<Point> points2 = new ArrayList<>(other.getPoints());
         points1.addAll(points2.subList(1, points2.size()));

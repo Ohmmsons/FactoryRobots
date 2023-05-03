@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -34,7 +35,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
     private final Semaphore pointSemaphore;
     private ArrayList<Shape> shapes;
     private Point point;
-    private LinkedHashSet<Robot> robots;
+    private Set<Robot> robots;
     private boolean isKeyPressed;
     private final java.util.List<Request> requests;
     private final JLabel messageLabel;
@@ -57,7 +58,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         this.addKeyListener(keyChecker);
         this.addMouseListener(mouseChecker);
         shapes = new ArrayList<>();
-        robots = new LinkedHashSet<Robot>();
+        robots = new LinkedHashSet<>();
         requests = new ArrayList<>();
         pointSemaphore = new Semaphore(0);
         setPreferredSize(new Dimension(1000, 1000));
@@ -123,11 +124,13 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * @post Draws the grid on the screen.
      */
     private void drawTiles(Graphics g) {
+
         g.setColor(backgroundColor);
         int tileSize = 50;
         int screwSize = 10;
         int numCols = getWidth() / tileSize;
         int numRows = getHeight() / tileSize;
+
 
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
@@ -145,6 +148,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
                 g.setColor(backgroundColor);
             }
         }
+
         g.setColor(blackColor);
         for (int row = 0; row <= numRows; row++) {
             g.drawLine(0, row * tileSize, getWidth(), row * tileSize);
@@ -152,6 +156,14 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
         for (int col = 0; col <= numCols; col++) {
             g.drawLine(col * tileSize, 0, col * tileSize, getHeight());
         }
+
+        Graphics2D g2d = (Graphics2D) g;
+        Stroke defaultStroke = g2d.getStroke();
+        g2d.setStroke(new BasicStroke(3));
+        g.setColor(Color.RED);
+        g.drawRect(50, 50, 900, 900);
+        g2d.setStroke(defaultStroke);
+
 
         int stationSize = 30;
         int borderSize = 3;
@@ -165,7 +177,6 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
             g.setColor(Color.darkGray);
             g.fillRect(stationX, stationY, stationSize, stationSize);
         }
-        g.drawRect(50,50,900,900);
     }
     /**
      * Draws the map with obstacles.
@@ -487,7 +498,7 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
      * @post Updates the GUI to display the robot status at the current step of the simulation.
      */
     @Override
-    public void displayRobotStatus(int step, LinkedHashSet<Robot> robots) {
+    public void displayRobotStatus(int step, Set<Robot> robots) {
         currentFrame = step;
         this.robots = robots;
         repaint();

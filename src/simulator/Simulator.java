@@ -39,7 +39,7 @@ public class Simulator {
      */
     public boolean validInputCheck(DeliveryMap deliveryMap, Request request) {
         if (deliveryMap.isDeliveryRequestValid(request)) return true;
-        else ui.displayErrorMessage("Request invalid, it is inside an obstacle, please input a new one");
+        else ui.displayErrorMessage("Request invalid, it is inside an obstacle, or out of bounds,  please input a new one");
         return false;
     }
 
@@ -51,7 +51,7 @@ public class Simulator {
      * @return Set of n robots, one in each corner, all fully charged and in standby.
      * @pre generator != null &amp;&amp; deliveryMap != null
      */
-    private LinkedHashSet<Robot> initializeRobots(int n, PointGenerator generator, DeliveryMap deliveryMap) {
+    private Set<Robot> initializeRobots(int n, PointGenerator generator, DeliveryMap deliveryMap) {
         // Create robots at evenly distributed points along the perimeter of the map
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(n);
         int mapSize = 1000;
@@ -100,6 +100,7 @@ public class Simulator {
                 case 0 -> obstacles.add(generator.generateShape(ShapeType.CIRCLE));
                 case 1 -> obstacles.add(generator.generateShape(ShapeType.RECTANGLE));
                 case 2 -> obstacles.add(generator.generateShape(ShapeType.TRIANGLE));
+                default -> throw new IllegalArgumentException("Impossible number");
             }
         }
         return obstacles;
@@ -142,7 +143,7 @@ public class Simulator {
         }while(nRobots>=100 || nRobots<0);
 
         // Create and initialize robots
-        LinkedHashSet<Robot> robots = initializeRobots(nRobots,pointGenerator,deliveryMap);
+        Set<Robot> robots = initializeRobots(nRobots,pointGenerator,deliveryMap);
 
         // Create robot manager and subscribe robots to it
         RobotManager robotManager = new RobotManager(robots,requestQueue);
