@@ -11,16 +11,16 @@ import java.util.*;
  *
  * @author Jude Adam
  * @version 1.0.0 20/04/2023
- *
  * @inv A robot's battery level must always be between 0 and 100.
  * @inv If a robot's battery level drops to 0, it must return to its charging point to recharge.
  * @inv currentPosition, deliveryMap, generator, chargingStation, trajectoryCache, and rng must not be null.
  * @inv currentPosition and chargingStation must be within the deliveryMap.
  */
 public class Robot {
-    private static final double ENERGY_CONSUMPTION_MOVING = 0.1;
-    private static final double ENERGY_CONSUMPTION_STANDBY = 0.01;
+    private static final double ENERGY_CONSUMPTION_ENROUTE = 0.01;
+    private static final double ENERGY_CONSUMPTION_STANDBY = 0.001;
     private static final double ENERGY_CHARGE_RATE = 1.0;
+    private static final double ENERGY_CONSUMPTION_DELIVERING = 0.1;
     private final Random rng;
     private Point currentPosition;
     private final PointGenerator generator;
@@ -41,11 +41,11 @@ public class Robot {
      * @param startingPoint the starting point of the robot
      * @param deliveryMap   the delivery map that the robot will navigate through
      * @param generator     the random number generator used to generate trajectory lengths
+     * @throws IllegalArgumentException if any of the input parameters are null
      * @pre startingPoint, deliveryMap, and generator must be non-null
      * @post A Robot object is created with the provided starting point, delivery map, and generator
-     * @throws IllegalArgumentException if any of the input parameters are null
      */
-    public Robot(Point startingPoint, DeliveryMap deliveryMap, PointGenerator generator,Random rng) {
+    public Robot(Point startingPoint, DeliveryMap deliveryMap, PointGenerator generator, Random rng) {
         if (startingPoint == null || deliveryMap == null || generator == null)
             throw new IllegalArgumentException("Can't be constructed with null arguments");
         this.currentPosition = startingPoint;
@@ -100,15 +100,16 @@ public class Robot {
      * Updates the state of the robot. Depending on the robot's power state, this may involve moving to a new position,
      * charging the battery, or updating the robot manager with its current state.
      *
+     * @throws IllegalStateException if the energy level is below 0
      * @pre energy >= 0
      * @post energy is updated based on the robot's power state
-     * @throws IllegalStateException if the energy level is below 0
      */
     public void update() {
-        if((int)energy < 0) throw new IllegalStateException("Energy level cannot be below 0.");
+        if ((int) energy < 0) throw new IllegalStateException("Energy level cannot be below 0.");
 
         switch (powerState) {
-            case DELIVERING, RETURNING, ENROUTE -> handleMovingState();
+            case DELIVERING -> handleDeliveringState();
+            case RETURNING, ENROUTE -> handleMovingState();
             case STANDBY -> handleStandbyState();
             case CHARGING -> handleChargingState();
             default -> throw new IllegalStateException("Unexpected power state: " + powerState);
@@ -116,15 +117,27 @@ public class Robot {
     }
 
     /**
-     * Handles the logic for when the robot is in the moving state (ENROUTE, DELIVERING or RETURNING).
+     * Handles the logic for when the robot is in the moving state (ENROUTE or RETURNING).
      *
      * @pre Robot must be in ENROUTE, DELIVERING or RETURNING state
      * @post Updates energy consumption and moves the robot to the next position in its trajectory
      */
     private void handleMovingState() {
-        energy -= ENERGY_CONSUMPTION_MOVING;
+        energy -= ENERGY_CONSUMPTION_ENROUTE;
         this.moveToNextPosition();
     }
+
+    /**
+     * Handles the logic for when the robot is in the DELIVERING state.
+     *
+     * @pre Robot must be in DELIVERING state
+     * @post Updates energy consumption and moves the robot to the next position in its trajectory
+     */
+    private void handleDeliveringState() {
+        energy -= ENERGY_CONSUMPTION_DELIVERING;
+        this.moveToNextPosition();
+    }
+
 
     /**
      * Handles the logic for when the robot is in the STANDBY state.
@@ -135,7 +148,7 @@ public class Robot {
     private void handleStandbyState() {
         if (!this.currentPosition.equals(chargingStation)) {
             energy -= ENERGY_CONSUMPTION_STANDBY;
-            if (energy / ENERGY_CONSUMPTION_MOVING <= distanceToChargingStation()) {
+            if (energy / ENERGY_CONSUMPTION_ENROUTE <= distanceToChargingStation()) {
                 this.goToChargingStation();
             }
         }
@@ -156,58 +169,45 @@ public class Robot {
         }
     }
 
-    /**
-     * Determines whether the robot can reach its destination given a trajectory.
-     *
-     * @param trajectory the trajectory to check
-     * @return true if the robot can reach its destination, false otherwise
-     * @pre trajectory must be non-null
-     * @post Returns true if the robot can reach its destination, false otherwise
-     */
-    public boolean canReachDestination(Trajectory trajectory) {
-        if (trajectory == null)
-            return false;
-        ArrayList<Point> points = trajectory.getPoints();
-        Point destination = points.get(points.size() - 1);
-        double totalDistance = distanceToDestination(currentPosition, destination) + distanceToDestination(destination, chargingStation);
-        return energy / ENERGY_CONSUMPTION_MOVING >= totalDistance;
-    }
-
 
     /**
      * Determines whether the robot can reach the charging station from its current position without running out of energy.
      *
      * @return the distance to the charging station from the robot's current position
+     * @throws IllegalArgumentException if either the start or destination points are null
      * @pre start and destination points are non-null
      * @post returns the distance to the charging station
-     * @throws IllegalArgumentException if either the start or destination points are null
      */
     public double distanceToDestination(Point start, Point destination) {
-        if(start==null||destination==null) throw new IllegalArgumentException("Start and destination must be non null");
-        Trajectory trajectoryToDestination = getTrajectory(start,destination);
+        if (start == null || destination == null)
+            throw new IllegalArgumentException("Start and destination must be non null");
+        Trajectory trajectoryToDestination = getTrajectory(start, destination);
         if (trajectoryToDestination == null)
             return Double.MAX_VALUE;
         return trajectoryToDestination.getLength();
     }
+
     /**
      * Calculates the distance to the charging station from the robot's current position.
      *
-     * @pre currentPosition and chargingStation must be non-null
      * @return the distance to the charging station
+     * @pre currentPosition and chargingStation must be non-null
      * @post Returns a non-negative integer representing the distance to the charging station
      */
     public double distanceToChargingStation() {
         return distanceToDestination(currentPosition, chargingStation);
     }
+
     /**
      * Returns the charging station point.
      *
      * @return the charging station point
      * @post Returns the charging station point
      */
-    public Point getChargingStation(){
-        return  chargingStation;
+    public Point getChargingStation() {
+        return chargingStation;
     }
+
     /**
      * Sets the trajectory of the robot to the given one, and notifies the manager that the robot is delivering.
      * This method also sets the power state of the robot to DELIVERING.
@@ -236,7 +236,7 @@ public class Robot {
         String formattedX = String.format("%03d", currentPosition.x());
         String formattedY = String.format("%03d", currentPosition.y());
         String symbol = (this.powerState == RobotPowerState.DELIVERING) ? "*" : "-";
-        return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol +")";
+        return "(" + formattedX + "," + formattedY + "," + df.format(energy) + "," + symbol + ")";
     }
 
     /**
@@ -292,12 +292,13 @@ public class Robot {
 
     /**
      * Finds a trajectory (if it hasn't already been found), between the start and destination points using the provided planner.
-     * @param start the starting point of the trajectory
+     *
+     * @param start       the starting point of the trajectory
      * @param destination the destination point of the trajectory
      * @return the trajectory between the start and destination points
+     * @throws IllegalArgumentException if either start or destination points are null
      * @pre start and destination points must be non-null
      * @post Returns a trajectory between the start and destination points, or null if no trajectory is found
-     * @throws IllegalArgumentException if either start or destination points are null
      */
     public Trajectory getTrajectory(Point start, Point destination) {
         if (start == null || destination == null)
@@ -334,18 +335,20 @@ public class Robot {
         double euclideanDistanceToStart = getCurrentPosition().dist(startPoint);
         double euclideanDistanceStartToEnd = startPoint.dist(endPoint);
         double euclideanDistanceEndToChargingStation = endPoint.dist(getChargingStation());
-        double totalDistance = euclideanDistanceToStart + euclideanDistanceStartToEnd + euclideanDistanceEndToChargingStation;
 
-        if ((energy / ENERGY_CONSUMPTION_MOVING) <= totalDistance)
+        double minimumEnergyToPerformRequestAndGoBackToCharge = euclideanDistanceStartToEnd * ENERGY_CONSUMPTION_DELIVERING + (euclideanDistanceToStart + euclideanDistanceEndToChargingStation) * ENERGY_CONSUMPTION_ENROUTE;
+
+        if (energy <= minimumEnergyToPerformRequestAndGoBackToCharge)
             return false;
 
         // Check if a trajectory now with collisions in mind (planned trajectories) would be possible given the current energy
         double distanceToStart = distanceToDestination(currentPosition, startPoint);
-        double distanceToEnd = distanceToDestination(startPoint, endPoint);
-        double distanceToChargingStation = distanceToDestination(endPoint, chargingStation);
+        double distanceStartToEnd = distanceToDestination(startPoint, endPoint);
+        double distanceEndToChargingStation = distanceToDestination(endPoint, chargingStation);
 
-        totalDistance = (distanceToStart + distanceToEnd + distanceToChargingStation);
-        return (energy / ENERGY_CONSUMPTION_MOVING) > totalDistance;
+        double energyToPerformRequestAndGoBackToCharge = distanceStartToEnd * ENERGY_CONSUMPTION_DELIVERING + (distanceToStart + distanceEndToChargingStation) * ENERGY_CONSUMPTION_ENROUTE;
+
+        return energy > energyToPerformRequestAndGoBackToCharge;
     }
 
     /**
@@ -355,8 +358,8 @@ public class Robot {
      * @param request The delivery request to be assigned to the robot.
      * @pre request must not be null.
      * @post The robot's path is set to the start point of the request.
-     *       The robot's power state is set to ENROUTE.
-     *       The manager is notified of the change in power state.
+     * The robot's power state is set to ENROUTE.
+     * The manager is notified of the change in power state.
      */
     public void assignRequest(Request request) {
         if (request == null) {
@@ -370,15 +373,22 @@ public class Robot {
     }
 
 
-
     /**
- * Gets the current position of the robot.
- *
- * @return the current position of the robot
- * @post Returns the current position  of the robot
- */
+     * Gets the current position of the robot.
+     *
+     * @return the current position of the robot
+     * @post Returns the current position  of the robot
+     */
     public Point getCurrentPosition() {
         return currentPosition;
+    }
+
+    public double getDistanceToNextRequest(){
+        Request nextRequest =  this.manager.getNextRequest();
+        if (nextRequest == null) {
+            return Double.MAX_VALUE;
+        }
+        return nextRequest.start().dist(currentPosition);
     }
 
 }

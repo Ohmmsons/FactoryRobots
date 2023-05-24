@@ -32,7 +32,7 @@ public class Rectangle extends Polygon {
      *
      * @param points Array of points that make up a rectangle
      * @return True if the points form a valid rectangle, false otherwise
-     * @pre points != null && points.length == 4
+     * @pre points != null &amp; points.length == 4
      * @post Returns true if the points form a valid rectangle with 4 distinct points and 4 right angles, false otherwise
      */
     private boolean isValidRectangle(Point[] points) {

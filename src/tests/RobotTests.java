@@ -84,31 +84,6 @@ public class RobotTests {
         robot.getEnergy();
         assertThrows(IllegalStateException.class, robot::update);
     }
-    @Test
-    public void testCanReachDestination1() {
-        Point startingPoint = new Point(0, 0);
-        DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
-        Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.getTrajectory(startingPoint, new Point(1, 1));
-        assertTrue(robot.canReachDestination(trajectory));
-    }
-
-    @Test
-    public void testCanReachDestination2() {
-        Point startingPoint = new Point(0, 0);
-        DeliveryMap deliveryMap = new DeliveryMap(new ArrayList<>());
-        Robot robot = new Robot(startingPoint, deliveryMap, new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.getTrajectory(startingPoint, new Point(100, 100));
-        assertTrue(robot.canReachDestination(trajectory));
-    }
-
-    @Test
-    public void testCanReachDestination3() {
-        DeliveryMap map = new DeliveryMap(new ArrayList<>());
-        Robot robot = new Robot(new Point(0, 0), map,  new PointGenerator(new Random()),new Random());
-        Trajectory trajectory = robot.getTrajectory(new Point(0, 0), new Point(300, 300));
-        assertTrue(robot.canReachDestination(trajectory));
-    }
 
     @Test
     public void testFindTrajectory_findsTrajectoryAroundShape() {

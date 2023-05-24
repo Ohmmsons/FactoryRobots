@@ -11,6 +11,9 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+  @author: Jude Adam 71254
+ */
 public class TrajectoryPopulationTests{
 
     private TrajectoryPopulation population;

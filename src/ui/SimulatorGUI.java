@@ -560,77 +560,77 @@ public class SimulatorGUI extends JPanel implements SimulatorUI {
 
 
     // Inner class to handle mouse clicks
-private static class MouseChecker implements MouseListener {
-    private final SimulatorGUI parent;
-    /**
-     * Constructor for MouseChecker class.
-     *
-     * @param parent The parent SimulatorGUI object.
-     * @pre parent != null
-     * @post A new MouseChecker object is created.
-     */
-    public MouseChecker(SimulatorGUI parent) {
-        this.parent = parent;
+    private static class MouseChecker implements MouseListener {
+        private final SimulatorGUI parent;
+        /**
+         * Constructor for MouseChecker class.
+         *
+         * @param parent The parent SimulatorGUI object.
+         * @pre parent != null
+         * @post A new MouseChecker object is created.
+         */
+        public MouseChecker(SimulatorGUI parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int x = e.getX();
+            int y = e.getY();
+
+            // Save the clicked point and release the semaphore to unblock the askForPoint() method
+            parent.point = new Point(x, y);
+            parent.pointSemaphore.release();
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
+    private static class KeyChecker implements KeyListener {
+        private final SimulatorGUI parent;
+        /**
+         * Constructor for KeyChecker class.
+         *
+         * @param parent The parent SimulatorGUI object.
+         * @pre parent != null
+         * @post A new KeyChecker object is created.
+         */
+        public KeyChecker(SimulatorGUI parent) {
+            this.parent = parent;
+        }
 
-        // Save the clicked point and release the semaphore to unblock the askForPoint() method
-        parent.point = new Point(x, y);
-        parent.pointSemaphore.release();
+        @Override
+        public synchronized void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE)
+                parent.isKeyPressed = true;
+        }
+
+        @Override
+        public synchronized void keyReleased(KeyEvent e) {
+            parent.isKeyPressed = false;
+        }
+
+        @Override
+        public synchronized void keyTyped(KeyEvent e) {
+        }
+
     }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
-}
-
-private static class KeyChecker implements KeyListener {
-    private final SimulatorGUI parent;
-    /**
-     * Constructor for KeyChecker class.
-     *
-     * @param parent The parent SimulatorGUI object.
-     * @pre parent != null
-     * @post A new KeyChecker object is created.
-     */
-    public KeyChecker(SimulatorGUI parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public synchronized void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE)
-            parent.isKeyPressed = true;
-    }
-
-    @Override
-    public synchronized void keyReleased(KeyEvent e) {
-        parent.isKeyPressed = false;
-    }
-
-    @Override
-    public synchronized void keyTyped(KeyEvent e) {
-    }
-
-}
 }

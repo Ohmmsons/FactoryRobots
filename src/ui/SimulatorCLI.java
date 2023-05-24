@@ -105,7 +105,7 @@ public class SimulatorCLI implements SimulatorUI {
         try {
             int available = System.in.available();
             if (available > 0) {
-                sc.nextLine(); // Consume the input
+                sc.nextLine();
                 return true;
             }
         } catch (IOException e) {
@@ -179,15 +179,15 @@ public class SimulatorCLI implements SimulatorUI {
         do {
             try {
                 n = sc.nextInt();
-                if (n <= 0) {
-                    System.out.println("The number of robots must be greater than 0. Please try again.");
+                if (n <= 0 || n>99) {
+                    System.out.println("The number of robots must be between 1 and 99. Please try again.");
                     validInput = false;
                 } else {
                     validInput = true;
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
-                sc.next(); // Clear the invalid input
+                sc.next();
                 validInput = false;
             }
         } while (!validInput);

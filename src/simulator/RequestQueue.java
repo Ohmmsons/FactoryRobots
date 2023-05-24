@@ -6,7 +6,7 @@ import java.util.Queue;
 /**
  * The RequestQueue class manages a queue of delivery requests.
  *
- * @author Your Name
+ * @author Jude Adam
  * @version 1.0.0 20/04/2023
  * @inv requests != null
  */

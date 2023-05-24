@@ -3,10 +3,7 @@ package tests;
 import simulator.*;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 /**
@@ -67,7 +64,7 @@ public class RobotManagerTests {
         robots.add(robot2);
         robots.add(robot3);
         RequestQueue queue = new  RequestQueue();
-        queue.addRequest(new Request (new Point(900,900),new Point(800,800)));
+        queue.addRequest(new Request (new Point(900,900),new Point(850,850)));
         RobotManager manager = new RobotManager(robots,queue);
         for(Robot robot:robots)
             robot.subscribeToManager(manager);
@@ -99,14 +96,14 @@ public class RobotManagerTests {
         robots.add(robot2);
         robots.add(robot3);
         RequestQueue queue = new  RequestQueue();
-        queue.addRequest(new Request (new Point(900,900),new Point(800,800)));
+        queue.addRequest(new Request (new Point(900,900),new Point(850,850)));
         RobotManager manager = new RobotManager(robots,queue);
         for(Robot robot:robots)
             robot.subscribeToManager(manager);
         manager.update();
         for(Robot robot:robots)
             robot.update();
-        queue.addRequest(new Request (new Point(200,900),new Point(150,800)));
+        queue.addRequest(new Request (new Point(100,900),new Point(150,900)));
         manager.update();
         for(Robot robot:robots)
             robot.update();

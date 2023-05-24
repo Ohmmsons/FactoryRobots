@@ -52,7 +52,6 @@ public class Simulator {
      * @pre generator != null &amp;&amp; deliveryMap != null
      */
     private Set<Robot> initializeRobots(int n, PointGenerator generator, DeliveryMap deliveryMap) {
-        // Create robots at evenly distributed points along the perimeter of the map
         LinkedHashSet<Robot> robots = new LinkedHashSet<>(n);
         int mapSize = 1000;
         int perimeter = (mapSize - 30) * 4;
@@ -75,6 +74,10 @@ public class Simulator {
                 x = offset;
                 y = mapSize - offset - (perimeterPosition - 3 * (mapSize - offset));
             }
+
+            x = (x + mapSize) % mapSize;
+            y = (y + mapSize) % mapSize;
+
             Point chargingPoint = new Point(x, y);
             Robot robot = new Robot(chargingPoint, deliveryMap, generator, rng);
             robots.add(robot);
@@ -82,7 +85,6 @@ public class Simulator {
 
         return robots;
     }
-
 
     /**
      * Uses a ShapeGenerator to generate random obstacles using random numbers provided by the Generator variable.

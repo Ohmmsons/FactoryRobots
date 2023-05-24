@@ -31,9 +31,10 @@ public class RobotManager {
         if (robots == null || requests == null)
             throw new IllegalArgumentException("Can't be constructed with null arguments");
         this.requests = requests;
-        this.subscribers = new LinkedHashSet<>(robots);
         for (Robot robot : robots)
             robot.subscribeToManager(this);
+        this.subscribers = new LinkedHashSet<>(robots);
+        subscribers.addAll(robots);
         this.currentRequests = new HashMap<>();
     }
 
@@ -60,8 +61,7 @@ public class RobotManager {
      * @param bestRobot
      * @param bestTrajectory
      */
-    private record RobotBestTrajectory(Robot bestRobot, Trajectory bestTrajectory) {
-    }
+    private record RobotBestTrajectory(Robot bestRobot, Trajectory bestTrajectory) { }
 
     /**
      * Update the subscribers with the latest delivery requests.
@@ -75,8 +75,9 @@ public class RobotManager {
     public void update() {
         if (!subscribers.isEmpty() && !requests.isEmpty()) {
             Request nextRequest = requests.getNextRequest();
-
-            RobotBestTrajectory robotBestTrajectory = findBestRobotAndTrajectory(nextRequest);
+            PriorityQueue<Robot> sortedSubscribers = new PriorityQueue<>(Comparator.comparingDouble(Robot::getDistanceToNextRequest));
+            sortedSubscribers.addAll(subscribers);
+            RobotBestTrajectory robotBestTrajectory = findBestRobotAndTrajectory(nextRequest, sortedSubscribers);
 
             // If there is a robot that can reach the request
             if (robotBestTrajectory.bestRobot() != null) {
@@ -98,25 +99,23 @@ public class RobotManager {
      * @post Returns a RobotBestTrajectory object with the robot having the shortest trajectory to the request and the corresponding trajectory.
      * If no robot can reach the request, both fields in RobotBestTrajectory will be null.
      */
-    private RobotBestTrajectory findBestRobotAndTrajectory(Request nextRequest) {
+    private RobotBestTrajectory findBestRobotAndTrajectory(Request nextRequest, PriorityQueue<Robot> sortedSubscribers) {
         Robot bestRobot = null;
         Trajectory bestTrajectory = null;
-        double minDistance = Double.MAX_VALUE;
-
         // Find the robot with the shortest trajectory to the next request
-        for (Robot robot : subscribers) {
+        for (Robot robot : sortedSubscribers) {
             if (robot.canPerformRequest(nextRequest)) {
                 Trajectory candidateTrajectory = getCandidateTrajectory(robot, nextRequest);
-                if (candidateTrajectory != null && candidateTrajectory.getLength() < minDistance) {
-                    minDistance = candidateTrajectory.getLength();
+                if (candidateTrajectory != null) {
                     bestRobot = robot;
                     bestTrajectory = candidateTrajectory;
+                    return new RobotBestTrajectory(bestRobot, bestTrajectory);
                 }
             }
         }
-
         return new RobotBestTrajectory(bestRobot, bestTrajectory);
     }
+
 
     /**
      * Get the candidate trajectory for a given robot and request.
@@ -220,5 +219,13 @@ public class RobotManager {
     public Set<Robot> getSubscribers() {
         return subscribers;
     }
+    /**
+     * Returns the next request in the queue.
+     *
+     * @return The next request.
+     * @pre None.
+     * @post The next request is returned.
+     */
+    public Request getNextRequest(){return requests.getNextRequest();}
 
 }

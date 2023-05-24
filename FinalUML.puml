@@ -211,6 +211,35 @@ class ui.SimulatorCLI {
 + void addRequest(Request)
 + int askForNRobots()
 }
+
+class ui.SimulatorGUI {
+- Scanner sc
+- ArrayList<Request> requests
+- List<Shape> shapes
++ int askForNumberOfObstacles()
++ Request askForRequest()
++ double askForSpeed()
++ boolean isAskingForNewPoint()
++ void displayRobotStatus(int,Set<Robot>)
++ void displayErrorMessage(String)
++ void sendMapInformation(DeliveryMap)
++ void addRequest(Request)
++ int askForNRobots()
+- void drawArrow(Graphics2D g, int x1, int y1, int x2, int y2)
+- void drawTiles(Graphics g)
+- void drawShapes(Graphics g)
+- void drawRobots(Graphics g)
+-  void drawDeliveringRobot(Graphics g, Robot robot)
+- void drawReturningRobot(Graphics g, Robot robot)
+-void drawStandbyRobot(Graphics g, Robot robot)
+-void drawCurrentStep(Graphics g)
+# void paintComponent(Graphics g)
+-void drawRequests(Graphics g)
+- Color getColorForIndex(int index)
+-{static}MouseChecker mouseChecker
+-{static}KeyChecker keyChecker
+}
+
 class simulator.Circle {
 - double r
 + double getRadius()
@@ -290,6 +319,8 @@ class simulator.RobotManager {
 simulator.Polygon <|-- simulator.Triangle
 simulator.Planner +.. simulator.Builder
 ui.SimulatorUI <|.. ui.SimulatorCLI
+ui.SimulatorUI <|.. ui.SimulatorGUI
+
 simulator.Shape <|-- simulator.Circle
 ui.SimulatorUI <|.. ui.TestUI
 simulator.ShapeFactory <|.. simulator.CircleFactory

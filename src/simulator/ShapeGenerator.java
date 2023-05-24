@@ -3,7 +3,7 @@ package simulator;
 import java.util.Random;
 
 /**
- * The Shape Generator class provides methods for generating random numbers and shapes.
+ * The Shape Generator class provides methods for generating random shapes.
  * @author Jude Adam
  * @version 1.0.0 24/04/2023
  * @inv rng != null
